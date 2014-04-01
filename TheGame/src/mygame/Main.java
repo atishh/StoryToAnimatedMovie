@@ -1,5 +1,8 @@
 package mygame;
 
+import com.jme3.animation.AnimChannel;
+import com.jme3.animation.AnimControl;
+import com.jme3.animation.AnimEventListener;
 import com.jme3.app.SimpleApplication;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
@@ -24,16 +27,31 @@ import java.util.Random;
  *
  * @author normenhansen
  */
-public class Main extends SimpleApplication {
+public class Main extends SimpleApplication implements AnimEventListener {
 
     //private Vector3f lightDir = new Vector3f(-0.39f, -0.32f, -0.74f);
     private Vector3f lightDir = new Vector3f(0, -1, 0);
     private DirectionalLight sun = new DirectionalLight();
     private Terrain LakeTerrain;
-    
+    private Node Actor1;
+    private AnimChannel channel;
+    private AnimControl control;
+
     public static void main(String[] args) {
         Main app = new Main();
         app.start();
+    }
+
+    public void createActors() {
+        Actor1 = (Node) assetManager.loadModel("Models/Actors/Cube.mesh.j3o");
+        rootNode.attachChild(Actor1);
+        control = Actor1.getControl(AnimControl.class);
+        control.addListener(this);
+        channel = control.createChannel();
+        channel.setAnim("walk");
+        float height = LakeTerrain.getHeight(new Vector2f(0, 0));
+        Actor1.setLocalTranslation(0, height + 4.6f, 0);
+        Actor1.setShadowMode(RenderQueue.ShadowMode.Cast);
     }
 
     public void createWater() {
@@ -56,10 +74,10 @@ public class Main extends SimpleApplication {
          * A white ambient light source.
          */
         /*
-        AmbientLight ambient = new AmbientLight();
-        ambient.setColor(ColorRGBA.White);
-        rootNode.addLight(ambient);
-*/
+         AmbientLight ambient = new AmbientLight();
+         ambient.setColor(ColorRGBA.White);
+         rootNode.addLight(ambient);
+         */
         /**
          * A white, directional light source
          */
@@ -69,13 +87,12 @@ public class Main extends SimpleApplication {
         rootNode.addLight(sun);
     }
 
-    public void createShadow()
-    {
-                 BasicShadowRenderer       bsr = new BasicShadowRenderer(assetManager, 512);
+    public void createShadow() {
+        BasicShadowRenderer bsr = new BasicShadowRenderer(assetManager, 512);
         bsr.setDirection(new Vector3f(-1, -1, -1).normalizeLocal());
         viewPort.addProcessor(bsr);
     }
-    
+
     public void createBox() {
         /* A colored lit cube. Needs light source! */
         Box boxMesh = new Box(1f, 1f, 1f);
@@ -90,9 +107,8 @@ public class Main extends SimpleApplication {
         rootNode.attachChild(boxGeo);
     }
 
-    public void createScene()
-    {
-                Spatial lake = assetManager.loadModel("Scenes/Lake/lake2.j3o");
+    public void createScene() {
+        Spatial lake = assetManager.loadModel("Scenes/Lake/lake2.j3o");
         rootNode.attachChild(lake);
 
         Node rootLake = lake.getParent();
@@ -106,7 +122,7 @@ public class Main extends SimpleApplication {
             lodControl.setCamera(getCamera());
         }
     }
-    
+
     public void PlantTree(Terrain LakeTerrain) {
         Random rand = new Random((long) 5f);
 
@@ -147,8 +163,6 @@ public class Main extends SimpleApplication {
         /**
          * Load a model. Uses model and texture from jme3-test-data library!
          */
-
-        
         createScene();
         PlantTree(LakeTerrain);
 
@@ -163,23 +177,8 @@ public class Main extends SimpleApplication {
 
         createShadow();
 
-        /*
-        //Shadow
-        DirectionalLightShadowRenderer dlsr =
-                new DirectionalLightShadowRenderer(assetManager, 1024, 2);
-        dlsr.setLight(sun);
+        createActors();
 
-        //viewPort.addProcessor(dlsr);
-        DirectionalLightShadowFilter dlsf =
-                new DirectionalLightShadowFilter(assetManager, 1024, 2);
-        dlsf.setLight(sun);
-        dlsf.setEnabled(true);
-        FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
-        fpp.addFilter(dlsf);
-        viewPort.addProcessor(fpp);
-       // rootNode.setShadowMode(RenderQueue.ShadowMode.Off);
-        rootNode.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
-*/
         // viewPort.setBackgroundColor(ColorRGBA.White);
         // Default speed is too slow
         flyCam.setMoveSpeed(20f);
@@ -194,5 +193,13 @@ public class Main extends SimpleApplication {
     @Override
     public void simpleRender(RenderManager rm) {
         //TODO: add render code
+    }
+
+    public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
