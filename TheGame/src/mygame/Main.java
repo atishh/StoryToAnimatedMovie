@@ -1,18 +1,19 @@
 package mygame;
 
 import com.jme3.app.SimpleApplication;
-import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.post.FilterPostProcessor;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.renderer.queue.RenderQueue.ShadowMode;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.shadow.DirectionalLightShadowFilter;
-import com.jme3.shadow.DirectionalLightShadowRenderer;
+import com.jme3.scene.shape.Box;
+import com.jme3.shadow.BasicShadowRenderer;
 import com.jme3.terrain.Terrain;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.water.SimpleWaterProcessor;
@@ -25,13 +26,87 @@ import java.util.Random;
  */
 public class Main extends SimpleApplication {
 
-    private Vector3f lightDir = new Vector3f(-0.39f, -0.32f, -0.74f);
-
+    //private Vector3f lightDir = new Vector3f(-0.39f, -0.32f, -0.74f);
+    private Vector3f lightDir = new Vector3f(0, -1, 0);
+    private DirectionalLight sun = new DirectionalLight();
+    private Terrain LakeTerrain;
+    
     public static void main(String[] args) {
         Main app = new Main();
         app.start();
     }
 
+    public void createWater() {
+        //Create water;
+        SimpleWaterProcessor waterProcessor =
+                new SimpleWaterProcessor(assetManager);
+        waterProcessor.setReflectionScene(rootNode);
+        waterProcessor.setLightPosition(lightDir.mult(-3000));
+        viewPort.addProcessor(waterProcessor);
+
+        Spatial waterPlane =
+                waterProcessor.createWaterGeometry(80, 80);
+        waterPlane.setMaterial(waterProcessor.getMaterial());
+        waterPlane.setLocalTranslation(-45, 1.5f, 65);
+        rootNode.attachChild(waterPlane);
+    }
+
+    public void createLight() {
+        /**
+         * A white ambient light source.
+         */
+        /*
+        AmbientLight ambient = new AmbientLight();
+        ambient.setColor(ColorRGBA.White);
+        rootNode.addLight(ambient);
+*/
+        /**
+         * A white, directional light source
+         */
+        //DirectionalLight sun = new DirectionalLight();
+        sun.setDirection((lightDir.normalizeLocal()));
+        sun.setColor(ColorRGBA.White);
+        rootNode.addLight(sun);
+    }
+
+    public void createShadow()
+    {
+                 BasicShadowRenderer       bsr = new BasicShadowRenderer(assetManager, 512);
+        bsr.setDirection(new Vector3f(-1, -1, -1).normalizeLocal());
+        viewPort.addProcessor(bsr);
+    }
+    
+    public void createBox() {
+        /* A colored lit cube. Needs light source! */
+        Box boxMesh = new Box(1f, 1f, 1f);
+        Geometry boxGeo = new Geometry("Colored Box", boxMesh);
+        Material boxMat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+        boxMat.setBoolean("UseMaterialColors", true);
+        boxMat.setColor("Ambient", ColorRGBA.Green);
+        boxMat.setColor("Diffuse", ColorRGBA.Green);
+        boxGeo.setMaterial(boxMat);
+        boxGeo.setShadowMode(ShadowMode.Cast);
+        boxGeo.setLocalTranslation(100, 3.6f, 100);
+        rootNode.attachChild(boxGeo);
+    }
+
+    public void createScene()
+    {
+                Spatial lake = assetManager.loadModel("Scenes/Lake/lake2.j3o");
+        rootNode.attachChild(lake);
+
+        Node rootLake = lake.getParent();
+        LakeTerrain = (Terrain) rootLake.getChild("terrain-lake2");
+        rootLake.getChild("terrain-lake2").setShadowMode(RenderQueue.ShadowMode.Receive);
+        //TerrainLodControl lodControl = new TerrainLodControl(LakeTerrain, getCamera());
+        // LakeTerrain.addControl(lodControl);
+        //LakeTerrain.
+        TerrainLodControl lodControl = rootNode.getChild("terrain-lake2").getControl(TerrainLodControl.class);
+        if (lodControl != null) {
+            lodControl.setCamera(getCamera());
+        }
+    }
+    
     public void PlantTree(Terrain LakeTerrain) {
         Random rand = new Random((long) 5f);
 
@@ -54,7 +129,7 @@ public class Main extends SimpleApplication {
 //Logger.getLogger("test").severe("AFTER XML LOAD num of lod : " + geo.getMesh().getNumLodLevels());
             //tree.getMesh().getNumLodLevels();
             tree.setLocalTranslation(randomX, height + 0.6f, randomZ);
-            tree.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
+            tree.setShadowMode(RenderQueue.ShadowMode.Cast);
             //tree.setLocalTranslation(speed, speed, speed);
             //float randomRotate = (float) (-3.14f + (Math.random() * ((3.14f + 3.14f) + 1)));
 
@@ -72,19 +147,9 @@ public class Main extends SimpleApplication {
         /**
          * Load a model. Uses model and texture from jme3-test-data library!
          */
-        Spatial lake = assetManager.loadModel("Scenes/Lake/lake2.j3o");
-        rootNode.attachChild(lake);
 
-        Node rootNode = lake.getParent();
-        Terrain LakeTerrain = (Terrain) rootNode.getChild("terrain-lake2");
-        rootNode.getChild("terrain-lake2").setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
-        //TerrainLodControl lodControl = new TerrainLodControl(LakeTerrain, getCamera());
-        // LakeTerrain.addControl(lodControl);
-        //LakeTerrain.
-        TerrainLodControl lodControl = rootNode.getChild("terrain-lake2").getControl(TerrainLodControl.class);
-        if (lodControl != null) {
-            lodControl.setCamera(getCamera());
-        }
+        
+        createScene();
         PlantTree(LakeTerrain);
 
 
@@ -92,35 +157,13 @@ public class Main extends SimpleApplication {
 
         // if(LakeTerrain != NULL)
 
-        /**
-         * A white ambient light source.
-         */
-        AmbientLight ambient = new AmbientLight();
-        ambient.setColor(ColorRGBA.White);
-        rootNode.addLight(ambient);
+        createBox();
+        createLight();
+        createWater();
 
-        /**
-         * A white, directional light source
-         */
-        DirectionalLight sun = new DirectionalLight();
-        sun.setDirection((lightDir.normalizeLocal()));
-        sun.setColor(ColorRGBA.White);
-        rootNode.addLight(sun);
+        createShadow();
 
-        //Create water;
-        SimpleWaterProcessor waterProcessor =
-                new SimpleWaterProcessor(assetManager);
-        waterProcessor.setReflectionScene(rootNode);
-        waterProcessor.setLightPosition(lightDir.mult(-3000));
-        viewPort.addProcessor(waterProcessor);
-
-        Spatial waterPlane =
-                waterProcessor.createWaterGeometry(80, 80);
-        waterPlane.setMaterial(waterProcessor.getMaterial());
-        waterPlane.setLocalTranslation(-45, 1.5f, 65);
-        rootNode.attachChild(waterPlane);
-
-
+        /*
         //Shadow
         DirectionalLightShadowRenderer dlsr =
                 new DirectionalLightShadowRenderer(assetManager, 1024, 2);
@@ -134,9 +177,9 @@ public class Main extends SimpleApplication {
         FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
         fpp.addFilter(dlsf);
         viewPort.addProcessor(fpp);
-        rootNode.setShadowMode(RenderQueue.ShadowMode.Off);
+       // rootNode.setShadowMode(RenderQueue.ShadowMode.Off);
         rootNode.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
-
+*/
         // viewPort.setBackgroundColor(ColorRGBA.White);
         // Default speed is too slow
         flyCam.setMoveSpeed(20f);
