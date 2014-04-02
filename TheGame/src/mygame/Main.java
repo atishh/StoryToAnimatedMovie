@@ -34,6 +34,7 @@ public class Main extends SimpleApplication implements AnimEventListener {
     private DirectionalLight sun = new DirectionalLight();
     private Terrain LakeTerrain;
     private Node Actor1;
+    private Node Actor2;
     private AnimChannel channel;
     private AnimControl control;
 
@@ -42,16 +43,17 @@ public class Main extends SimpleApplication implements AnimEventListener {
         app.start();
     }
 
-    public void createActors() {
-        Actor1 = (Node) assetManager.loadModel("Models/Actors/Cube.mesh.j3o");
-        rootNode.attachChild(Actor1);
-        control = Actor1.getControl(AnimControl.class);
+    public Node createActor() {
+        Node Actor = (Node) assetManager.loadModel("Models/Actors/Cube.mesh.j3o");
+        rootNode.attachChild(Actor);
+        control = Actor.getControl(AnimControl.class);
         control.addListener(this);
         channel = control.createChannel();
         channel.setAnim("walk");
         float height = LakeTerrain.getHeight(new Vector2f(0, 0));
-        Actor1.setLocalTranslation(0, height + 4.6f, 0);
-        Actor1.setShadowMode(RenderQueue.ShadowMode.Cast);
+        Actor.setLocalTranslation(0, height + 4.6f, 0);
+        Actor.setShadowMode(RenderQueue.ShadowMode.Cast);
+        return Actor;
     }
 
     public void createWater() {
@@ -177,8 +179,19 @@ public class Main extends SimpleApplication implements AnimEventListener {
 
         createShadow();
 
-        createActors();
+        Actor1 = createActor();
+        Actor2 = createActor();
 
+        PointsOnLake PointsOnLakeObj1 = new PointsOnLake();
+        
+        Vector2f point1 = PointsOnLakeObj1.walkablePoint[0];
+        float height = LakeTerrain.getHeight(point1);
+        Actor1.setLocalTranslation(point1.getX(), height + 4.6f, point1.getY());
+        
+        point1 = PointsOnLakeObj1.walkablePoint[1];
+        height = LakeTerrain.getHeight(point1);
+        Actor2.setLocalTranslation(point1.getX(), height + 4.6f, point1.getY());
+        
         // viewPort.setBackgroundColor(ColorRGBA.White);
         // Default speed is too slow
         flyCam.setMoveSpeed(20f);
@@ -188,6 +201,11 @@ public class Main extends SimpleApplication implements AnimEventListener {
     @Override
     public void simpleUpdate(float tpf) {
         //TODO: add update code
+        Vector3f currLoc = Actor1.getLocalTranslation();
+        float height = LakeTerrain.getHeight(new Vector2f(currLoc.getX(), currLoc.getZ()));
+        currLoc.setY(height + 4.6f);
+        Actor1.setLocalTranslation(currLoc);
+        Actor1.move(0,0,tpf);
     }
 
     @Override
