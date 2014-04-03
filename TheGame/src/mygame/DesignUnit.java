@@ -1,0 +1,165 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package mygame;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Scanner;
+
+/**
+ * Assumes UTF-8 encoding. JDK 7+.
+ */
+public class DesignUnit {
+
+    public CDFNode mTopCDFNode = null;
+    public CDFNode mCurrCDFNode = null;
+    public ActorNode[] mFemaleActors;
+    public int mNoOfFemaleActors = 0;
+    public ActorNode[] mMaleActors;
+    public int mNoOfMaleActors = 0;
+    public int mCounter = 0;
+
+    public enum ParserState {
+
+        STATE_INITIAL, STATE_NOOFFEMALE, STATE_FEMALE, STATE_FEMALEATTRIBUTE, 
+        STATE_NOOFMALE, STATE_MALE, STATE_MALEATTRIBUTE,
+        STATE_BACKGROUND, STATE_MOOD, STATE_ACTION
+    };
+    public ParserState myParserState = ParserState.STATE_NOOFFEMALE;
+
+    public static void main(String... aArgs) throws IOException {
+        DesignUnit parserObj = new DesignUnit("C:\\Users\\atsingh\\Projects\\nlp\\source\\outfile.txt");
+        parserObj.processLineByLine();
+        log("Done.");
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param aFileName full name of an existing, readable file.
+     */
+    public DesignUnit(String aFileName) {
+        fFilePath = Paths.get(aFileName);
+    }
+
+    /**
+     * Template method that calls {@link #processLine(String)}.
+     */
+    public final void processLineByLine() throws IOException {
+        try (Scanner scanner = new Scanner(fFilePath, ENCODING.name())) {
+            while (scanner.hasNextLine()) {
+                processLine(scanner.nextLine());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to create Pi Face Device", e);
+        }
+    }
+
+    /**
+     * Overridable method for processing lines in different ways.
+     *
+     * <P>This simple default implementation expects simple name-value pairs,
+     * separated by an '=' sign. Examples of valid input:
+     * <tt>height = 167cm</tt>
+     * <tt>mass = 65kg</tt>
+     * <tt>disposition = "grumpy"</tt>
+     * <tt>this is the name = this is the value</tt>
+     */
+    protected void processLine(String aLine) {
+        //use a second Scanner to parse the content of each line 
+        Scanner scanner = new Scanner(aLine);
+        //scanner.useDelimiter("=");
+        //if (scanner.hasNext()) {
+        //assumes the line has a certain structure
+        String token = scanner.hasNext() ? scanner.next() : "";
+        log("Name is : " + token.trim());
+        switch (myParserState) {
+            case STATE_INITIAL:
+                System.out.println("Unreachable state. Just for fun");
+                myParserState = ParserState.STATE_NOOFFEMALE;
+                break;
+
+            case STATE_NOOFFEMALE:
+                mNoOfFemaleActors = Integer.parseInt(token);
+                System.out.println("No of female Actors are " + mNoOfFemaleActors);
+                myParserState = ParserState.STATE_FEMALE;
+                mCounter = 0;
+                mFemaleActors = new ActorNode[mNoOfFemaleActors];
+                break;
+            case STATE_FEMALE:
+                mFemaleActors[mCounter] = new ActorNode(token, mCounter);
+                if (mCounter < (mNoOfFemaleActors)) {
+                    myParserState = ParserState.STATE_FEMALEATTRIBUTE;
+                } else {
+                    myParserState = ParserState.STATE_NOOFMALE;
+                }
+                System.out.println("Female Actor " + mCounter + " is " + token);
+                break;
+            case STATE_FEMALEATTRIBUTE:
+                mFemaleActors[mCounter].attribute += token;
+                if (mCounter < (mNoOfFemaleActors - 1)) {
+                    mCounter++;
+                    myParserState = ParserState.STATE_FEMALE;
+                } else {
+                    myParserState = ParserState.STATE_NOOFMALE;
+                }
+                System.out.println("Female Actor  " + mCounter + " Attribute  is " + token);
+                break;
+            case STATE_NOOFMALE:
+                mNoOfMaleActors = Integer.parseInt(token);
+                System.out.println("No of Male Actors are " + mNoOfMaleActors);
+                myParserState = ParserState.STATE_MALE;
+                mCounter = 0;
+                mMaleActors = new ActorNode[mNoOfMaleActors];
+                break;
+            case STATE_MALE:
+                //TODO change it
+                mMaleActors[mCounter] = new ActorNode(token, mCounter);
+                if (mCounter < (mNoOfMaleActors)) {
+                    myParserState = ParserState.STATE_MALEATTRIBUTE;
+                } else {
+                    myParserState = ParserState.STATE_BACKGROUND;
+                }
+                System.out.println("Male Actor " + mCounter + " is " + token);
+                break;
+            case STATE_MALEATTRIBUTE:
+                mMaleActors[mCounter].attribute += token;
+                if (mCounter < (mNoOfMaleActors - 1)) {
+                    mCounter++;
+                    myParserState = ParserState.STATE_MALE;
+                } else {
+                    myParserState = ParserState.STATE_BACKGROUND;
+                }
+                System.out.println("Male Actor  " + mCounter + " Attribute  is " + token);
+                break;
+
+            default:
+                System.out.println("Midweek days are so-so.");
+                break;
+        }
+        // }
+
+        /*
+         if (scanner.hasNext()) {
+         //assumes the line has a certain structure
+         String name = scanner.next();
+         //String value = scanner.next();
+         log("Name is : " + name.trim());
+         } else {
+         log("Empty or invalid line. Unable to process.");
+         }
+         * */
+    }
+    // PRIVATE 
+    private final Path fFilePath;
+    private final static Charset ENCODING = StandardCharsets.UTF_8;
+
+    private static void log(Object aObject) {
+        System.out.println(String.valueOf(aObject));
+    }
+}

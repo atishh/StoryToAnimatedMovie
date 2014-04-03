@@ -3,10 +3,10 @@ package mygame;
 
 import java.io.Serializable;
 
-public class ActionEdge {
+public class CDFEdge {
 
-    public ActionNode source;
-    public ActionNode target;
+    public CDFNode source;
+    public CDFNode target;
     public String label;
     public int sourceIndex;
     public int targetIndex;

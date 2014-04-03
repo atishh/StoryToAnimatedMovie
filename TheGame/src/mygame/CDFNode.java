@@ -11,27 +11,27 @@ import java.util.List;
  *
  * @author aa496
  */
-public class ActionNode {
+public class CDFNode {
 
     public String label;
     public int idx;
     public String attribute;
-    public List<ActionNode> children;
-    public List<ActionEdge> outEdges;
-    public ActionNode parent;
+    public List<CDFNode> children;
+    public List<CDFEdge> outEdges;
+    public CDFNode parent;
 
-    public ActionNode(String lex, int idx) {
+    public CDFNode(String lex, int idx) {
         this.label = lex + "-" + idx;
 
         this.idx = idx;
 
-        children = new ArrayList<ActionNode>();
-        outEdges = new ArrayList<ActionEdge>();
+        children = new ArrayList<CDFNode>();
+        outEdges = new ArrayList<CDFEdge>();
         attribute = "";
     }
 
-    public void addChild(ActionNode c) {
-        for (ActionNode node : children) {
+    public void addChild(CDFNode c) {
+        for (CDFNode node : children) {
             if (node.label.equalsIgnoreCase(c.label)) {
                 return;
             }
@@ -44,7 +44,7 @@ public class ActionNode {
         if (parent == null) {
             return null;
         }
-        for (ActionEdge e : parent.outEdges) {
+        for (CDFEdge e : parent.outEdges) {
             if (e.target == this) {
                 return e.label;
             }
