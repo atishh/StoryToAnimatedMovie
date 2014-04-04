@@ -16,28 +16,33 @@ public class CDFNode {
     public String label;
     public int idx;
     public String attribute;
-    public List<CDFNode> children;
+    //public List<CDFNode> children;
+    public CDFNode children;
     public List<CDFEdge> outEdges;
     public CDFNode parent;
-
+    public CDFType cdfType;
+    
+    //TODO the actors can be more;
+    public ActorNode Actor1;
+    public ActorNode Actor2;
+    public String TalkString;
+    
     public CDFNode(String lex, int idx) {
-        this.label = lex + "-" + idx;
+        this.label = lex;
 
         this.idx = idx;
 
-        children = new ArrayList<CDFNode>();
+        children = null;
+        parent = null;
         outEdges = new ArrayList<CDFEdge>();
         attribute = "";
+        cdfType = CDFType.CDF_ACTION;
+        
+        Actor1 = null;
+        Actor2 = null;
+        TalkString = "";
     }
 
-    public void addChild(CDFNode c) {
-        for (CDFNode node : children) {
-            if (node.label.equalsIgnoreCase(c.label)) {
-                return;
-            }
-        }
-        children.add(c);
-    }
 
     public String getRelationToParent() {
         String rel = null;

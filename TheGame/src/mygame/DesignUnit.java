@@ -16,21 +16,170 @@ import java.util.Scanner;
  */
 public class DesignUnit {
 
-    public CDFNode mTopCDFNode = null;
+    public CDFNode mRootCDFNode = null;
     public CDFNode mCurrCDFNode = null;
     public ActorNode[] mFemaleActors;
     public int mNoOfFemaleActors = 0;
     public ActorNode[] mMaleActors;
     public int mNoOfMaleActors = 0;
+    //Other Actors are those actors which are not identified by nlp.
+    //Lets keep the maximum value to be 10.
+    public ActorNode[] mOtherActors = new ActorNode[50];
+    ;
+    public int mNoOfOtherActors = 0;
     public int mCounter = 0;
 
     public enum ParserState {
 
-        STATE_INITIAL, STATE_NOOFFEMALE, STATE_FEMALE, STATE_FEMALEATTRIBUTE, 
+        STATE_INITIAL, STATE_NOOFFEMALE, STATE_FEMALE, STATE_FEMALEATTRIBUTE,
         STATE_NOOFMALE, STATE_MALE, STATE_MALEATTRIBUTE,
-        STATE_BACKGROUND, STATE_MOOD, STATE_ACTION
+        STATE_ACTION
+    };
+
+    public enum ActionInternalState {
+
+        STATE_ACTOR1, STATE_ACTOR2, STATE_SAY, STATE_NOTHING
     };
     public ParserState myParserState = ParserState.STATE_NOOFFEMALE;
+    public ActionInternalState myActionInternalState = ActionInternalState.STATE_ACTOR1;
+
+    public ActorNode findActorNode(String token) {
+        if (token == null) {
+            return null;
+        }
+
+        for (int i = 0; i < mNoOfFemaleActors; i++) {
+            if (mFemaleActors[i].Name.equals(token)) {
+                System.out.println("Found Actor for token " + token);
+                return mFemaleActors[i];
+            }
+        }
+        for (int i = 0; i < mNoOfMaleActors; i++) {
+            if (mMaleActors[i].Name.equals(token)) {
+                System.out.println("Found Actor for token " + token);
+                return mMaleActors[i];
+            }
+        }
+
+        for (int i = 0; i < mNoOfOtherActors; i++) {
+            if (mOtherActors[i].Name.equals(token)) {
+                System.out.println("Found Actor in otherActor for token " + token);
+                return mOtherActors[i];
+            }
+        }
+        System.out.println("No Actor found for token " + token + "creating new actor");
+        ActorNode myActorNode = new ActorNode(token, mNoOfOtherActors);
+        mOtherActors[mNoOfOtherActors] = myActorNode;
+        mNoOfOtherActors++;
+        return myActorNode;
+    }
+
+    public void CreateCDFEdge(CDFNode newCDFNode) {
+        if (mCurrCDFNode == null) {
+            //This means it is root node.
+            mCurrCDFNode = newCDFNode;
+            mRootCDFNode = mCurrCDFNode;
+        } else {
+            //create EDGE
+            newCDFNode.parent = mCurrCDFNode;
+            mCurrCDFNode.children = newCDFNode;
+            mCurrCDFNode = newCDFNode;
+        }
+    }
+
+    public void ProcessForBackground(String token) {
+        System.out.println("Processing Background");
+
+        boolean bCdfNodeCreated = false;
+        CDFNode newCDFNode = null;
+        Scanner scanner = new Scanner(token);
+        //scanner.useDelimiter(" ");
+        //scanner.next();
+
+        while (scanner.hasNext()) {
+            //assumes the line has a certain structure
+            String token1 = scanner.next();
+            log("Background found : " + token1.trim());
+            if (bCdfNodeCreated == false) {
+                newCDFNode = new CDFNode(token1, 1);
+                newCDFNode.cdfType = CDFType.CDF_BACKGROUND;
+            }
+            newCDFNode.attribute += " " + token1;
+        }
+        CreateCDFEdge(newCDFNode);
+    }
+
+    public void ProcessForMood(String token) {
+        System.out.println("Processing Mood");
+
+        boolean bCdfNodeCreated = false;
+        CDFNode newCDFNode = null;
+        Scanner scanner = new Scanner(token);
+        //scanner.useDelimiter(" ");
+        //scanner.next();
+
+        while (scanner.hasNext()) {
+            //assumes the line has a certain structure
+            String token1 = scanner.next();
+            log("Mood found : " + token1.trim());
+            if (bCdfNodeCreated == false) {
+                newCDFNode = new CDFNode(token1, 1);
+                newCDFNode.cdfType = CDFType.CDF_MOOD;
+            }
+            newCDFNode.attribute += " " + token1;
+        }
+        CreateCDFEdge(newCDFNode);
+    }
+
+    public void ProcessForAction(String token) {
+        System.out.println("Processing Action");
+
+        boolean bCdfNodeCreated = false;
+        CDFNode newCDFNode = null;
+        Scanner scanner = new Scanner(token);
+        //scanner.useDelimiter(" ");
+        //scanner.next();
+
+        while (scanner.hasNext()) {
+            //assumes the line has a certain structure
+            String token1 = scanner.next();
+            log("Action found : " + token1.trim());
+            if (bCdfNodeCreated == false) {
+                newCDFNode = new CDFNode(token1, 1);
+                newCDFNode.cdfType = CDFType.CDF_ACTION;
+            }
+            newCDFNode.attribute += " " + token1;
+        }
+        CreateCDFEdge(newCDFNode);
+        myActionInternalState = ActionInternalState.STATE_ACTOR1;
+    }
+
+    public void ProcessForActionInternal(String token) {
+        System.out.println("Processing ActionInternal");
+        Scanner scanner = new Scanner(token);
+        String token1;
+        switch (myActionInternalState) {
+            case STATE_ACTOR1:
+                token1 = scanner.hasNext() ? scanner.next() : null;
+                mCurrCDFNode.Actor1 = findActorNode(token1);
+                myActionInternalState = ActionInternalState.STATE_ACTOR2;
+                break;
+            case STATE_ACTOR2:
+                token1 = scanner.hasNext() ? scanner.next() : null;
+                mCurrCDFNode.Actor1 = findActorNode(token1);
+                myActionInternalState = ActionInternalState.STATE_SAY;
+                break;
+
+            case STATE_SAY:
+                mCurrCDFNode.TalkString = token;
+                myActionInternalState = ActionInternalState.STATE_NOTHING;
+                break;
+
+            default:
+                System.out.println("Midweek days are so-so.");
+                break;
+        }
+    }
 
     public static void main(String... aArgs) throws IOException {
         DesignUnit parserObj = new DesignUnit("C:\\Users\\atsingh\\Projects\\nlp\\source\\outfile.txt");
@@ -71,12 +220,14 @@ public class DesignUnit {
      * <tt>this is the name = this is the value</tt>
      */
     protected void processLine(String aLine) {
+        log("Line is : " + aLine);
         //use a second Scanner to parse the content of each line 
-        Scanner scanner = new Scanner(aLine);
+        //Scanner scanner = new Scanner(aLine);
         //scanner.useDelimiter("=");
         //if (scanner.hasNext()) {
         //assumes the line has a certain structure
-        String token = scanner.hasNext() ? scanner.next() : "";
+        //String token = scanner.hasNext() ? scanner.next() : "";
+        String token = aLine;
         log("Name is : " + token.trim());
         switch (myParserState) {
             case STATE_INITIAL:
@@ -123,7 +274,7 @@ public class DesignUnit {
                 if (mCounter < (mNoOfMaleActors)) {
                     myParserState = ParserState.STATE_MALEATTRIBUTE;
                 } else {
-                    myParserState = ParserState.STATE_BACKGROUND;
+                    myParserState = ParserState.STATE_ACTION;
                 }
                 System.out.println("Male Actor " + mCounter + " is " + token);
                 break;
@@ -133,10 +284,21 @@ public class DesignUnit {
                     mCounter++;
                     myParserState = ParserState.STATE_MALE;
                 } else {
-                    myParserState = ParserState.STATE_BACKGROUND;
+                    myParserState = ParserState.STATE_ACTION;
                 }
                 System.out.println("Male Actor  " + mCounter + " Attribute  is " + token);
                 break;
+
+            case STATE_ACTION:
+                if (token.contains("Background:")) {
+                    ProcessForBackground(token);
+                } else if (token.contains("Mood:")) {
+                    ProcessForMood(token);
+                } else if (token.contains("Action:")) {
+                    ProcessForAction(token);
+                } else {
+                    ProcessForActionInternal(token);
+                }
 
             default:
                 System.out.println("Midweek days are so-so.");
