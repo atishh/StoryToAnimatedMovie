@@ -164,7 +164,7 @@ public class Main extends SimpleApplication implements AnimEventListener {
     public void simpleInitApp() {
         
         Global.gAssertManager = assetManager;
-        
+        Global.gMyMain = this;
         /**
          * Load a model. Uses model and texture from jme3-test-data library!
          */

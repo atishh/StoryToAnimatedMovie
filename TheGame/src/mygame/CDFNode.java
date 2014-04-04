@@ -27,6 +27,8 @@ public class CDFNode {
     public ActorNode Actor2;
     public String TalkString;
     
+    public BackgroundNode Background1;
+    
     public CDFNode(String lex, int idx) {
         this.label = lex;
 
@@ -41,6 +43,8 @@ public class CDFNode {
         Actor1 = null;
         Actor2 = null;
         TalkString = "";
+        
+        Background1 = null;
     }
 
 

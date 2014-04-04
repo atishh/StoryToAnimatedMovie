@@ -33,7 +33,8 @@ public class ActorNode {
     }
 
     public void createActor() {
-        if(Global.gAssertManager != null)
+        if (Global.gAssertManager != null) {
             Actor = (Node) Global.gAssertManager.loadModel("Models/Actors/Cube.mesh.j3o");
+        }
     }
 }

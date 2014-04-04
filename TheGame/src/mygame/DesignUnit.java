@@ -15,7 +15,13 @@ import java.util.Scanner;
  * Assumes UTF-8 encoding. JDK 7+.
  */
 public class DesignUnit {
-
+    
+    public static void main(String... aArgs) throws IOException {
+        DesignUnit parserObj = new DesignUnit("C:\\Users\\atsingh\\Projects\\nlp\\source\\outfile.txt");
+        parserObj.processLineByLine();
+        log("Done.");
+    }
+    
     public CDFNode mRootCDFNode = null;
     public CDFNode mCurrCDFNode = null;
     public ActorNode[] mFemaleActors;
@@ -103,6 +109,8 @@ public class DesignUnit {
             if (bCdfNodeCreated == false) {
                 newCDFNode = new CDFNode(token1, 1);
                 newCDFNode.cdfType = CDFType.CDF_BACKGROUND;
+                newCDFNode.Background1 = new BackgroundNode(token1, 1);
+                bCdfNodeCreated = true;
             }
             newCDFNode.attribute += " " + token1;
         }
@@ -181,11 +189,7 @@ public class DesignUnit {
         }
     }
 
-    public static void main(String... aArgs) throws IOException {
-        DesignUnit parserObj = new DesignUnit("C:\\Users\\atsingh\\Projects\\nlp\\source\\outfile.txt");
-        parserObj.processLineByLine();
-        log("Done.");
-    }
+
 
     /**
      * Constructor.
