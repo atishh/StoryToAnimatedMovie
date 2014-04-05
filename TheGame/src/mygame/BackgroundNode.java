@@ -12,6 +12,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.shadow.BasicShadowRenderer;
 import com.jme3.terrain.Terrain;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.water.SimpleWaterProcessor;
@@ -31,14 +32,32 @@ public class BackgroundNode {
     Terrain LakeTerrain;
     private Vector3f lightDir = new Vector3f(0, -1, 0);
     private DirectionalLight sun = new DirectionalLight();
-public SimpleWaterProcessor waterProcessor;
-    
+    public SimpleWaterProcessor waterProcessor;
+    public BasicShadowRenderer bsr;
+
     public BackgroundNode(String lex, int idx) {
         this.Name = lex;
         this.label = lex + "-" + idx;
         this.idx = idx;
         attribute = "";
         createBackground();
+    }
+
+    public void AttachNodesToRoot() {
+
+        if ((Background != null)) {
+            System.out.println("Attaching to root node " + Background.getName());
+            Global.gMyMain.getRootNode().attachChild(Background);
+            if (waterProcessor != null) {
+                Global.gMyMain.getViewPort().addProcessor(waterProcessor);
+            }
+            if (bsr != null) {
+                Global.gMyMain.getViewPort().addProcessor(bsr);
+            }
+            if(sun != null)
+                Global.gMyMain.getRootNode().addLight(sun);
+        }
+
     }
 
     public void CreateLake() {
@@ -102,15 +121,22 @@ public SimpleWaterProcessor waterProcessor;
 
         sun.setDirection((lightDir.normalizeLocal()));
         sun.setColor(ColorRGBA.White);
-        Background.addLight(sun);
+       // Background.addLight(sun);
+    }
+
+    public void createShadow() {
+        bsr = new BasicShadowRenderer(Global.gAssertManager, 512);
+        bsr.setDirection(new Vector3f(-1, -1, -1).normalizeLocal());
+
     }
 
     public void createBackground() {
         if ((Global.gAssertManager != null) && (Global.gMyMain != null)) {
             CreateLake();
             PlantTree(LakeTerrain);
-            CreateWater();
             CreateLight();
+            CreateWater();
+            createShadow();
         }
     }
 }

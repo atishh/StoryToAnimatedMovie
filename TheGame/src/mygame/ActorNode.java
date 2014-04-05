@@ -37,4 +37,11 @@ public class ActorNode {
             Actor = (Node) Global.gAssertManager.loadModel("Models/Actors/Cube.mesh.j3o");
         }
     }
+
+    public void AttachNodesToRoot() {
+        if ((Actor != null)) {
+            System.out.println("Attaching to root node " + Actor.getName());
+            Global.gMyMain.getRootNode().attachChild(Actor);
+        }
+    }
 }

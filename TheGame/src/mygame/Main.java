@@ -180,33 +180,34 @@ public class Main extends SimpleApplication implements AnimEventListener {
         /**
          * Load a model. Uses model and texture from jme3-test-data library!
          */
-        createScene();
-        PlantTree(LakeTerrain);
+       // createScene();
+        //PlantTree(LakeTerrain);
 
 
 
 
         // if(LakeTerrain != NULL)
 
-        createBox();
-        createLight();
-        createWater();
+        //createBox();
+        //createLight();
+        //createWater();
 
-        createShadow();
+        //createShadow();
 
-        Actor1 = createActor();
-        Actor2 = createActor();
+        /*
+         Actor1 = createActor();
+         Actor2 = createActor();
 
-        PointsOnLake PointsOnLakeObj1 = new PointsOnLake();
+         PointsOnLake PointsOnLakeObj1 = new PointsOnLake();
 
-        Vector2f point1 = PointsOnLakeObj1.walkablePoint[0];
-        float height = LakeTerrain.getHeight(point1);
-        Actor1.setLocalTranslation(point1.getX(), height + 4.6f, point1.getY());
+         Vector2f point1 = PointsOnLakeObj1.walkablePoint[0];
+         float height = LakeTerrain.getHeight(point1);
+         Actor1.setLocalTranslation(point1.getX(), height + 4.6f, point1.getY());
 
-        point1 = PointsOnLakeObj1.walkablePoint[1];
-        height = LakeTerrain.getHeight(point1);
-        Actor2.setLocalTranslation(point1.getX(), height + 4.6f, point1.getY());
-
+         point1 = PointsOnLakeObj1.walkablePoint[1];
+         height = LakeTerrain.getHeight(point1);
+         Actor2.setLocalTranslation(point1.getX(), height + 4.6f, point1.getY());
+         */
         // viewPort.setBackgroundColor(ColorRGBA.White);
         // Default speed is too slow
         flyCam.setMoveSpeed(20f);
@@ -240,6 +241,7 @@ public class Main extends SimpleApplication implements AnimEventListener {
                 if (pCurrActionCDFNode == null) {
                     mActionStateObj = ActionState.STATE_ACTIONSTATEEXIT;
                 } else {
+                    pCurrActionCDFNode.AttachNodesToRoot();
                     mActionStateObj = ActionState.STATE_ACTIONSTATEMIDDLE;
                 }
                 break;

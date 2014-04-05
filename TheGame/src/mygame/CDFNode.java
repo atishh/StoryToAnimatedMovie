@@ -28,6 +28,20 @@ public class CDFNode {
     public BackgroundNode Background1;
     public boolean bFirstTime = true;
 
+    public void AttachNodesToRoot() {
+        if ((Actor1 != null)) {
+            Actor1.AttachNodesToRoot();
+        }
+        if ((Actor2 != null)) {
+            Actor2.AttachNodesToRoot();
+        }
+
+        if ((Background1 != null)) {
+            Background1.AttachNodesToRoot();
+        }
+
+    }
+
     public CDFNode(String lex, int idx) {
         this.label = lex;
 
