@@ -31,8 +31,10 @@ public class DesignUnit {
     //Other Actors are those actors which are not identified by nlp.
     //Lets keep the maximum value to be 10.
     public ActorNode[] mOtherActors = new ActorNode[50];
-    ;
     public int mNoOfOtherActors = 0;
+    
+    //Background 
+    
     public int mCounter = 0;
 
     public enum ParserState {

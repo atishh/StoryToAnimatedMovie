@@ -31,7 +31,8 @@ public class BackgroundNode {
     Terrain LakeTerrain;
     private Vector3f lightDir = new Vector3f(0, -1, 0);
     private DirectionalLight sun = new DirectionalLight();
-
+public SimpleWaterProcessor waterProcessor;
+    
     public BackgroundNode(String lex, int idx) {
         this.Name = lex;
         this.label = lex + "-" + idx;
@@ -84,11 +85,11 @@ public class BackgroundNode {
 
     public void CreateWater() {
         //Create water;
-        SimpleWaterProcessor waterProcessor =
+        waterProcessor =
                 new SimpleWaterProcessor(Global.gAssertManager);
         waterProcessor.setReflectionScene(Background);
         waterProcessor.setLightPosition(lightDir.mult(-3000));
-        Global.gMyMain.getViewPort().addProcessor(waterProcessor);
+        //Global.gMyMain.getViewPort().addProcessor(waterProcessor);
 
         Spatial waterPlane =
                 waterProcessor.createWaterGeometry(80, 80);

@@ -20,7 +20,10 @@ import com.jme3.shadow.BasicShadowRenderer;
 import com.jme3.terrain.Terrain;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.water.SimpleWaterProcessor;
+import java.io.IOException;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * test
@@ -165,6 +168,14 @@ public class Main extends SimpleApplication implements AnimEventListener {
         
         Global.gAssertManager = assetManager;
         Global.gMyMain = this;
+        
+        DesignUnit parserObj = new DesignUnit("C:\\Users\\atsingh\\Projects\\nlp\\source\\outfile.txt");
+        try {
+            parserObj.processLineByLine();
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         /**
          * Load a model. Uses model and texture from jme3-test-data library!
          */
