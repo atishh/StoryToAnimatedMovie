@@ -40,6 +40,7 @@ public class Main extends SimpleApplication implements AnimEventListener {
     private Node Actor2;
     private AnimChannel channel;
     private AnimControl control;
+    public DesignUnit parserObj;
 
     public static void main(String[] args) {
         Main app = new Main();
@@ -140,10 +141,10 @@ public class Main extends SimpleApplication implements AnimEventListener {
             if ((randomZ < 25) && (randomZ > -25)) {
                 continue;
             }
-            System.out.println("randomX = " + randomX);
-            System.out.println("randomY = " + randomZ);
+            //System.out.println("randomX = " + randomX);
+            //System.out.println("randomY = " + randomZ);
             float height = LakeTerrain.getHeight(new Vector2f(randomX, randomZ));
-            System.out.println("height = " + height);
+            //System.out.println("height = " + height);
             Spatial tree = assetManager.loadModel("Scenes/Plants/Cylinder.001.mesh.j3o");
             //tree.setLodLevel(1);
             // Geometry geo = (Geometry)tree.;
@@ -155,7 +156,7 @@ public class Main extends SimpleApplication implements AnimEventListener {
             //float randomRotate = (float) (-3.14f + (Math.random() * ((3.14f + 3.14f) + 1)));
 
             float randomRotate = (float) (-3.14f + (rand.nextFloat() * ((3.14f + 3.14f) + 1)));
-            System.out.println("randomRotate = " + randomRotate);
+            //System.out.println("randomRotate = " + randomRotate);
             tree.rotate(0f, randomRotate, 0f);
             rootNode.attachChild(tree);
         }
@@ -165,11 +166,11 @@ public class Main extends SimpleApplication implements AnimEventListener {
 
     @Override
     public void simpleInitApp() {
-        
+
         Global.gAssertManager = assetManager;
         Global.gMyMain = this;
-        
-        DesignUnit parserObj = new DesignUnit("C:\\Users\\atsingh\\Projects\\nlp\\source\\outfile.txt");
+
+        parserObj = new DesignUnit("C:\\Users\\atsingh\\Projects\\nlp\\source\\outfile.txt");
         try {
             parserObj.processLineByLine();
         } catch (IOException ex) {
@@ -197,29 +198,67 @@ public class Main extends SimpleApplication implements AnimEventListener {
         Actor2 = createActor();
 
         PointsOnLake PointsOnLakeObj1 = new PointsOnLake();
-        
+
         Vector2f point1 = PointsOnLakeObj1.walkablePoint[0];
         float height = LakeTerrain.getHeight(point1);
         Actor1.setLocalTranslation(point1.getX(), height + 4.6f, point1.getY());
-        
+
         point1 = PointsOnLakeObj1.walkablePoint[1];
         height = LakeTerrain.getHeight(point1);
         Actor2.setLocalTranslation(point1.getX(), height + 4.6f, point1.getY());
-        
+
         // viewPort.setBackgroundColor(ColorRGBA.White);
         // Default speed is too slow
         flyCam.setMoveSpeed(20f);
         flyCam.setZoomSpeed(5f);
     }
 
+    public enum ActionState {
+
+        STATE_ACTIONSTATEINITIAL, STATE_ACTIONSTATEMIDDLE, STATE_ACTIONSTATEEND,
+        STATE_ACTIONSTATEEXIT
+    };
+    public ActionState mActionStateObj = ActionState.STATE_ACTIONSTATEINITIAL;
+    public CDFNode pCurrActionCDFNode = null;
+
     @Override
     public void simpleUpdate(float tpf) {
         //TODO: add update code
-        Vector3f currLoc = Actor1.getLocalTranslation();
-        float height = LakeTerrain.getHeight(new Vector2f(currLoc.getX(), currLoc.getZ()));
-        currLoc.setY(height + 4.6f);
-        Actor1.setLocalTranslation(currLoc);
-        Actor1.move(0,0,tpf);
+        /*
+         Vector3f currLoc = Actor1.getLocalTranslation();
+         float height = LakeTerrain.getHeight(new Vector2f(currLoc.getX(), currLoc.getZ()));
+         currLoc.setY(height + 4.6f);
+         Actor1.setLocalTranslation(currLoc);
+         Actor1.move(0,0,tpf);
+         */
+        System.out.println("Inside simpleUpdate function");
+        boolean bActionCompleted = false;
+        switch (mActionStateObj) {
+            case STATE_ACTIONSTATEINITIAL:
+                System.out.println("In Simpleupdate , initializing action");
+                pCurrActionCDFNode = parserObj.getNextCDFNodeTypeAction();
+                if (pCurrActionCDFNode == null) {
+                    mActionStateObj = ActionState.STATE_ACTIONSTATEEXIT;
+                } else {
+                    mActionStateObj = ActionState.STATE_ACTIONSTATEMIDDLE;
+                }
+                break;
+            case STATE_ACTIONSTATEMIDDLE:
+                bActionCompleted = pCurrActionCDFNode.PerformAction(tpf);
+                if (bActionCompleted == true) {
+                    mActionStateObj = ActionState.STATE_ACTIONSTATEEND;
+                }
+                break;
+            case STATE_ACTIONSTATEEND:
+                mActionStateObj = ActionState.STATE_ACTIONSTATEINITIAL;
+                break;
+            case STATE_ACTIONSTATEEXIT:
+                //System.exit(0);
+                stop();
+                break;
+        }
+
+
     }
 
     @Override

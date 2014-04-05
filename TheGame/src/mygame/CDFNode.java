@@ -21,14 +21,13 @@ public class CDFNode {
     public List<CDFEdge> outEdges;
     public CDFNode parent;
     public CDFType cdfType;
-    
     //TODO the actors can be more;
     public ActorNode Actor1;
     public ActorNode Actor2;
     public String TalkString;
-    
     public BackgroundNode Background1;
-    
+    public boolean bFirstTime = true;
+
     public CDFNode(String lex, int idx) {
         this.label = lex;
 
@@ -39,25 +38,21 @@ public class CDFNode {
         outEdges = new ArrayList<CDFEdge>();
         attribute = "";
         cdfType = CDFType.CDF_ACTION;
-        
+
         Actor1 = null;
         Actor2 = null;
         TalkString = "";
-        
+
         Background1 = null;
+        bFirstTime = true;
     }
 
-
-    public String getRelationToParent() {
-        String rel = null;
-        if (parent == null) {
-            return null;
+    public boolean PerformAction(float tpf) {
+        if (bFirstTime) {
+            ActionNode.init(this);
+            bFirstTime = false;
         }
-        for (CDFEdge e : parent.outEdges) {
-            if (e.target == this) {
-                return e.label;
-            }
-        }
-        return null;
+        ActionNode.ProcessActionWrapper(label, tpf);
+        return ActionNode.ActionCompleted;
     }
 }

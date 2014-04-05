@@ -15,13 +15,12 @@ import java.util.Scanner;
  * Assumes UTF-8 encoding. JDK 7+.
  */
 public class DesignUnit {
-    
+
     public static void main(String... aArgs) throws IOException {
         DesignUnit parserObj = new DesignUnit("C:\\Users\\atsingh\\Projects\\nlp\\source\\outfile.txt");
         parserObj.processLineByLine();
         log("Done.");
     }
-    
     public CDFNode mRootCDFNode = null;
     public CDFNode mCurrCDFNode = null;
     public ActorNode[] mFemaleActors;
@@ -32,9 +31,7 @@ public class DesignUnit {
     //Lets keep the maximum value to be 10.
     public ActorNode[] mOtherActors = new ActorNode[50];
     public int mNoOfOtherActors = 0;
-    
     //Background 
-    
     public int mCounter = 0;
 
     public enum ParserState {
@@ -50,6 +47,69 @@ public class DesignUnit {
     };
     public ParserState myParserState = ParserState.STATE_NOOFFEMALE;
     public ActionInternalState myActionInternalState = ActionInternalState.STATE_ACTOR1;
+    public CDFNode mNextCDFNodeTypeAction = null;
+
+    public void populateBackground() {
+        CDFNode CDFNodeTemp = mRootCDFNode;
+        BackgroundNode PrevBackgroundNode = null;
+        while (CDFNodeTemp != null) {
+            if (CDFNodeTemp.cdfType == CDFType.CDF_BACKGROUND) {
+                if (SupportedBackground.IsSupported(CDFNodeTemp.label)) {
+                    if ((PrevBackgroundNode != null) && PrevBackgroundNode.Name.equalsIgnoreCase(CDFNodeTemp.label)) {
+                        //This means previous background was the same
+                        CDFNodeTemp.Background1 = PrevBackgroundNode;
+                    } else {
+                        CDFNodeTemp.Background1 = new BackgroundNode(CDFNodeTemp.label, 1);
+                        PrevBackgroundNode = CDFNodeTemp.Background1;
+                    }
+                } else {
+                    //Not supported.. what to do
+                    if (PrevBackgroundNode != null) {
+                        CDFNodeTemp.Background1 = PrevBackgroundNode;
+                    } else {
+                        //Create a lake background to be on safe side
+                        CDFNodeTemp.Background1 = new BackgroundNode("lake", 1);
+                        PrevBackgroundNode = CDFNodeTemp.Background1;
+                    }
+                }
+            }
+            CDFNodeTemp = CDFNodeTemp.children;
+        }
+    }
+
+    public void linkBackgroundToAction() {
+        CDFNode CDFNodeTemp = mRootCDFNode;
+        BackgroundNode PrevBackgroundNode = null;
+        while (CDFNodeTemp != null) {
+            if (CDFNodeTemp.cdfType == CDFType.CDF_BACKGROUND) {
+                if (CDFNodeTemp.Background1 != null) {
+                    PrevBackgroundNode = CDFNodeTemp.Background1;
+                }
+            } else if (CDFNodeTemp.cdfType == CDFType.CDF_ACTION) {
+                if (CDFNodeTemp.Background1 == null) {
+                    CDFNodeTemp.Background1 = PrevBackgroundNode;
+                }
+            }
+            CDFNodeTemp = CDFNodeTemp.children;
+        }
+
+    }
+
+    public CDFNode getNextCDFNodeTypeAction() {
+        if (mNextCDFNodeTypeAction == null) {
+            mNextCDFNodeTypeAction = mRootCDFNode;
+        } else {
+            mNextCDFNodeTypeAction = mNextCDFNodeTypeAction.children;
+        }
+        while ((mNextCDFNodeTypeAction != null) && mNextCDFNodeTypeAction.cdfType != CDFType.CDF_ACTION) {
+            mNextCDFNodeTypeAction = mNextCDFNodeTypeAction.children;
+        }
+
+        if (mNextCDFNodeTypeAction != null) {
+            System.out.println("Function getNextCDFNodeTypeAction returns " + mNextCDFNodeTypeAction.label);
+        }
+        return mNextCDFNodeTypeAction;
+    }
 
     public ActorNode findActorNode(String token) {
         if (token == null) {
@@ -111,7 +171,7 @@ public class DesignUnit {
             if (bCdfNodeCreated == false) {
                 newCDFNode = new CDFNode(token1, 1);
                 newCDFNode.cdfType = CDFType.CDF_BACKGROUND;
-                newCDFNode.Background1 = new BackgroundNode(token1, 1);
+                //newCDFNode.Background1 = new BackgroundNode(token1, 1);
                 bCdfNodeCreated = true;
             }
             newCDFNode.attribute += " " + token1;
@@ -147,8 +207,8 @@ public class DesignUnit {
         boolean bCdfNodeCreated = false;
         CDFNode newCDFNode = null;
         Scanner scanner = new Scanner(token);
-        //scanner.useDelimiter(" ");
-        //scanner.next();
+        scanner.useDelimiter(":");
+        scanner.next(); //Ignore keyword Action in Action:walk
 
         while (scanner.hasNext()) {
             //assumes the line has a certain structure
@@ -176,7 +236,7 @@ public class DesignUnit {
                 break;
             case STATE_ACTOR2:
                 token1 = scanner.hasNext() ? scanner.next() : null;
-                mCurrCDFNode.Actor1 = findActorNode(token1);
+                mCurrCDFNode.Actor2 = findActorNode(token1);
                 myActionInternalState = ActionInternalState.STATE_SAY;
                 break;
 
@@ -190,8 +250,6 @@ public class DesignUnit {
                 break;
         }
     }
-
-
 
     /**
      * Constructor.
@@ -213,6 +271,8 @@ public class DesignUnit {
         } catch (IOException e) {
             throw new RuntimeException("Failed to create Pi Face Device", e);
         }
+        populateBackground();
+        linkBackgroundToAction();
     }
 
     /**

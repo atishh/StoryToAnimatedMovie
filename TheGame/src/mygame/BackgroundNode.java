@@ -66,17 +66,17 @@ public SimpleWaterProcessor waterProcessor;
             if ((randomZ < 25) && (randomZ > -25)) {
                 continue;
             }
-            System.out.println("randomX = " + randomX);
-            System.out.println("randomY = " + randomZ);
+            //System.out.println("randomX = " + randomX);
+            //System.out.println("randomY = " + randomZ);
             float height = LakeTerrain.getHeight(new Vector2f(randomX, randomZ));
-            System.out.println("height = " + height);
+            //System.out.println("height = " + height);
             Spatial tree = Global.gAssertManager.loadModel("Scenes/Plants/Cylinder.001.mesh.j3o");
 
             tree.setLocalTranslation(randomX, height + 0.6f, randomZ);
             tree.setShadowMode(RenderQueue.ShadowMode.Cast);
 
             float randomRotate = (float) (-3.14f + (rand.nextFloat() * ((3.14f + 3.14f) + 1)));
-            System.out.println("randomRotate = " + randomRotate);
+            //System.out.println("randomRotate = " + randomRotate);
             tree.rotate(0f, randomRotate, 0f);
             Background.attachChild(tree);
         }

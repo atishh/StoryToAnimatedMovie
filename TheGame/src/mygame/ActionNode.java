@@ -2,6 +2,8 @@ package mygame;
 
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
+import com.jme3.terrain.Terrain;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,17 +15,38 @@ public class ActionNode {
     public static boolean ActionCompleted = false;
     public static  float tpf;
     
+    public ActionNode(CDFNode CDFNodeObj)
+    {
+        ActionCDFNode = CDFNodeObj;
+    }
+    
+    //temporary
+    public static int  counter = 0;
+    
     public static void processActionTypeWalk() {
         //TODO: add update code
-        Vector3f currLoc = ActionCDFNode.Actor1.Actor.getLocalTranslation();
-        float height = ActionCDFNode.Background1.LakeTerrain.getHeight(new Vector2f(currLoc.getX(), currLoc.getZ()));
+        ActorNode Actor1 = ActionCDFNode.Actor1;
+        Node Actor1Node = Actor1.Actor;
+        Vector3f currLoc = Actor1Node.getLocalTranslation();
+        BackgroundNode Background1 = ActionCDFNode.Background1;
+        Terrain LakeTerrain = Background1.LakeTerrain;
+        float height = LakeTerrain.getHeight(new Vector2f(currLoc.getX(), currLoc.getZ()));
         currLoc.setY(height + 4.6f);
         ActionCDFNode.Actor1.Actor.setLocalTranslation(currLoc);
         ActionCDFNode.Actor1.Actor.move(0,0,tpf);
+        counter++;
+        if(counter > 100)
+            ActionCompleted = true;
     }
    
 
-    public static void init() {
+    public static boolean bInitDone = false;
+    public static void init(CDFNode CDFNodeObj) {
+        ActionCDFNode = CDFNodeObj;
+        
+        if(bInitDone == true)
+            return;
+        bInitDone = true;
         processActionMap.put("drink", new Runnable() {
             public void run() {
                 processActionTypeWalk();
@@ -112,8 +135,9 @@ public class ActionNode {
 
     }
 
-    public static void ProcessActionWrapper(String ActionType) {
+    public static void ProcessActionWrapper(String ActionType, float tpf_tmp) {
 
+        tpf = tpf_tmp;
         boolean bActionNotSupported = false;
         ActionCompleted = false;
         Runnable r = processActionMap.get(ActionType.toLowerCase());
