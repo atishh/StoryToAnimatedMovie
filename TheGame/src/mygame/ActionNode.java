@@ -13,6 +13,7 @@ public class ActionNode {
     public static Map<String, Runnable> processActionMap = new HashMap<String, Runnable>();
     public static boolean ActionCompleted = false;
     public static float tpf;
+    public static boolean bFirstTimeForThisAction = true;
 
     public ActionNode(CDFNode CDFNodeObj) {
         ActionCDFNode = CDFNodeObj;
@@ -40,11 +41,30 @@ public class ActionNode {
         }
 
     }
+    public static Vector3f Actor2Pos = new Vector3f(0,0,0);
 
     public static void processActionTypeWalk() {
         //TODO: add update code
         ActorNode Actor1 = ActionCDFNode.Actor1;
+        ActorNode Actor2 = ActionCDFNode.Actor2;
+
+        if (bFirstTimeForThisAction == true) {
+            if (Actor2 != null) {
+                Actor2Pos.set(Actor2.Actor.getLocalTranslation());
+            } else {
+                //Here Actor2 is null; this means that we need to find where 
+                //to walk;
+                Vector2f Actor2Pos2D = PointsOnLake.getAPointNearLake();
+                System.out.println("Point Near Lake " + Actor2Pos2D.toString());
+                Actor2Pos.set(Actor2Pos2D.getX(), 0, Actor2Pos2D.getY());
+                
+            }
+            bFirstTimeForThisAction = false;
+        }
         for (int i = 0; i < Actor1.nTotalNoOfActorsInThisNode; i++) {
+            ActorNode CurrActor = Actor1.TotalActorNodeInThisNode[i];
+            if (CurrActor.bPositionSet == false) {
+            }
             Node Actor1Node = Actor1.TotalActorNodeInThisNode[i].Actor;
             Vector3f currLoc = Actor1Node.getLocalTranslation();
             BackgroundNode Background1 = ActionCDFNode.Background1;
@@ -52,7 +72,7 @@ public class ActionNode {
             float height = LakeTerrain.getHeight(new Vector2f(currLoc.getX(), currLoc.getZ()));
             currLoc.setY(height + 4.6f);
             Actor1Node.setLocalTranslation(currLoc);
-            Actor1Node.move(0, 0, tpf+i);
+            Actor1Node.move(0, 0, tpf + i);
         }
         counter++;
         if (counter > 100) {

@@ -238,6 +238,7 @@ public class Main extends SimpleApplication implements AnimEventListener {
             case STATE_ACTIONSTATEINITIAL:
                 System.out.println("In Simpleupdate , initializing action");
                 pCurrActionCDFNode = parserObj.getNextCDFNodeTypeAction();
+                ActionNode.bFirstTimeForThisAction = true;
                 if (pCurrActionCDFNode == null) {
                     mActionStateObj = ActionState.STATE_ACTIONSTATEEXIT;
                 } else {

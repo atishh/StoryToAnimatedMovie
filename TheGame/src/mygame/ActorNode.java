@@ -23,6 +23,8 @@ public class ActorNode {
     public Node Actor = null;
     public AnimChannel channel;
     public AnimControl control;
+    
+    public boolean bPositionSet = false;
     //bOtherActor means that it is not the main actor
     //Somehow nlp could not able to find this actor.
     public boolean bOtherActor = false;
@@ -64,6 +66,7 @@ public class ActorNode {
         this.idx = idx;
         this.bOtherActor = bOther;
         attribute = "";
+        bPositionSet = false;
         createActor();
 
         channel = null;
