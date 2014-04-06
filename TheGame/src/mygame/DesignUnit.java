@@ -136,7 +136,7 @@ public class DesignUnit {
             }
         }
         System.out.println("No Actor found for token " + token + "creating new actor");
-        ActorNode myActorNode = new ActorNode(token, mNoOfOtherActors);
+        ActorNode myActorNode = new ActorNode(token, mNoOfOtherActors, true);
         mOtherActors[mNoOfOtherActors] = myActorNode;
         mNoOfOtherActors++;
         return myActorNode;
@@ -273,6 +273,7 @@ public class DesignUnit {
         }
         populateBackground();
         linkBackgroundToAction();
+        ActorNode.PopulateTotalActorNodeInThisNode();
     }
 
     /**
@@ -309,7 +310,7 @@ public class DesignUnit {
                 mFemaleActors = new ActorNode[mNoOfFemaleActors];
                 break;
             case STATE_FEMALE:
-                mFemaleActors[mCounter] = new ActorNode(token, mCounter);
+                mFemaleActors[mCounter] = new ActorNode(token, mCounter, false);
                 if (mCounter < (mNoOfFemaleActors)) {
                     myParserState = ParserState.STATE_FEMALEATTRIBUTE;
                 } else {
@@ -336,7 +337,7 @@ public class DesignUnit {
                 break;
             case STATE_MALE:
                 //TODO change it
-                mMaleActors[mCounter] = new ActorNode(token, mCounter);
+                mMaleActors[mCounter] = new ActorNode(token, mCounter, false);
                 if (mCounter < (mNoOfMaleActors)) {
                     myParserState = ParserState.STATE_MALEATTRIBUTE;
                 } else {

@@ -44,14 +44,16 @@ public class ActionNode {
     public static void processActionTypeWalk() {
         //TODO: add update code
         ActorNode Actor1 = ActionCDFNode.Actor1;
-        Node Actor1Node = Actor1.Actor;
-        Vector3f currLoc = Actor1Node.getLocalTranslation();
-        BackgroundNode Background1 = ActionCDFNode.Background1;
-        Terrain LakeTerrain = Background1.LakeTerrain;
-        float height = LakeTerrain.getHeight(new Vector2f(currLoc.getX(), currLoc.getZ()));
-        currLoc.setY(height + 4.6f);
-        ActionCDFNode.Actor1.Actor.setLocalTranslation(currLoc);
-        ActionCDFNode.Actor1.Actor.move(0, 0, tpf);
+        for (int i = 0; i < Actor1.nTotalNoOfActorsInThisNode; i++) {
+            Node Actor1Node = Actor1.TotalActorNodeInThisNode[i].Actor;
+            Vector3f currLoc = Actor1Node.getLocalTranslation();
+            BackgroundNode Background1 = ActionCDFNode.Background1;
+            Terrain LakeTerrain = Background1.LakeTerrain;
+            float height = LakeTerrain.getHeight(new Vector2f(currLoc.getX(), currLoc.getZ()));
+            currLoc.setY(height + 4.6f);
+            Actor1Node.setLocalTranslation(currLoc);
+            Actor1Node.move(0, 0, tpf+i);
+        }
         counter++;
         if (counter > 100) {
             ActionCompleted = true;
