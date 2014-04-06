@@ -30,11 +30,20 @@ public class ActorNode {
         this.idx = idx;
         attribute = "";
         createActor();
+
+        channel = null;
+        control = null;
+
     }
 
     public void createActor() {
         if (Global.gAssertManager != null) {
             Actor = (Node) Global.gAssertManager.loadModel("Models/Actors/Cube.mesh.j3o");
+            control = Actor.getControl(AnimControl.class);
+
+            channel = control.createChannel();
+            channel.setAnim("walk");
+            
         }
     }
 

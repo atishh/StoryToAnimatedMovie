@@ -35,12 +35,16 @@ public class BackgroundNode {
     public SimpleWaterProcessor waterProcessor;
     public BasicShadowRenderer bsr;
 
+    public boolean bLookAroundBackground = false;
+    
+    
     public BackgroundNode(String lex, int idx) {
         this.Name = lex;
         this.label = lex + "-" + idx;
         this.idx = idx;
         attribute = "";
         createBackground();
+        bLookAroundBackground = false;
     }
 
     public void AttachNodesToRoot() {
