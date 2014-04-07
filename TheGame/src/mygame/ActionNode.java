@@ -6,6 +6,7 @@ import com.jme3.scene.Node;
 import com.jme3.terrain.Terrain;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class ActionNode {
 
@@ -14,6 +15,7 @@ public class ActionNode {
     public static boolean ActionCompleted = false;
     public static float tpf;
     public static boolean bFirstTimeForThisAction = true;
+    public static Random rand = new Random((long) 5f);
 
     public ActionNode(CDFNode CDFNodeObj) {
         ActionCDFNode = CDFNodeObj;
@@ -25,23 +27,24 @@ public class ActionNode {
     public static void processLookAroundBackground() {
         //TODO: add update code
         BackgroundNode BackgroundNode1 = ActionCDFNode.Background1;
-        camPos.setX(camPos.getX() - 3 * tpf);
-        camPos.setY(camPos.getY() - 4 * tpf);
-        camPos.setZ(camPos.getZ() - 5 * tpf);
+        camPos.setX(camPos.getX() - 10 * tpf);
+        camPos.setY(camPos.getY() - 12 * tpf);
+        camPos.setZ(camPos.getZ() - 14 * tpf);
         Global.gMyMain.getCamera().setLocation(camPos);
         Global.gMyMain.getCamera().lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
         if (camPos.getX() < 10) {
-            BackgroundNode1.bLookAroundBackground = true;
+            BackgroundNode1.bLookAroundBackgroundDone = true;
         }
         if (camPos.getY() < 10) {
-            BackgroundNode1.bLookAroundBackground = true;
+            BackgroundNode1.bLookAroundBackgroundDone = true;
         }
         if (camPos.getZ() < 10) {
-            BackgroundNode1.bLookAroundBackground = true;
+            BackgroundNode1.bLookAroundBackgroundDone = true;
         }
 
     }
-    public static Vector3f Actor2Pos = new Vector3f(0,0,0);
+    public static int nNoOfActor2 = 10;
+    public static Vector3f[] Actor2Pos = new Vector3f[nNoOfActor2];
 
     public static void processActionTypeWalk() {
         //TODO: add update code
@@ -50,34 +53,64 @@ public class ActionNode {
 
         if (bFirstTimeForThisAction == true) {
             if (Actor2 != null) {
-                Actor2Pos.set(Actor2.Actor.getLocalTranslation());
+                Actor2Pos[0].set(Actor2.Actor.getLocalTranslation());
             } else {
                 //Here Actor2 is null; this means that we need to find where 
                 //to walk;
-                Vector2f Actor2Pos2D = PointsOnLake.getAPointNearLake();
-                System.out.println("Point Near Lake " + Actor2Pos2D.toString());
-                Actor2Pos.set(Actor2Pos2D.getX(), 0, Actor2Pos2D.getY());
-                
+                for (int i = 0; i < Actor1.nTotalNoOfActorsInThisNode; i++) {
+                    Vector2f Actor2Pos2D = PointsOnLake.getAPointNearLake();
+                    System.out.println("Point Near Lake " + Actor2Pos2D.toString());
+                    Actor2Pos[i].set(Actor2Pos2D.getX(), 0, Actor2Pos2D.getY());
+                }
+
             }
             bFirstTimeForThisAction = false;
         }
+        boolean bReachedTarget = true;
+
         for (int i = 0; i < Actor1.nTotalNoOfActorsInThisNode; i++) {
+            BackgroundNode Background1 = ActionCDFNode.Background1;
+            Terrain LakeTerrain = Background1.LakeTerrain;
+
             ActorNode CurrActor = Actor1.TotalActorNodeInThisNode[i];
             if (CurrActor.bPositionSet == false) {
+                Vector2f Actor1Pos2D = PointsOnLake.getAPointNearRoad();
+                System.out.println("Point On Road " + Actor1Pos2D.toString());
+                float height = LakeTerrain.getHeight(new Vector2f(Actor1Pos2D.getX(), Actor1Pos2D.getY()));
+                CurrActor.Actor.setLocalTranslation(Actor1Pos2D.getX(), height, Actor1Pos2D.getY());
+                CurrActor.bPositionSet = true;
             }
             Node Actor1Node = Actor1.TotalActorNodeInThisNode[i].Actor;
             Vector3f currLoc = Actor1Node.getLocalTranslation();
-            BackgroundNode Background1 = ActionCDFNode.Background1;
-            Terrain LakeTerrain = Background1.LakeTerrain;
-            float height = LakeTerrain.getHeight(new Vector2f(currLoc.getX(), currLoc.getZ()));
+
+            //walk towards Actor2Loc, which can be actor or point on plane.
+            float randomX = (float) (0 + (rand.nextFloat() * ((0.2))));
+            System.out.println("Random translation " + randomX);
+            float xMov = currLoc.getX() + (Actor2Pos[i].getX() > currLoc.getX() ? tpf + randomX : -tpf - randomX);
+            float zMov = currLoc.getZ() + (Actor2Pos[i].getZ() > currLoc.getZ() ? tpf + randomX : -tpf - randomX);
+
+            if (Math.abs(Actor2Pos[i].getX() - currLoc.getX()) > 1) {
+                bReachedTarget = false;
+            }
+            if (Math.abs(Actor2Pos[i].getZ() - currLoc.getZ()) > 1) {
+                bReachedTarget = false;
+            }
+
+            float height = LakeTerrain.getHeight(new Vector2f(xMov, xMov));
             currLoc.setY(height + 4.6f);
+            currLoc.setX(xMov);
+            currLoc.setZ(zMov);
             Actor1Node.setLocalTranslation(currLoc);
-            Actor1Node.move(0, 0, tpf + i);
+            //Actor1Node.move(0, 0, tpf);
         }
-        counter++;
-        if (counter > 100) {
+        /*
+         counter++;
+         if (counter > 100) {
+         ActionCompleted = true;
+         }
+         */
+        if(bReachedTarget)
             ActionCompleted = true;
-        }
     }
     public static boolean bInitDone = false;
 
@@ -88,6 +121,10 @@ public class ActionNode {
             return;
         }
         bInitDone = true;
+        for (int i = 0; i < nNoOfActor2; i++) {
+            Actor2Pos[i] = new Vector3f(0, 0, 0);
+        }
+
         processActionMap.put("drink", new Runnable() {
             public void run() {
                 processActionTypeWalk();
@@ -183,7 +220,7 @@ public class ActionNode {
         ActionCompleted = false;
 
         //Look Around Background in parallel to action.
-        if (ActionCDFNode.Background1.bLookAroundBackground == false) {
+        if (ActionCDFNode.Background1.bLookAroundBackgroundDone == false) {
             processLookAroundBackground();
         }
 

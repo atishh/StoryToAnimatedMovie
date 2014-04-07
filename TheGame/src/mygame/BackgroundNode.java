@@ -35,7 +35,7 @@ public class BackgroundNode {
     public SimpleWaterProcessor waterProcessor;
     public BasicShadowRenderer bsr;
 
-    public boolean bLookAroundBackground = false;
+    public boolean bLookAroundBackgroundDone = false;
     
     
     public BackgroundNode(String lex, int idx) {
@@ -44,7 +44,7 @@ public class BackgroundNode {
         this.idx = idx;
         attribute = "";
         createBackground();
-        bLookAroundBackground = false;
+        bLookAroundBackgroundDone = false;
     }
 
     public void AttachNodesToRoot() {
@@ -137,9 +137,10 @@ public class BackgroundNode {
     public void createBackground() {
         if ((Global.gAssertManager != null) && (Global.gMyMain != null)) {
             CreateLake();
-            PlantTree(LakeTerrain);
+            //Temporarily commenting it for faster fps
+            //PlantTree(LakeTerrain);
             CreateLight();
-            CreateWater();
+            //CreateWater();
             createShadow();
         }
     }
