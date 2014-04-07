@@ -16,6 +16,7 @@ public class ActionNode {
     public static float tpf;
     public static boolean bFirstTimeForThisAction = true;
     public static Random rand = new Random((long) 5f);
+    public static boolean bCamInUse = false;
 
     public ActionNode(CDFNode CDFNodeObj) {
         ActionCDFNode = CDFNodeObj;
@@ -40,6 +41,10 @@ public class ActionNode {
         }
         if (camPos.getZ() < 10) {
             BackgroundNode1.bLookAroundBackgroundDone = true;
+        }
+
+        if (BackgroundNode1.bLookAroundBackgroundDone == true) {
+            bCamInUse = false;
         }
 
     }
@@ -103,14 +108,32 @@ public class ActionNode {
             Actor1Node.setLocalTranslation(currLoc);
             //Actor1Node.move(0, 0, tpf);
         }
+        //handle camera
+        if (bCamInUse == false) {
+            Node Actor1Node = Actor1.TotalActorNodeInThisNode[0].Actor;
+            Vector3f currLoc = Actor1Node.getLocalTranslation();
+
+            float camX = Actor2Pos[0].getX() > currLoc.getX() ? Actor2Pos[0].getX() + 50
+                    : Actor2Pos[0].getX() - 50;
+            float camZ = Actor2Pos[0].getZ() > currLoc.getZ() ? Actor2Pos[0].getZ() + 50
+                    : Actor2Pos[0].getZ() - 50;
+            System.out.println("Camera Pos x " + camX + " camera pos z " + camZ);
+            camPos.setX(camX);
+            camPos.setY(10);
+            camPos.setZ(camZ);
+            Global.gMyMain.getCamera().setLocation(camPos);
+            Global.gMyMain.getCamera().lookAt(currLoc, Vector3f.UNIT_Y);
+            bCamInUse = true;
+        }
         /*
          counter++;
          if (counter > 100) {
          ActionCompleted = true;
          }
          */
-        if(bReachedTarget)
+        if (bReachedTarget) {
             ActionCompleted = true;
+        }
     }
     public static boolean bInitDone = false;
 
@@ -221,7 +244,10 @@ public class ActionNode {
 
         //Look Around Background in parallel to action.
         if (ActionCDFNode.Background1.bLookAroundBackgroundDone == false) {
+            bCamInUse = true;
             processLookAroundBackground();
+
+        } else {
         }
 
         Runnable r = processActionMap.get(ActionType.toLowerCase());
