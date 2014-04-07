@@ -5,6 +5,7 @@
  */
 package mygame;
 
+import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
@@ -32,12 +33,11 @@ public class BackgroundNode {
     Terrain LakeTerrain;
     private Vector3f lightDir = new Vector3f(0, -1, 0);
     private DirectionalLight sun = new DirectionalLight();
+    private AmbientLight ambient;
     public SimpleWaterProcessor waterProcessor;
     public BasicShadowRenderer bsr;
-
     public boolean bLookAroundBackgroundDone = false;
-    
-    
+
     public BackgroundNode(String lex, int idx) {
         this.Name = lex;
         this.label = lex + "-" + idx;
@@ -58,8 +58,13 @@ public class BackgroundNode {
             if (bsr != null) {
                 Global.gMyMain.getViewPort().addProcessor(bsr);
             }
-            if(sun != null)
+            if (sun != null) {
                 Global.gMyMain.getRootNode().addLight(sun);
+            }
+            if (ambient != null) {
+                Global.gMyMain.getRootNode().addLight(ambient);
+            }
+
         }
 
     }
@@ -123,9 +128,16 @@ public class BackgroundNode {
 
     public void CreateLight() {
 
+        /**
+         * A white ambient light source.
+         */
+        ambient = new AmbientLight();
+        ambient.setColor(ColorRGBA.White);
+        //  rootNode.addLight(ambient);
+
         sun.setDirection((lightDir.normalizeLocal()));
         sun.setColor(ColorRGBA.White);
-       // Background.addLight(sun);
+        // Background.addLight(sun);
     }
 
     public void createShadow() {

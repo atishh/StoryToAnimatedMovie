@@ -51,6 +51,8 @@ public class ActionNode {
     public static int nNoOfActor2 = 10;
     public static Vector3f[] Actor2Pos = new Vector3f[nNoOfActor2];
 
+    public static Vector3f Actor1LookAt = new Vector3f(0,0,0);
+    
     public static void processActionTypeWalk() {
         //TODO: add update code
         ActorNode Actor1 = ActionCDFNode.Actor1;
@@ -88,6 +90,12 @@ public class ActionNode {
             Node Actor1Node = Actor1.TotalActorNodeInThisNode[i].Actor;
             Vector3f currLoc = Actor1Node.getLocalTranslation();
 
+            //Look towards Actor2.
+            //Vector3f Actor1LookAt = new Vector3f(Actor2Pos[i]);
+            Actor1LookAt.set(Actor2Pos[i]);
+            Actor1LookAt.setY(5);
+            Actor1Node.lookAt(Actor1LookAt, Vector3f.UNIT_Y);
+
             //walk towards Actor2Loc, which can be actor or point on plane.
             float randomX = (float) (0 + (rand.nextFloat() * ((0.2))));
             System.out.println("Random translation " + randomX);
@@ -96,9 +104,14 @@ public class ActionNode {
 
             if (Math.abs(Actor2Pos[i].getX() - currLoc.getX()) > 1) {
                 bReachedTarget = false;
+            } else {
+                xMov = currLoc.getX();
             }
+
             if (Math.abs(Actor2Pos[i].getZ() - currLoc.getZ()) > 1) {
                 bReachedTarget = false;
+            } else {
+                zMov = currLoc.getZ();
             }
 
             float height = LakeTerrain.getHeight(new Vector2f(xMov, xMov));
@@ -106,6 +119,7 @@ public class ActionNode {
             currLoc.setX(xMov);
             currLoc.setZ(zMov);
             Actor1Node.setLocalTranslation(currLoc);
+
             //Actor1Node.move(0, 0, tpf);
         }
         //handle camera
