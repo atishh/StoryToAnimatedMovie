@@ -5,10 +5,8 @@
 package mygame;
 
 import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
 import java.util.HashMap;
 import java.util.Map;
-import static mygame.ActionNode.processActionMap;
 
 /**
  *
@@ -72,6 +70,15 @@ public class PointsOnLake {
         pointsMap.put("water", pointOnWater);
 
         bInitialize = true;
+    }
+
+    public static Vector2f getAPoint(String sPosition) {
+        if (bInitialize == false) {
+            initialize();
+        }
+        String sPositionTemp = sPosition.toLowerCase().trim();
+        PointsArray PointsArrayObj = pointsMap.get(sPositionTemp);
+        return PointsArrayObj.getAPoint();
     }
 
     public static Vector2f getAPointNearLake() {
