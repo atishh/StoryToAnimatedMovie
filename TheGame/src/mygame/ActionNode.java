@@ -64,10 +64,12 @@ public class ActionNode {
                 //Here Actor2 is null; this means that we need to find where 
                 //to walk;
                 String sPosition = ActionCDFNode.TalkString;
+                
                 for (int i = 0; i < Actor1.nTotalNoOfActorsInThisNode; i++) {
-                    Vector2f Actor2Pos2D = PointsOnLake.getAPoint(sPosition);
-                    System.out.println("Point Near Lake " + Actor2Pos2D.toString());
-                    Actor2Pos[i].set(Actor2Pos2D.getX(), 0, Actor2Pos2D.getY());
+                    System.out.println("sPosition String is " + sPosition);
+                    Vector3f Actor2PosTemp = PointsOnLake.getAPoint(sPosition);
+                    System.out.println("Point Near Lake " + Actor2PosTemp.toString());
+                    Actor2Pos[0].set(Actor2PosTemp);
                 }
 
             }
@@ -82,10 +84,10 @@ public class ActionNode {
 
             ActorNode CurrActor = Actor1.TotalActorNodeInThisNode[i];
             if (CurrActor.bPositionSet == false) {
-                Vector2f Actor1Pos2D = PointsOnLake.getAPointNearRoad();
-                System.out.println("Point On Road " + Actor1Pos2D.toString());
-                float height = LakeTerrain.getHeight(new Vector2f(Actor1Pos2D.getX(), Actor1Pos2D.getY()));
-                CurrActor.Actor.setLocalTranslation(Actor1Pos2D.getX(), height, Actor1Pos2D.getY());
+                Vector3f Actor1PosTemp = PointsOnLake.getAPointNearRoad();
+                System.out.println("Point On Road " + Actor1PosTemp.toString());
+                float height = LakeTerrain.getHeight(new Vector2f(Actor1PosTemp.getX(), Actor1PosTemp.getZ()));
+                CurrActor.Actor.setLocalTranslation(Actor1PosTemp.getX(), height, Actor1PosTemp.getZ());
                 CurrActor.bPositionSet = true;
             }
             Node Actor1Node = Actor1.TotalActorNodeInThisNode[i].Actor;
@@ -107,9 +109,10 @@ public class ActionNode {
                     : Actor2Pos[0].getX() - 50;
             float camZ = Actor2Pos[0].getZ() > currLoc.getZ() ? Actor2Pos[0].getZ() + 50
                     : Actor2Pos[0].getZ() - 50;
+            float camY = Actor2Pos[0].getY() + 10;
             System.out.println("Camera Pos x " + camX + " camera pos z " + camZ);
             camPos.setX(camX);
-            camPos.setY(10);
+            camPos.setY(camY);
             camPos.setZ(camZ);
             Global.gMyMain.getCamera().setLocation(camPos);
             Global.gMyMain.getCamera().lookAt(currLoc, Vector3f.UNIT_Y);
@@ -136,9 +139,9 @@ public class ActionNode {
                 //Here Actor2 is null; this means that we need to find where 
                 //to walk;
                 for (int i = 0; i < Actor1.nTotalNoOfActorsInThisNode; i++) {
-                    Vector2f Actor2Pos2D = PointsOnLake.getAPointNearLake();
-                    System.out.println("Point Near Lake " + Actor2Pos2D.toString());
-                    Actor2Pos[i].set(Actor2Pos2D.getX(), 0, Actor2Pos2D.getY());
+                    Vector3f Actor2PosTemp = PointsOnLake.getAPointNearLake();
+                    System.out.println("Point Near Lake " + Actor2PosTemp.toString());
+                    Actor2Pos[i].set(Actor2PosTemp);
                 }
 
             }
@@ -152,10 +155,10 @@ public class ActionNode {
 
             ActorNode CurrActor = Actor1.TotalActorNodeInThisNode[i];
             if (CurrActor.bPositionSet == false) {
-                Vector2f Actor1Pos2D = PointsOnLake.getAPointNearRoad();
-                System.out.println("Point On Road " + Actor1Pos2D.toString());
-                float height = LakeTerrain.getHeight(new Vector2f(Actor1Pos2D.getX(), Actor1Pos2D.getY()));
-                CurrActor.Actor.setLocalTranslation(Actor1Pos2D.getX(), height, Actor1Pos2D.getY());
+                Vector3f Actor1PosTemp = PointsOnLake.getAPointNearRoad();
+                System.out.println("Point On Road " + Actor1PosTemp.toString());
+                float height = LakeTerrain.getHeight(new Vector2f(Actor1PosTemp.getX(), Actor1PosTemp.getZ()));
+                CurrActor.Actor.setLocalTranslation(Actor1PosTemp.getX(), height, Actor1PosTemp.getZ());
                 CurrActor.bPositionSet = true;
             }
             Node Actor1Node = Actor1.TotalActorNodeInThisNode[i].Actor;

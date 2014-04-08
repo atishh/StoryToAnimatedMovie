@@ -4,7 +4,7 @@
  */
 package mygame;
 
-import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 
 /**
  *
@@ -13,16 +13,16 @@ import com.jme3.math.Vector2f;
 public class PointsArray {
 
     public int nOfPoints = 10;
-    public Vector2f[] Points = null;
+    public Vector3f[] Points = null;
     public int currPointNo = 0;
 
     PointsArray(int nOfPointsTemp) {
         nOfPoints = nOfPointsTemp;
-        Points = new Vector2f[nOfPoints];
+        Points = new Vector3f[nOfPoints];
         currPointNo = 0;
     }
 
-    public Vector2f getAPoint() {
+    public Vector3f getAPoint() {
 
         if (currPointNo >= nOfPoints) {
             currPointNo = 0;
