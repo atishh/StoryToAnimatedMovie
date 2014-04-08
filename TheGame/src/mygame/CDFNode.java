@@ -4,8 +4,11 @@
  */
 package mygame;
 
+import com.jme3.scene.Node;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -27,6 +30,7 @@ public class CDFNode {
     public String TalkString;
     public BackgroundNode Background1;
     public boolean bFirstTime = true;
+    public Map<String, String> passiveActorMap = new HashMap<String, String>();
 
     public void AttachNodesToRoot() {
         if ((Actor1 != null)) {
@@ -40,6 +44,19 @@ public class CDFNode {
             Background1.AttachNodesToRoot();
         }
 
+    }
+
+    public void CreatePassiveActors() {
+        if (Background1 != null) {
+            for (Map.Entry<String, String> entry : passiveActorMap.entrySet()) {
+                System.out.println(entry.getKey() + "/" + entry.getValue());
+                Node passiveActor = Background1.createPassiveActor(entry.getKey(), entry.getValue());
+                if (Actor1 != null) {
+                    //Might be wrong.
+                    Actor1.Actor = passiveActor;
+                }
+            }
+        }
     }
 
     public CDFNode(String lex, int idx) {

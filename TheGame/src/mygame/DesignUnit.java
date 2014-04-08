@@ -89,6 +89,7 @@ public class DesignUnit {
                 if (CDFNodeTemp.Background1 == null) {
                     CDFNodeTemp.Background1 = PrevBackgroundNode;
                 }
+                CDFNodeTemp.CreatePassiveActors();
             }
             CDFNodeTemp = CDFNodeTemp.children;
         }
@@ -111,7 +112,7 @@ public class DesignUnit {
         return mNextCDFNodeTypeAction;
     }
 
-    public ActorNode findActorNode(String token) {
+    public ActorNode findActorNode(String token, CDFNode CDFNodeObj) {
         if (token == null) {
             return null;
         }
@@ -136,7 +137,7 @@ public class DesignUnit {
             }
         }
         System.out.println("No Actor found for token " + token + "creating new actor");
-        ActorNode myActorNode = new ActorNode(token, mNoOfOtherActors, true);
+        ActorNode myActorNode = new ActorNode(token, mNoOfOtherActors, true, CDFNodeObj);
         mOtherActors[mNoOfOtherActors] = myActorNode;
         mNoOfOtherActors++;
         return myActorNode;
@@ -231,12 +232,12 @@ public class DesignUnit {
         switch (myActionInternalState) {
             case STATE_ACTOR1:
                 token1 = scanner.hasNext() ? scanner.next() : null;
-                mCurrCDFNode.Actor1 = findActorNode(token1);
+                mCurrCDFNode.Actor1 = findActorNode(token1, mCurrCDFNode);
                 myActionInternalState = ActionInternalState.STATE_ACTOR2;
                 break;
             case STATE_ACTOR2:
                 token1 = scanner.hasNext() ? scanner.next() : null;
-                mCurrCDFNode.Actor2 = findActorNode(token1);
+                mCurrCDFNode.Actor2 = findActorNode(token1, mCurrCDFNode);
                 myActionInternalState = ActionInternalState.STATE_SAY;
                 break;
 
@@ -310,7 +311,7 @@ public class DesignUnit {
                 mFemaleActors = new ActorNode[mNoOfFemaleActors];
                 break;
             case STATE_FEMALE:
-                mFemaleActors[mCounter] = new ActorNode(token, mCounter, false);
+                mFemaleActors[mCounter] = new ActorNode(token, mCounter, false, null);
                 if (mCounter < (mNoOfFemaleActors)) {
                     myParserState = ParserState.STATE_FEMALEATTRIBUTE;
                 } else {
@@ -337,7 +338,7 @@ public class DesignUnit {
                 break;
             case STATE_MALE:
                 //TODO change it
-                mMaleActors[mCounter] = new ActorNode(token, mCounter, false);
+                mMaleActors[mCounter] = new ActorNode(token, mCounter, false, null);
                 if (mCounter < (mNoOfMaleActors)) {
                     myParserState = ParserState.STATE_MALEATTRIBUTE;
                 } else {

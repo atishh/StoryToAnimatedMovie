@@ -15,6 +15,7 @@ public class PointsArray {
     public int nOfPoints = 10;
     public Vector3f[] Points = null;
     public int currPointNo = 0;
+    public int currPointNoForBuild = 0;
 
     PointsArray(int nOfPointsTemp) {
         nOfPoints = nOfPointsTemp;
@@ -28,5 +29,13 @@ public class PointsArray {
             currPointNo = 0;
         }
         return Points[currPointNo++];
+    }
+
+    public Vector3f getAPointForBuild() {
+
+        if (currPointNoForBuild >= nOfPoints) {
+            currPointNoForBuild = 0;
+        }
+        return Points[currPointNoForBuild++];
     }
 }

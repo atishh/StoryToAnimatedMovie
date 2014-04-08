@@ -24,7 +24,7 @@ import java.util.Random;
  * @author aa496
  */
 public class BackgroundNode {
-
+    
     public String Name;
     public String label;
     public int idx;
@@ -38,7 +38,7 @@ public class BackgroundNode {
     public BasicShadowRenderer bsr;
     public boolean bLookAroundBackgroundDone = false;
     public boolean bIsAttachedToRoot = false;
-
+    
     public BackgroundNode(String lex, int idx) {
         this.Name = lex;
         this.label = lex + "-" + idx;
@@ -48,9 +48,9 @@ public class BackgroundNode {
         bLookAroundBackgroundDone = false;
         bIsAttachedToRoot = false;
     }
-
+    
     public void AttachNodesToRoot() {
-
+        
         if ((Background != null) && (bIsAttachedToRoot == false)) {
             System.out.println("Attaching to root node " + Background.getName());
             Global.gMyMain.getRootNode().attachChild(Background);
@@ -68,9 +68,9 @@ public class BackgroundNode {
             }
             bIsAttachedToRoot = true;
         }
-
+        
     }
-
+    
     public void CreateLake() {
         Spatial lake = Global.gAssertManager.loadModel("Scenes/Lake/lake2.j3o");
         Background = new Node();
@@ -83,10 +83,10 @@ public class BackgroundNode {
             lodControl.setCamera(Global.gMyMain.getCamera());
         }
     }
-
+    
     public void PlantTree(Terrain LakeTerrain) {
         Random rand = new Random((long) 5f);
-
+        
         for (int i = 0; i < 400; i++) {
             float randomX = (float) (-100 + (rand.nextFloat() * ((100 + 100) + 1)));
             float randomZ = (float) (-100 + (rand.nextFloat() * ((100 + 100) + 1)));
@@ -101,18 +101,18 @@ public class BackgroundNode {
             float height = LakeTerrain.getHeight(new Vector2f(randomX, randomZ));
             //System.out.println("height = " + height);
             Spatial tree = Global.gAssertManager.loadModel("Scenes/Plants/Cylinder.001.mesh.j3o");
-
+            
             tree.setLocalTranslation(randomX, height + 0.6f, randomZ);
             tree.setShadowMode(RenderQueue.ShadowMode.Cast);
-
+            
             float randomRotate = (float) (-3.14f + (rand.nextFloat() * ((3.14f + 3.14f) + 1)));
             //System.out.println("randomRotate = " + randomRotate);
             tree.rotate(0f, randomRotate, 0f);
             Background.attachChild(tree);
         }
-
+        
     }
-
+    
     public void CreateWater() {
         //Create water;
         waterProcessor =
@@ -127,7 +127,7 @@ public class BackgroundNode {
         waterPlane.setLocalTranslation(-45, 1.5f, 65);
         Background.attachChild(waterPlane);
     }
-
+    
     public void CreateLight() {
 
         /**
@@ -141,13 +141,24 @@ public class BackgroundNode {
         sun.setColor(ColorRGBA.White);
         // Background.addLight(sun);
     }
-
+    
     public void createShadow() {
         bsr = new BasicShadowRenderer(Global.gAssertManager, 512);
         bsr.setDirection(new Vector3f(-1, -1, -1).normalizeLocal());
-
+        
     }
-
+    
+    public Node createPassiveActor(String Name, String ObjectPath) {
+        //This is the passive actor.
+        Node Actor = (Node) Global.gAssertManager.loadModel(ObjectPath);
+        Vector3f ActorLoc = PointsOnLake.getAPointForBuild(Name);
+        float height = LakeTerrain.getHeight(new Vector2f(ActorLoc.getX(), ActorLoc.getZ()));
+        Actor.setLocalTranslation(ActorLoc.getX(), height, ActorLoc.getZ());
+        Actor.setLocalScale(5, 5, 5);
+        Background.attachChild(Actor);
+        return Actor;
+    }
+    
     public void createBackground() {
         if ((Global.gAssertManager != null) && (Global.gMyMain != null)) {
             CreateLake();

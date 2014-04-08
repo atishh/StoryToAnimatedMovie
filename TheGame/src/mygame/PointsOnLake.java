@@ -20,12 +20,14 @@ public class PointsOnLake {
     private static final int nOfPointOnWater = 3;
     private static final int nOfPointOnSky = 3;
     private static final int nOfPointOnTree = 3;
+    private static final int nOfPointForHouse = 3;
     public static PointsArray walkablePoint = new PointsArray(nOfWalkablePoints);
     public static PointsArray pointNearLake = new PointsArray(nOfPointNearLake);
     public static PointsArray pointNearRoad = new PointsArray(nOfPointOnRoad);
     public static PointsArray pointOnWater = new PointsArray(nOfPointOnWater);
     public static PointsArray pointOnSky = new PointsArray(nOfPointOnSky);
     public static PointsArray pointOnTree = new PointsArray(nOfPointOnTree);
+    public static PointsArray pointForHouse = new PointsArray(nOfPointForHouse);
     public static boolean bInitialize = false;
     public static Map<String, PointsArray> pointsMap = new HashMap<String, PointsArray>();
 
@@ -74,6 +76,10 @@ public class PointsOnLake {
         pointOnTree.Points[1] = new Vector3f(10, 15, -10);
         pointOnTree.Points[2] = new Vector3f(-10, 12, 10);
 
+        pointForHouse.Points[0] = new Vector3f(50, 10, -50);
+        pointForHouse.Points[1] = new Vector3f(50, 10, -50);
+        pointForHouse.Points[2] = new Vector3f(-50, 10, 50);
+
         pointsMap.put("walk", walkablePoint);
         pointsMap.put("lake", pointNearLake);
         pointsMap.put("road", pointNearRoad);
@@ -81,6 +87,9 @@ public class PointsOnLake {
         pointsMap.put("sky", pointOnSky);
         pointsMap.put("tree", pointOnTree);
         pointsMap.put("trees", pointOnTree);
+        pointsMap.put("cabin", pointForHouse);
+        pointsMap.put("house", pointForHouse);
+
         bInitialize = true;
     }
 
@@ -91,6 +100,15 @@ public class PointsOnLake {
         String sPositionTemp = sPosition.toLowerCase().trim();
         PointsArray PointsArrayObj = pointsMap.get(sPositionTemp);
         return PointsArrayObj.getAPoint();
+    }
+
+    public static Vector3f getAPointForBuild(String sPosition) {
+        if (bInitialize == false) {
+            initialize();
+        }
+        String sPositionTemp = sPosition.toLowerCase().trim();
+        PointsArray PointsArrayObj = pointsMap.get(sPositionTemp);
+        return PointsArrayObj.getAPointForBuild();
     }
 
     public static Vector3f getAPointNearLake() {

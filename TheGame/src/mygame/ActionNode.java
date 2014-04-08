@@ -52,6 +52,162 @@ public class ActionNode {
     public static Vector3f[] Actor2Pos = new Vector3f[nNoOfActor2];
     public static Vector3f Actor1LookAt = new Vector3f(0, 0, 0);
 
+    public static void processActionTypeMake() {
+        //TODO: add update code
+        ActorNode Actor1 = ActionCDFNode.Actor1;
+        ActorNode Actor2 = ActionCDFNode.Actor2;
+
+        if (bFirstTimeForThisAction == true) {
+            if (Actor2 != null) {
+                Actor2Pos[0].set(Actor2.Actor.getLocalTranslation());
+            } else {
+                Actor2Pos[0].set(Actor1.Actor.getLocalTranslation());
+            }
+            bFirstTimeForThisAction = false;
+            counter = 0;
+        }
+
+        //handle camera
+        if (bCamInUse == false) {
+            Node Actor1Node = Actor1.TotalActorNodeInThisNode[0].Actor;
+            Vector3f currLoc = Actor1Node.getLocalTranslation();
+
+            float camX = Actor2Pos[0].getX() > currLoc.getX() ? Actor2Pos[0].getX() + 50
+                    : Actor2Pos[0].getX() - 50;
+            float camZ = Actor2Pos[0].getZ() > currLoc.getZ() ? Actor2Pos[0].getZ() + 50
+                    : Actor2Pos[0].getZ() - 50;
+            float camY = Actor2Pos[0].getY() + 10;
+            System.out.println("Camera Pos x " + camX + " camera pos z " + camZ);
+            camPos.setX(camX);
+            camPos.setY(camY);
+            camPos.setZ(camZ);
+            Global.gMyMain.getCamera().setLocation(camPos);
+            Global.gMyMain.getCamera().lookAt(currLoc, Vector3f.UNIT_Y);
+            bCamInUse = true;
+        } else {
+            //Move the camera little bit, since stationary camera looks dull.
+            Vector3f camLoc = Global.gMyMain.getCamera().getLocation();
+            camLoc.setX(camLoc.getX() + tpf);
+            camLoc.setY(camLoc.getY() + tpf);
+            camLoc.setZ(camLoc.getZ() + tpf);
+            Global.gMyMain.getCamera().setLocation(camLoc);
+            Node Actor1Node = Actor1.TotalActorNodeInThisNode[0].Actor;
+            Vector3f currLoc = Actor1Node.getLocalTranslation();
+            Global.gMyMain.getCamera().lookAt(currLoc, Vector3f.UNIT_Y);
+        }
+
+        counter++;
+        if (counter > 5) {
+            ActionCompleted = true;
+            bCamInUse = false;
+        }
+
+    }
+
+    public static void processActionTypeStand() {
+        //TODO: add update code
+        ActorNode Actor1 = ActionCDFNode.Actor1;
+        ActorNode Actor2 = ActionCDFNode.Actor2;
+
+        if (bFirstTimeForThisAction == true) {
+            if (Actor2 != null) {
+                Actor2Pos[0].set(Actor2.Actor.getLocalTranslation());
+            } else {
+                Actor2Pos[0].set(Actor1.Actor.getLocalTranslation());
+            }
+            bFirstTimeForThisAction = false;
+            counter = 0;
+        }
+
+        //handle camera
+        if (bCamInUse == false) {
+            Node Actor1Node = Actor1.TotalActorNodeInThisNode[0].Actor;
+            Vector3f currLoc = Actor1Node.getLocalTranslation();
+
+            float camX = Actor2Pos[0].getX() > currLoc.getX() ? Actor2Pos[0].getX() + 50
+                    : Actor2Pos[0].getX() - 50;
+            float camZ = Actor2Pos[0].getZ() > currLoc.getZ() ? Actor2Pos[0].getZ() + 50
+                    : Actor2Pos[0].getZ() - 50;
+            float camY = Actor2Pos[0].getY() + 10;
+            System.out.println("Camera Pos x " + camX + " camera pos z " + camZ);
+            camPos.setX(camX);
+            camPos.setY(camY);
+            camPos.setZ(camZ);
+            Global.gMyMain.getCamera().setLocation(camPos);
+            Global.gMyMain.getCamera().lookAt(currLoc, Vector3f.UNIT_Y);
+            bCamInUse = true;
+        } else {
+            //Move the camera little bit, since stationary camera looks dull.
+            Vector3f camLoc = Global.gMyMain.getCamera().getLocation();
+            camLoc.setX(camLoc.getX() + tpf);
+            camLoc.setY(camLoc.getY() + tpf);
+            camLoc.setZ(camLoc.getZ() + tpf);
+            Global.gMyMain.getCamera().setLocation(camLoc);
+            Node Actor1Node = Actor1.TotalActorNodeInThisNode[0].Actor;
+            Vector3f currLoc = Actor1Node.getLocalTranslation();
+            Global.gMyMain.getCamera().lookAt(currLoc, Vector3f.UNIT_Y);
+        }
+
+        counter++;
+        if (counter > 20) {
+            ActionCompleted = true;
+            bCamInUse = false;
+        }
+
+    }
+
+    public static void processActionTypeSit() {
+        //TODO: add update code
+        ActorNode Actor1 = ActionCDFNode.Actor1;
+        ActorNode Actor2 = ActionCDFNode.Actor2;
+
+        if (bFirstTimeForThisAction == true) {
+            if (Actor2 != null) {
+                Actor2Pos[0].set(Actor2.Actor.getLocalTranslation());
+            } else {
+                Actor2Pos[0].set(Actor1.Actor.getLocalTranslation());
+            }
+            bFirstTimeForThisAction = false;
+            counter = 0;
+        }
+
+        //handle camera
+        if (bCamInUse == false) {
+            Node Actor1Node = Actor1.TotalActorNodeInThisNode[0].Actor;
+            Vector3f currLoc = Actor1Node.getLocalTranslation();
+
+            float camX = Actor2Pos[0].getX() > currLoc.getX() ? Actor2Pos[0].getX() + 50
+                    : Actor2Pos[0].getX() - 50;
+            float camZ = Actor2Pos[0].getZ() > currLoc.getZ() ? Actor2Pos[0].getZ() + 50
+                    : Actor2Pos[0].getZ() - 50;
+            float camY = Actor2Pos[0].getY() + 10;
+            System.out.println("Camera Pos x " + camX + " camera pos z " + camZ);
+            camPos.setX(camX);
+            camPos.setY(camY);
+            camPos.setZ(camZ);
+            Global.gMyMain.getCamera().setLocation(camPos);
+            Global.gMyMain.getCamera().lookAt(currLoc, Vector3f.UNIT_Y);
+            bCamInUse = true;
+        } else {
+            //Move the camera little bit, since stationary camera looks dull.
+            Vector3f camLoc = Global.gMyMain.getCamera().getLocation();
+            camLoc.setX(camLoc.getX() + tpf);
+            camLoc.setY(camLoc.getY() + tpf);
+            camLoc.setZ(camLoc.getZ() + tpf);
+            Global.gMyMain.getCamera().setLocation(camLoc);
+            Node Actor1Node = Actor1.TotalActorNodeInThisNode[0].Actor;
+            Vector3f currLoc = Actor1Node.getLocalTranslation();
+            Global.gMyMain.getCamera().lookAt(currLoc, Vector3f.UNIT_Y);
+        }
+
+        counter++;
+        if (counter > 20) {
+            ActionCompleted = true;
+            bCamInUse = false;
+        }
+
+    }
+
     public static void processActionTypeLook() {
         //TODO: add update code
         ActorNode Actor1 = ActionCDFNode.Actor1;
@@ -284,7 +440,7 @@ public class ActionNode {
         });
         processActionMap.put("make", new Runnable() {
             public void run() {
-                processActionTypeWalk();
+                processActionTypeMake();
             }
         });
         processActionMap.put("run", new Runnable() {
@@ -304,7 +460,7 @@ public class ActionNode {
         });
         processActionMap.put("sit", new Runnable() {
             public void run() {
-                processActionTypeWalk();
+                processActionTypeSit();
             }
         });
         processActionMap.put("sleep", new Runnable() {
@@ -314,7 +470,7 @@ public class ActionNode {
         });
         processActionMap.put("stand", new Runnable() {
             public void run() {
-                processActionTypeWalk();
+                processActionTypeStand();
             }
         });
         processActionMap.put("start", new Runnable() {

@@ -6,8 +6,7 @@ package mygame;
 
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
-import com.jme3.math.Vector2f;
-import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
 /**
@@ -23,7 +22,6 @@ public class ActorNode {
     public Node Actor = null;
     public AnimChannel channel;
     public AnimControl control;
-    
     public boolean bPositionSet = false;
     //bOtherActor means that it is not the main actor
     //Somehow nlp could not able to find this actor.
@@ -34,7 +32,11 @@ public class ActorNode {
     public ActorNode[] TotalActorNodeInThisNode = new ActorNode[10];
     public static ActorNode[] gActorNodes = new ActorNode[50];
     public static int gNoOfActors = 0;
+    public boolean bAttachedToRoot = false;
 
+    public CDFNode CDFNodeObj = null;
+    public boolean bPassiveActor = false;
+    
     //This function will populate total no. of actors based on synonyms.
     //For ex; Martin, Annie and Martha are children. children walks to the lake.
     //Here we have 4 ActorNode, but children is actually referred to Martin, Annie
@@ -55,18 +57,22 @@ public class ActorNode {
                 }
             }
             //There should be atleast one actor.
-            if(gActorNodes[i].nTotalNoOfActorsInThisNode == 0)
+            if (gActorNodes[i].nTotalNoOfActorsInThisNode == 0) {
                 gActorNodes[i].nTotalNoOfActorsInThisNode = 1;
+            }
         }
     }
 
-    public ActorNode(String lex, int idx, boolean bOther) {
+    public ActorNode(String lex, int idx, boolean bOther, CDFNode CDFNodeTemp) {
         this.Name = lex;
         this.label = lex + "-" + idx;
         this.idx = idx;
         this.bOtherActor = bOther;
         attribute = "";
         bPositionSet = false;
+        CDFNodeObj = CDFNodeTemp;
+        bPassiveActor = false;
+        
         createActor();
 
         channel = null;
@@ -77,36 +83,56 @@ public class ActorNode {
         TotalActorNodeInThisNode[nTotalNoOfActorsInThisNode] = this;
         //It is intentionally kept zero here. So that other actor can be populated.
         //Ideally this should be 1;
-        nTotalNoOfActorsInThisNode = 0; 
-        
+        nTotalNoOfActorsInThisNode = 0;
+        bAttachedToRoot = false;
+
     }
 
     public void createActor() {
         if (Global.gAssertManager != null) {
-            Actor = (Node) Global.gAssertManager.loadModel("Models/Actors/Cube.mesh.j3o");
-            control = Actor.getControl(AnimControl.class);
+            //First try to load non-actor like cabin. The action can be 
+            //"The cabin stand little far aways.
+            if (bOtherActor == true) {
+                String ObjectPath = SupportedBackground.getPathForStaticObjects(Name);
+                if (ObjectPath != null) {
+                    System.out.println("Inside createActor name " + Name + ObjectPath);
+                    //Actor = CDFNodeObj.Background1.createPassiveActor(Name, ObjectPath);
+                    CDFNodeObj.passiveActorMap.put(Name, ObjectPath);
+                    bAttachedToRoot = true;
+                    bPassiveActor = true;
+                }
+            }
 
-            channel = control.createChannel();
-            channel.setAnim("walk");
+            if (Actor == null) {
+                //This is the real actor.
+                Actor = (Node) Global.gAssertManager.loadModel("Models/Actors/Cube.mesh.j3o");
+                control = Actor.getControl(AnimControl.class);
+
+                channel = control.createChannel();
+                channel.setAnim("walk");
+            }
 
         }
     }
 
     public void AttachNodesToRoot() {
-        if ((Actor != null)) {
-            System.out.println("Attaching to root node " + Actor.getName());
-            Global.gMyMain.getRootNode().attachChild(Actor);
-        }
-
-        if (bOtherActor == true) {
-            for (int i = 0; i < nTotalNoOfActorsInThisNode; i++) {
-
-                if (TotalActorNodeInThisNode[i].Actor != null) {
-                    System.out.println("Attaching to root node " + TotalActorNodeInThisNode[i].Actor.getName());
-                    Global.gMyMain.getRootNode().attachChild(TotalActorNodeInThisNode[i].Actor);
-                }
-
+        if (bAttachedToRoot == false) {
+            if ((Actor != null)) {
+                System.out.println("Attaching to root node " + Actor.getName());
+                Global.gMyMain.getRootNode().attachChild(Actor);
             }
+
+            if (bOtherActor == true) {
+                for (int i = 0; i < nTotalNoOfActorsInThisNode; i++) {
+
+                    if (TotalActorNodeInThisNode[i].Actor != null) {
+                        System.out.println("Attaching to root node " + TotalActorNodeInThisNode[i].Actor.getName());
+                        Global.gMyMain.getRootNode().attachChild(TotalActorNodeInThisNode[i].Actor);
+                    }
+
+                }
+            }
+            bAttachedToRoot = true;
         }
     }
 }
