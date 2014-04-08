@@ -37,6 +37,7 @@ public class BackgroundNode {
     public SimpleWaterProcessor waterProcessor;
     public BasicShadowRenderer bsr;
     public boolean bLookAroundBackgroundDone = false;
+    public boolean bIsAttachedToRoot = false;
 
     public BackgroundNode(String lex, int idx) {
         this.Name = lex;
@@ -45,11 +46,12 @@ public class BackgroundNode {
         attribute = "";
         createBackground();
         bLookAroundBackgroundDone = false;
+        bIsAttachedToRoot = false;
     }
 
     public void AttachNodesToRoot() {
 
-        if ((Background != null)) {
+        if ((Background != null) && (bIsAttachedToRoot == false)) {
             System.out.println("Attaching to root node " + Background.getName());
             Global.gMyMain.getRootNode().attachChild(Background);
             if (waterProcessor != null) {
@@ -64,7 +66,7 @@ public class BackgroundNode {
             if (ambient != null) {
                 Global.gMyMain.getRootNode().addLight(ambient);
             }
-
+            bIsAttachedToRoot = true;
         }
 
     }

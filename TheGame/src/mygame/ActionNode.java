@@ -64,7 +64,7 @@ public class ActionNode {
                 //Here Actor2 is null; this means that we need to find where 
                 //to walk;
                 String sPosition = ActionCDFNode.TalkString;
-                
+
                 for (int i = 0; i < Actor1.nTotalNoOfActorsInThisNode; i++) {
                     System.out.println("sPosition String is " + sPosition);
                     Vector3f Actor2PosTemp = PointsOnLake.getAPoint(sPosition);
@@ -117,6 +117,16 @@ public class ActionNode {
             Global.gMyMain.getCamera().setLocation(camPos);
             Global.gMyMain.getCamera().lookAt(currLoc, Vector3f.UNIT_Y);
             bCamInUse = true;
+        } else {
+            //Move the camera little bit, since stationary camera looks dull.
+            Vector3f camLoc = Global.gMyMain.getCamera().getLocation();
+            camLoc.setX(camLoc.getX() + tpf);
+            camLoc.setY(camLoc.getY() + tpf);
+            camLoc.setZ(camLoc.getZ() + tpf);
+            Global.gMyMain.getCamera().setLocation(camLoc);
+            Node Actor1Node = Actor1.TotalActorNodeInThisNode[0].Actor;
+            Vector3f currLoc = Actor1Node.getLocalTranslation();
+            Global.gMyMain.getCamera().lookAt(currLoc, Vector3f.UNIT_Y);
         }
 
         counter++;
@@ -212,6 +222,16 @@ public class ActionNode {
             Global.gMyMain.getCamera().setLocation(camPos);
             Global.gMyMain.getCamera().lookAt(currLoc, Vector3f.UNIT_Y);
             bCamInUse = true;
+        } else {
+            //Move the camera little bit, since stationary camera looks dull.
+            Vector3f camLoc = Global.gMyMain.getCamera().getLocation();
+            camLoc.setX(camLoc.getX() + tpf);
+            camLoc.setY(camLoc.getY() + tpf);
+            camLoc.setZ(camLoc.getZ() + tpf);
+            Global.gMyMain.getCamera().setLocation(camLoc);
+            Node Actor1Node = Actor1.TotalActorNodeInThisNode[0].Actor;
+            Vector3f currLoc = Actor1Node.getLocalTranslation();
+            Global.gMyMain.getCamera().lookAt(currLoc, Vector3f.UNIT_Y);
         }
         /*
          counter++;
