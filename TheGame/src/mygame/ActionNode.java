@@ -62,6 +62,25 @@ public class ActionNode {
         Global.gMyMain.getCamera().lookAt(currLoc, Vector3f.UNIT_Y);
     }
 
+    public static void processCounter(int nCountLimit) {
+        counter++;
+        if (counter * nAccel > nCountLimit) {
+            ActionCompleted = true;
+            bCamInUse = false;
+        }
+    }
+
+    public static void handleCamera() {
+        //handle camera
+        if (bCamInUse == false) {
+            positionCamera();
+            bCamInUse = true;
+        } else {
+            //Move the camera little bit, since stationary camera looks dull.
+            perplexCamera();
+        }
+    }
+
     public static void processLookAroundBackground() {
         //TODO: add update code
         BackgroundNode BackgroundNode1 = ActionCDFNode.Background1;
@@ -102,19 +121,9 @@ public class ActionNode {
         }
 
         //handle camera
-        if (bCamInUse == false) {
-            positionCamera();
-            bCamInUse = true;
-        } else {
-            //Move the camera little bit, since stationary camera looks dull.
-            perplexCamera();
-        }
+        handleCamera();
 
-        counter++;
-        if (counter * nAccel > 5) {
-            ActionCompleted = true;
-            bCamInUse = false;
-        }
+        processCounter(5);
 
     }
 
@@ -134,19 +143,10 @@ public class ActionNode {
         }
 
         //handle camera
-        if (bCamInUse == false) {
-            positionCamera();
-            bCamInUse = true;
-        } else {
-            //Move the camera little bit, since stationary camera looks dull.
-            perplexCamera();
-        }
+        handleCamera();
 
-        counter++;
-        if (counter * nAccel > 20) {
-            ActionCompleted = true;
-            bCamInUse = false;
-        }
+        processCounter(20);
+
 
     }
 
@@ -166,19 +166,10 @@ public class ActionNode {
         }
 
         //handle camera
-        if (bCamInUse == false) {
-            positionCamera();
-            bCamInUse = true;
-        } else {
-            //Move the camera little bit, since stationary camera looks dull.
-            perplexCamera();
-        }
+        handleCamera();
 
-        counter++;
-        if (counter * nAccel > 20) {
-            ActionCompleted = true;
-            bCamInUse = false;
-        }
+        processCounter(20);
+
 
     }
 
@@ -236,19 +227,10 @@ public class ActionNode {
             //Actor1Node.move(0, 0, tpf);
         }
         //handle camera
-        if (bCamInUse == false) {
-            positionCamera();
-            bCamInUse = true;
-        } else {
-            //Move the camera little bit, since stationary camera looks dull.
-            perplexCamera();
-        }
+        handleCamera();
 
-        counter++;
-        if (counter * nAccel > 20) {
-            ActionCompleted = true;
-            bCamInUse = false;
-        }
+        processCounter(20);
+
 
     }
 
@@ -324,13 +306,8 @@ public class ActionNode {
             //Actor1Node.move(0, 0, tpf);
         }
         //handle camera
-        if (bCamInUse == false) {
-            positionCamera();
-            bCamInUse = true;
-        } else {
-            //Move the camera little bit, since stationary camera looks dull.
-            perplexCamera();
-        }
+        handleCamera();
+
         /*
          counter++;
          if (counter > 100) {
