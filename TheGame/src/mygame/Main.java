@@ -232,7 +232,7 @@ public class Main extends SimpleApplication implements AnimEventListener {
          Actor1.setLocalTranslation(currLoc);
          Actor1.move(0,0,tpf);
          */
-        System.out.println("Inside simpleUpdate function");
+        //System.out.println("Inside simpleUpdate function");
         boolean bActionCompleted = false;
         switch (mActionStateObj) {
             case STATE_ACTIONSTATEINITIAL:

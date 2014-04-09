@@ -17,6 +17,9 @@ public class ActionNode {
     public static boolean bFirstTimeForThisAction = true;
     public static Random rand = new Random((long) 5f);
     public static boolean bCamInUse = false;
+    public static int nCurrActionNo = 0;
+    public static int nAccelerateUptoActionNo = 4;
+    public static float nAccel = 1;
 
     public ActionNode(CDFNode CDFNodeObj) {
         ActionCDFNode = CDFNodeObj;
@@ -28,9 +31,9 @@ public class ActionNode {
     public static void processLookAroundBackground() {
         //TODO: add update code
         BackgroundNode BackgroundNode1 = ActionCDFNode.Background1;
-        camPos.setX(camPos.getX() - 10 * tpf);
-        camPos.setY(camPos.getY() - 12 * tpf);
-        camPos.setZ(camPos.getZ() - 14 * tpf);
+        camPos.setX(camPos.getX() - 10 * nAccel * tpf);
+        camPos.setY(camPos.getY() - 12 * nAccel * tpf);
+        camPos.setZ(camPos.getZ() - 14 * nAccel * tpf);
         Global.gMyMain.getCamera().setLocation(camPos);
         Global.gMyMain.getCamera().lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
         if (camPos.getX() < 10) {
@@ -97,7 +100,7 @@ public class ActionNode {
         }
 
         counter++;
-        if (counter > 5) {
+        if (counter * nAccel > 5) {
             ActionCompleted = true;
             bCamInUse = false;
         }
@@ -149,7 +152,7 @@ public class ActionNode {
         }
 
         counter++;
-        if (counter > 20) {
+        if (counter * nAccel > 20) {
             ActionCompleted = true;
             bCamInUse = false;
         }
@@ -201,7 +204,7 @@ public class ActionNode {
         }
 
         counter++;
-        if (counter > 20) {
+        if (counter * nAccel > 20) {
             ActionCompleted = true;
             bCamInUse = false;
         }
@@ -286,7 +289,7 @@ public class ActionNode {
         }
 
         counter++;
-        if (counter > 20) {
+        if (counter * nAccel > 20) {
             ActionCompleted = true;
             bCamInUse = false;
         }
@@ -338,19 +341,21 @@ public class ActionNode {
 
             //walk towards Actor2Loc, which can be actor or point on plane.
             float randomX = (float) (0 + (rand.nextFloat() * ((0.2))));
-            System.out.println("Random translation " + randomX);
-            float xMov = currLoc.getX() + (Actor2Pos[i].getX() > currLoc.getX() ? tpf + randomX : -tpf - randomX);
-            float zMov = currLoc.getZ() + (Actor2Pos[i].getZ() > currLoc.getZ() ? tpf + randomX : -tpf - randomX);
+            //System.out.println("Random translation " + randomX);
+            float xMov = currLoc.getX() + nAccel * (Actor2Pos[i].getX() > currLoc.getX() ? tpf + randomX : -tpf - randomX);
+            float zMov = currLoc.getZ() + nAccel * (Actor2Pos[i].getZ() > currLoc.getZ() ? tpf + randomX : -tpf - randomX);
 
             if (Math.abs(Actor2Pos[i].getX() - currLoc.getX()) > 1) {
                 bReachedTarget = false;
             } else {
+                //This is done so that xMov will not flicker because of randomX
                 xMov = currLoc.getX();
             }
 
             if (Math.abs(Actor2Pos[i].getZ() - currLoc.getZ()) > 1) {
                 bReachedTarget = false;
             } else {
+                //This is done so that zMov will not flicker because of randomX
                 zMov = currLoc.getZ();
             }
 
@@ -381,9 +386,9 @@ public class ActionNode {
         } else {
             //Move the camera little bit, since stationary camera looks dull.
             Vector3f camLoc = Global.gMyMain.getCamera().getLocation();
-            camLoc.setX(camLoc.getX() + tpf);
-            camLoc.setY(camLoc.getY() + tpf);
-            camLoc.setZ(camLoc.getZ() + tpf);
+            camLoc.setX(camLoc.getX() + nAccel * tpf);
+            camLoc.setY(camLoc.getY() + nAccel * tpf);
+            camLoc.setZ(camLoc.getZ() + nAccel * tpf);
             Global.gMyMain.getCamera().setLocation(camLoc);
             Node Actor1Node = Actor1.TotalActorNodeInThisNode[0].Actor;
             Vector3f currLoc = Actor1Node.getLocalTranslation();
@@ -506,6 +511,21 @@ public class ActionNode {
         tpf = tpf_tmp;
         boolean bActionNotSupported = false;
         ActionCompleted = false;
+
+        if (bFirstTimeForThisAction == true) {
+            nCurrActionNo++;
+        }
+
+        if (nCurrActionNo <= nAccelerateUptoActionNo) {
+            nAccel = 2;
+        } else {
+            nAccel = 1;
+        }
+        //System.out.println("nCurrActionNo = " + nCurrActionNo);
+        //System.out.println("nAccelerateUptoActionNo = " + nAccelerateUptoActionNo);
+        System.out.println("nAccel = " + nAccel);
+
+
 
         //Look Around Background in parallel to action.
         if (ActionCDFNode.Background1.bLookAroundBackgroundDone == false) {
