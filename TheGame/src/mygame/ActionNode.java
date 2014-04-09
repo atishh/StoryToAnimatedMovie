@@ -105,6 +105,30 @@ public class ActionNode {
 
     }
 
+    public static void processActionTypeStart() {
+        //TODO: add update code
+        ActorNode Actor1 = ActionCDFNode.Actor1;
+        ActorNode Actor2 = ActionCDFNode.Actor2;
+
+        if (bFirstTimeForThisAction == true) {
+            if (Actor2 != null) {
+                Actor2Pos[0].set(Actor2.Actor.getLocalTranslation());
+            } else {
+                Actor2Pos[0].set(Actor1.Actor.getLocalTranslation());
+            }
+            bFirstTimeForThisAction = false;
+            counter = 0;
+        }
+        
+        System.out.println("Totalno of actors1 " + Actor1.nTotalNoOfActorsInThisNode);
+
+        //handle camera
+        handleCamera();
+
+        processCounter(5);
+
+    }
+
     public static void processActionTypeMake() {
         //TODO: add update code
         ActorNode Actor1 = ActionCDFNode.Actor1;
@@ -255,6 +279,7 @@ public class ActionNode {
             bFirstTimeForThisAction = false;
         }
         boolean bReachedTarget = true;
+        //System.out.println("Totalno of actors1 " + Actor1.nTotalNoOfActorsInThisNode);
 
         for (int i = 0; i < Actor1.nTotalNoOfActorsInThisNode; i++) {
             BackgroundNode Background1 = ActionCDFNode.Background1;
@@ -394,7 +419,7 @@ public class ActionNode {
         });
         processActionMap.put("start", new Runnable() {
             public void run() {
-                processActionTypeWalk();
+                processActionTypeStart();
             }
         });
         processActionMap.put("stop", new Runnable() {
@@ -437,9 +462,7 @@ public class ActionNode {
         }
         //System.out.println("nCurrActionNo = " + nCurrActionNo);
         //System.out.println("nAccelerateUptoActionNo = " + nAccelerateUptoActionNo);
-        System.out.println("nAccel = " + nAccel);
-
-
+        //System.out.println("nAccel = " + nAccel);
 
         //Look Around Background in parallel to action.
         if (ActionCDFNode.Background1.bLookAroundBackgroundDone == false) {

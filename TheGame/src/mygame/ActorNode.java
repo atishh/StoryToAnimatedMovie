@@ -47,7 +47,7 @@ public class ActorNode {
                 //Try to find if other actors attribute matches.
                 for (int j = 0; j < gNoOfActors; j++) {
                     if (i != j) {
-                        if (gActorNodes[j].attribute.contains(gActorNodes[i].Name)) {
+                        if (gActorNodes[j].attribute.toLowerCase().contains(gActorNodes[i].Name.toLowerCase())) {
                             gActorNodes[i].TotalActorNodeInThisNode[gActorNodes[i].nTotalNoOfActorsInThisNode] = gActorNodes[j];
                             gActorNodes[i].nTotalNoOfActorsInThisNode++;
                             System.out.println("Found " + gActorNodes[j].Name + " with attribute "
@@ -73,8 +73,6 @@ public class ActorNode {
         CDFNodeObj = CDFNodeTemp;
         bPassiveActor = false;
         
-        createActor();
-
         channel = null;
         control = null;
 
@@ -85,6 +83,7 @@ public class ActorNode {
         //Ideally this should be 1;
         nTotalNoOfActorsInThisNode = 0;
         bAttachedToRoot = false;
+        createActor();
 
     }
 
@@ -105,6 +104,7 @@ public class ActorNode {
 
             if (Actor == null) {
                 //This is the real actor.
+                
                 Actor = (Node) Global.gAssertManager.loadModel("Models/Actors/Cube.mesh.j3o");
                 control = Actor.getControl(AnimControl.class);
 

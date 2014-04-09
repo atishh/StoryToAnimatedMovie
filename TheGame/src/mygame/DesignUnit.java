@@ -117,21 +117,26 @@ public class DesignUnit {
             return null;
         }
 
+        System.out.println("findActorNode token = '"+token+"'");
+        
         for (int i = 0; i < mNoOfFemaleActors; i++) {
-            if (mFemaleActors[i].Name.equals(token)) {
+            System.out.println("findActorNode female = '"+mFemaleActors[i].Name+"'");
+            if (mFemaleActors[i].Name.equalsIgnoreCase(token)) {
                 System.out.println("Found Actor for token " + token);
                 return mFemaleActors[i];
             }
         }
         for (int i = 0; i < mNoOfMaleActors; i++) {
-            if (mMaleActors[i].Name.equals(token)) {
+            System.out.println("findActorNode male = '"+mMaleActors[i].Name+"'");
+            if (mMaleActors[i].Name.equalsIgnoreCase(token)) {
                 System.out.println("Found Actor for token " + token);
                 return mMaleActors[i];
             }
         }
 
         for (int i = 0; i < mNoOfOtherActors; i++) {
-            if (mOtherActors[i].Name.equals(token)) {
+            System.out.println("findActorNode other = '"+mOtherActors[i].Name+"'");
+            if (mOtherActors[i].Name.equalsIgnoreCase(token)) {
                 System.out.println("Found Actor in otherActor for token " + token);
                 return mOtherActors[i];
             }
@@ -311,7 +316,7 @@ public class DesignUnit {
                 mFemaleActors = new ActorNode[mNoOfFemaleActors];
                 break;
             case STATE_FEMALE:
-                mFemaleActors[mCounter] = new ActorNode(token, mCounter, false, null);
+                mFemaleActors[mCounter] = new ActorNode(token.trim(), mCounter, false, null);
                 if (mCounter < (mNoOfFemaleActors)) {
                     myParserState = ParserState.STATE_FEMALEATTRIBUTE;
                 } else {
@@ -338,7 +343,7 @@ public class DesignUnit {
                 break;
             case STATE_MALE:
                 //TODO change it
-                mMaleActors[mCounter] = new ActorNode(token, mCounter, false, null);
+                mMaleActors[mCounter] = new ActorNode(token.trim(), mCounter, false, null);
                 if (mCounter < (mNoOfMaleActors)) {
                     myParserState = ParserState.STATE_MALEATTRIBUTE;
                 } else {
