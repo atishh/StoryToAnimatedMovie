@@ -99,7 +99,12 @@ public class PointsOnLake {
         }
         String sPositionTemp = sPosition.toLowerCase().trim();
         PointsArray PointsArrayObj = pointsMap.get(sPositionTemp);
-        return PointsArrayObj.getAPoint();
+        if (PointsArrayObj != null) {
+            return PointsArrayObj.getAPoint();
+        } else {
+            System.out.println("getAPoint returns null. means not supported");
+            return null;
+        }
     }
 
     public static Vector3f getAPointForBuild(String sPosition) {

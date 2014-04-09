@@ -28,6 +28,19 @@ public class ActionNode {
     public static int counter = 0;
     public static Vector3f camPos = new Vector3f(100, 150, 100);
 
+    public static void perplexCamera() {
+        //Move the camera little bit, since stationary camera looks dull.
+        ActorNode Actor1 = ActionCDFNode.Actor1;
+        Vector3f camLoc = Global.gMyMain.getCamera().getLocation();
+        camLoc.setX(camLoc.getX() + tpf);
+        camLoc.setY(camLoc.getY() + tpf);
+        camLoc.setZ(camLoc.getZ() + tpf);
+        Global.gMyMain.getCamera().setLocation(camLoc);
+        Node Actor1Node = Actor1.TotalActorNodeInThisNode[0].Actor;
+        Vector3f currLoc = Actor1Node.getLocalTranslation();
+        Global.gMyMain.getCamera().lookAt(currLoc, Vector3f.UNIT_Y);
+    }
+
     public static void processLookAroundBackground() {
         //TODO: add update code
         BackgroundNode BackgroundNode1 = ActionCDFNode.Background1;
@@ -89,14 +102,7 @@ public class ActionNode {
             bCamInUse = true;
         } else {
             //Move the camera little bit, since stationary camera looks dull.
-            Vector3f camLoc = Global.gMyMain.getCamera().getLocation();
-            camLoc.setX(camLoc.getX() + tpf);
-            camLoc.setY(camLoc.getY() + tpf);
-            camLoc.setZ(camLoc.getZ() + tpf);
-            Global.gMyMain.getCamera().setLocation(camLoc);
-            Node Actor1Node = Actor1.TotalActorNodeInThisNode[0].Actor;
-            Vector3f currLoc = Actor1Node.getLocalTranslation();
-            Global.gMyMain.getCamera().lookAt(currLoc, Vector3f.UNIT_Y);
+            perplexCamera();
         }
 
         counter++;
@@ -141,14 +147,7 @@ public class ActionNode {
             bCamInUse = true;
         } else {
             //Move the camera little bit, since stationary camera looks dull.
-            Vector3f camLoc = Global.gMyMain.getCamera().getLocation();
-            camLoc.setX(camLoc.getX() + tpf);
-            camLoc.setY(camLoc.getY() + tpf);
-            camLoc.setZ(camLoc.getZ() + tpf);
-            Global.gMyMain.getCamera().setLocation(camLoc);
-            Node Actor1Node = Actor1.TotalActorNodeInThisNode[0].Actor;
-            Vector3f currLoc = Actor1Node.getLocalTranslation();
-            Global.gMyMain.getCamera().lookAt(currLoc, Vector3f.UNIT_Y);
+            perplexCamera();
         }
 
         counter++;
@@ -193,14 +192,7 @@ public class ActionNode {
             bCamInUse = true;
         } else {
             //Move the camera little bit, since stationary camera looks dull.
-            Vector3f camLoc = Global.gMyMain.getCamera().getLocation();
-            camLoc.setX(camLoc.getX() + tpf);
-            camLoc.setY(camLoc.getY() + tpf);
-            camLoc.setZ(camLoc.getZ() + tpf);
-            Global.gMyMain.getCamera().setLocation(camLoc);
-            Node Actor1Node = Actor1.TotalActorNodeInThisNode[0].Actor;
-            Vector3f currLoc = Actor1Node.getLocalTranslation();
-            Global.gMyMain.getCamera().lookAt(currLoc, Vector3f.UNIT_Y);
+            perplexCamera();
         }
 
         counter++;
@@ -227,8 +219,13 @@ public class ActionNode {
                 for (int i = 0; i < Actor1.nTotalNoOfActorsInThisNode; i++) {
                     System.out.println("sPosition String is " + sPosition);
                     Vector3f Actor2PosTemp = PointsOnLake.getAPoint(sPosition);
-                    System.out.println("Point Near Lake " + Actor2PosTemp.toString());
-                    Actor2Pos[0].set(Actor2PosTemp);
+                    if (Actor2PosTemp != null) {
+                        System.out.println("Point Near Lake " + Actor2PosTemp.toString());
+                        Actor2Pos[0].set(Actor2PosTemp);
+                    } else {
+                        System.out.println("Failed to set Actor2Pos since we couldn't able to find"
+                                + "a point to place it");
+                    }
                 }
 
             }
@@ -278,14 +275,7 @@ public class ActionNode {
             bCamInUse = true;
         } else {
             //Move the camera little bit, since stationary camera looks dull.
-            Vector3f camLoc = Global.gMyMain.getCamera().getLocation();
-            camLoc.setX(camLoc.getX() + tpf);
-            camLoc.setY(camLoc.getY() + tpf);
-            camLoc.setZ(camLoc.getZ() + tpf);
-            Global.gMyMain.getCamera().setLocation(camLoc);
-            Node Actor1Node = Actor1.TotalActorNodeInThisNode[0].Actor;
-            Vector3f currLoc = Actor1Node.getLocalTranslation();
-            Global.gMyMain.getCamera().lookAt(currLoc, Vector3f.UNIT_Y);
+            perplexCamera();
         }
 
         counter++;
@@ -385,14 +375,7 @@ public class ActionNode {
             bCamInUse = true;
         } else {
             //Move the camera little bit, since stationary camera looks dull.
-            Vector3f camLoc = Global.gMyMain.getCamera().getLocation();
-            camLoc.setX(camLoc.getX() + nAccel * tpf);
-            camLoc.setY(camLoc.getY() + nAccel * tpf);
-            camLoc.setZ(camLoc.getZ() + nAccel * tpf);
-            Global.gMyMain.getCamera().setLocation(camLoc);
-            Node Actor1Node = Actor1.TotalActorNodeInThisNode[0].Actor;
-            Vector3f currLoc = Actor1Node.getLocalTranslation();
-            Global.gMyMain.getCamera().lookAt(currLoc, Vector3f.UNIT_Y);
+            perplexCamera();
         }
         /*
          counter++;
