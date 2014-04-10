@@ -222,6 +222,9 @@ public class Main extends SimpleApplication implements AnimEventListener {
     public ActionState mActionStateObj = ActionState.STATE_ACTIONSTATEINITIAL;
     public CDFNode pCurrActionCDFNode = null;
 
+    BackgroundNode PrevBackgroundNode = null;
+    BackgroundNode CurrBackgroundNode = null;
+    
     @Override
     public void simpleUpdate(float tpf) {
         //TODO: add update code
@@ -242,7 +245,14 @@ public class Main extends SimpleApplication implements AnimEventListener {
                 if (pCurrActionCDFNode == null) {
                     mActionStateObj = ActionState.STATE_ACTIONSTATEEXIT;
                 } else {
-                    pCurrActionCDFNode.AttachNodesToRoot();
+                    CurrBackgroundNode = pCurrActionCDFNode.Background1;
+                    if(CurrBackgroundNode != PrevBackgroundNode)
+                    {
+                        System.out.println("In Simpleupdate , background changed");
+                        pCurrActionCDFNode.PlaceActorsForThisBackground(CurrBackgroundNode);
+                    }
+                    PrevBackgroundNode = CurrBackgroundNode;
+                    
                     mActionStateObj = ActionState.STATE_ACTIONSTATEMIDDLE;
                 }
                 break;

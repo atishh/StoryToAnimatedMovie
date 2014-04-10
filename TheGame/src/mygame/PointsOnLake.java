@@ -17,7 +17,7 @@ public class PointsOnLake {
     private static final int nOfWalkablePoints = 10;
     private static final int nOfPointNearLake = 10;
     private static final int nOfPointOnRoad = 10;
-    private static final int nOfPointOnWater = 3;
+    private static final int nOfPointOnWater = 6;
     private static final int nOfPointOnSky = 3;
     private static final int nOfPointOnTree = 3;
     private static final int nOfPointForHouse = 3;
@@ -67,6 +67,9 @@ public class PointsOnLake {
         pointOnWater.Points[0] = new Vector3f(-20, 0, 1);
         pointOnWater.Points[1] = new Vector3f(-20, 0, 3);
         pointOnWater.Points[2] = new Vector3f(-20, 0, 5);
+        pointOnWater.Points[3] = new Vector3f(-20, 0, -10);
+        pointOnWater.Points[4] = new Vector3f(-20, 0, -15);
+        pointOnWater.Points[5] = new Vector3f(-20, 0, -20);
 
         pointOnSky.Points[0] = new Vector3f(0, 50, 0);
         pointOnSky.Points[1] = new Vector3f(0, 60, 0);

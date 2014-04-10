@@ -30,9 +30,15 @@ public class CDFNode {
     public String TalkString;
     public BackgroundNode Background1;
     public boolean bFirstTime = true;
+    public boolean bFirstTimePlaceActor = true;
     public Map<String, String> passiveActorMap = new HashMap<String, String>();
 
     public void AttachNodesToRoot() {
+
+        if ((Background1 != null)) {
+            Background1.AttachNodesToRoot();
+        }
+
         if ((Actor1 != null)) {
             Actor1.AttachNodesToRoot();
         }
@@ -40,9 +46,7 @@ public class CDFNode {
             Actor2.AttachNodesToRoot();
         }
 
-        if ((Background1 != null)) {
-            Background1.AttachNodesToRoot();
-        }
+
 
     }
 
@@ -76,6 +80,7 @@ public class CDFNode {
 
         Background1 = null;
         bFirstTime = true;
+        bFirstTimePlaceActor = true;
     }
 
     public boolean PerformAction(float tpf) {
@@ -85,5 +90,19 @@ public class CDFNode {
         }
         ActionNode.ProcessActionWrapper(label, tpf);
         return ActionNode.ActionCompleted;
+    }
+
+    public void PlaceActorsForThisBackground(BackgroundNode CurrBackgroundNode) {
+        AttachNodesToRoot();
+        if(bFirstTimePlaceActor)
+        {
+            PlaceActorNode.init(this);
+            bFirstTimePlaceActor = false;
+        }
+        PlaceActorNode.PlaceActorWapper(label);
+        if(children != null)
+        {
+            children.PlaceActorsForThisBackground(CurrBackgroundNode);
+        }
     }
 }

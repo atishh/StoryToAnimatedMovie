@@ -18,7 +18,7 @@ public class ActionNode {
     public static Random rand = new Random((long) 5f);
     public static boolean bCamInUse = false;
     public static int nCurrActionNo = 0;
-    public static int nAccelerateUptoActionNo = 0;
+    public static int nAccelerateUptoActionNo = 3;
     public static float nAccel = 1;
     public static int nNoOfActor2 = 10;
     public static Vector3f[] Actor2Pos = new Vector3f[nNoOfActor2];
@@ -119,7 +119,7 @@ public class ActionNode {
             bFirstTimeForThisAction = false;
             counter = 0;
         }
-        
+
         System.out.println("Totalno of actors1 " + Actor1.nTotalNoOfActorsInThisNode);
 
         //handle camera
@@ -215,10 +215,13 @@ public class ActionNode {
                     Vector3f Actor2PosTemp = PointsOnLake.getAPoint(sPosition);
                     if (Actor2PosTemp != null) {
                         System.out.println("Point Near Lake " + Actor2PosTemp.toString());
-                        Actor2Pos[0].set(Actor2PosTemp);
+                        Actor2Pos[i].set(Actor2PosTemp);
                     } else {
                         System.out.println("Failed to set Actor2Pos since we couldn't able to find"
                                 + "a point to place it");
+                        ActionCompleted = true;
+                        bCamInUse = false;
+                        return;
                     }
                 }
 
@@ -258,6 +261,15 @@ public class ActionNode {
 
     }
 
+    public static void processActionTypeRun() {
+        //Run is similar to walk just with faster speed.
+        //To change it latter since animation of "walk" and "run" are different.
+        float nPrevAccel = nAccel;
+        nAccel = 2*nAccel;
+        processActionTypeWalk();
+        nAccel = nPrevAccel;
+    }
+
     public static void processActionTypeWalk() {
         //TODO: add update code
         ActorNode Actor1 = ActionCDFNode.Actor1;
@@ -267,12 +279,24 @@ public class ActionNode {
             if (Actor2 != null) {
                 Actor2Pos[0].set(Actor2.Actor.getLocalTranslation());
             } else {
+
                 //Here Actor2 is null; this means that we need to find where 
                 //to walk;
+                String sPosition = ActionCDFNode.TalkString;
+
                 for (int i = 0; i < Actor1.nTotalNoOfActorsInThisNode; i++) {
-                    Vector3f Actor2PosTemp = PointsOnLake.getAPointNearLake();
-                    System.out.println("Point Near Lake " + Actor2PosTemp.toString());
-                    Actor2Pos[i].set(Actor2PosTemp);
+                    System.out.println("sPosition String is " + sPosition);
+                    Vector3f Actor2PosTemp = PointsOnLake.getAPoint(sPosition);
+                    if (Actor2PosTemp != null) {
+                        System.out.println("Point Near Lake " + Actor2PosTemp.toString());
+                        Actor2Pos[i].set(Actor2PosTemp);
+                    } else {
+                        System.out.println("Failed to set Actor2Pos since we couldn't able to find"
+                                + "a point to place it");
+                        ActionCompleted = true;
+                        bCamInUse = false;
+                        return;
+                    }
                 }
 
             }
@@ -389,7 +413,7 @@ public class ActionNode {
         });
         processActionMap.put("run", new Runnable() {
             public void run() {
-                processActionTypeWalk();
+                processActionTypeRun();
             }
         });
         processActionMap.put("say", new Runnable() {
