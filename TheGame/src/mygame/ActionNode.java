@@ -24,6 +24,8 @@ public class ActionNode {
     public static Vector3f[] Actor2Pos = new Vector3f[nNoOfActor2];
     public static Vector3f Actor1LookAt = new Vector3f(0, 0, 0);
 
+    public static int nSubtitleDuration = 5;
+    
     public ActionNode(CDFNode CDFNodeObj) {
         ActionCDFNode = CDFNodeObj;
     }
@@ -49,10 +51,10 @@ public class ActionNode {
         Node Actor1Node = Actor1.TotalActorNodeInThisNode[0].Actor;
         Vector3f currLoc = Actor1Node.getLocalTranslation();
 
-        float camX = Actor2Pos[0].getX() > currLoc.getX() ? Actor2Pos[0].getX() + 50
-                : Actor2Pos[0].getX() - 50;
-        float camZ = Actor2Pos[0].getZ() > currLoc.getZ() ? Actor2Pos[0].getZ() + 50
-                : Actor2Pos[0].getZ() - 50;
+        float camX = Actor2Pos[0].getX() > currLoc.getX() ? Actor2Pos[0].getX() + 35
+                : Actor2Pos[0].getX() - 35;
+        float camZ = Actor2Pos[0].getZ() > currLoc.getZ() ? Actor2Pos[0].getZ() + 35
+                : Actor2Pos[0].getZ() - 35;
         float camY = Actor2Pos[0].getY() + 10;
         System.out.println("Camera Pos x " + camX + " camera pos z " + camZ);
         camPos.setX(camX);
@@ -102,6 +104,37 @@ public class ActionNode {
         if (BackgroundNode1.bLookAroundBackgroundDone == true) {
             bCamInUse = false;
         }
+
+    }
+
+    public static void processActionTypeSay() {
+
+        ActorNode Actor1 = ActionCDFNode.Actor1;
+        ActorNode Actor2 = ActionCDFNode.Actor2;
+
+        if (bFirstTimeForThisAction == true) {
+            nSubtitleDuration = 5;
+            if (Actor2 != null) {
+                Actor2Pos[0].set(Actor2.Actor.getLocalTranslation());
+            } else {
+                Actor2Pos[0].set(Actor1.Actor.getLocalTranslation());
+            }
+            String sTalkString = ActionCDFNode.TalkString;
+            if (sTalkString != null) {
+                int nStringCount = sTalkString.length();
+                SubtitleManager.setSubtitle(sTalkString);
+                nSubtitleDuration = nStringCount;
+            }
+            bFirstTimeForThisAction = false;
+            counter = 0;
+        }
+
+        System.out.println("Totalno of actors1 " + Actor1.nTotalNoOfActorsInThisNode);
+
+        //handle camera
+        handleCamera();
+
+        processCounter(nSubtitleDuration);
 
     }
 
@@ -236,13 +269,7 @@ public class ActionNode {
             Terrain LakeTerrain = Background1.LakeTerrain;
 
             ActorNode CurrActor = Actor1.TotalActorNodeInThisNode[i];
-            if (CurrActor.bPositionSet == false) {
-                Vector3f Actor1PosTemp = PointsOnLake.getAPointNearRoad();
-                System.out.println("Point On Road " + Actor1PosTemp.toString());
-                float height = LakeTerrain.getHeight(new Vector2f(Actor1PosTemp.getX(), Actor1PosTemp.getZ()));
-                CurrActor.Actor.setLocalTranslation(Actor1PosTemp.getX(), height, Actor1PosTemp.getZ());
-                CurrActor.bPositionSet = true;
-            }
+
             Node Actor1Node = Actor1.TotalActorNodeInThisNode[i].Actor;
             Vector3f currLoc = Actor1Node.getLocalTranslation();
 
@@ -265,7 +292,7 @@ public class ActionNode {
         //Run is similar to walk just with faster speed.
         //To change it latter since animation of "walk" and "run" are different.
         float nPrevAccel = nAccel;
-        nAccel = 2*nAccel;
+        nAccel = 2 * nAccel;
         processActionTypeWalk();
         nAccel = nPrevAccel;
     }
@@ -310,13 +337,7 @@ public class ActionNode {
             Terrain LakeTerrain = Background1.LakeTerrain;
 
             ActorNode CurrActor = Actor1.TotalActorNodeInThisNode[i];
-            if (CurrActor.bPositionSet == false) {
-                Vector3f Actor1PosTemp = PointsOnLake.getAPointNearRoad();
-                System.out.println("Point On Road " + Actor1PosTemp.toString());
-                float height = LakeTerrain.getHeight(new Vector2f(Actor1PosTemp.getX(), Actor1PosTemp.getZ()));
-                CurrActor.Actor.setLocalTranslation(Actor1PosTemp.getX(), height, Actor1PosTemp.getZ());
-                CurrActor.bPositionSet = true;
-            }
+
             Node Actor1Node = Actor1.TotalActorNodeInThisNode[i].Actor;
             Vector3f currLoc = Actor1Node.getLocalTranslation();
 
@@ -418,7 +439,7 @@ public class ActionNode {
         });
         processActionMap.put("say", new Runnable() {
             public void run() {
-                processActionTypeWalk();
+                processActionTypeSay();
             }
         });
         processActionMap.put("scramble", new Runnable() {

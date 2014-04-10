@@ -28,7 +28,7 @@ public class PlaceActorNode {
                     Vector3f Actor1PosTemp = PointsOnLake.getAPointNearRoad();
                     System.out.println("Point On Road " + Actor1PosTemp.toString());
                     float height = LakeTerrain.getHeight(new Vector2f(Actor1PosTemp.getX(), Actor1PosTemp.getZ()));
-                    CurrActor.Actor.setLocalTranslation(Actor1PosTemp.getX(), height, Actor1PosTemp.getZ());
+                    CurrActor.Actor.setLocalTranslation(Actor1PosTemp.getX(), height + 4.6f, Actor1PosTemp.getZ());
                     CurrActor.bPositionSet = true;
                 }
             }

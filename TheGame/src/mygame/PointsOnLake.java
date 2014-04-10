@@ -79,9 +79,9 @@ public class PointsOnLake {
         pointOnTree.Points[1] = new Vector3f(10, 15, -10);
         pointOnTree.Points[2] = new Vector3f(-10, 12, 10);
 
-        pointForHouse.Points[0] = new Vector3f(50, 10, -50);
-        pointForHouse.Points[1] = new Vector3f(50, 10, -50);
-        pointForHouse.Points[2] = new Vector3f(-50, 10, 50);
+        pointForHouse.Points[0] = new Vector3f(50, 10, -25);
+        pointForHouse.Points[1] = new Vector3f(50, 10, -25);
+        pointForHouse.Points[2] = new Vector3f(-50, 10, 25);
 
         pointsMap.put("walk", walkablePoint);
         pointsMap.put("lake", pointNearLake);
