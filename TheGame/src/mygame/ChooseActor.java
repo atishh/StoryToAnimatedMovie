@@ -25,13 +25,13 @@ public class ChooseActor {
     }
 
     static void init() {
-        ActorData ActorDataObj = new ActorData("swan", "Scenes/Birds/Sphere.mesh.j3o", 1, 0, 4);
+        ActorData ActorDataObj = new ActorData("swan", "Scenes/Birds/Sphere.mesh.j3o", 0.5f, 0, 5);
         NameToActorDataMap.put("swan", ActorDataObj);
-        ActorDataObj = new ActorData("kingfisher", "Scenes/Birds/Sphere.mesh.j3o", 1, 0, 4);
+        ActorDataObj = new ActorData("kingfisher", "Scenes/Birds/Sphere.mesh.j3o", 0.5f, 0, 5);
         NameToActorDataMap.put("kingfisher", ActorDataObj);
         ActorDataObj = new ActorData("fish", "Scenes/Fish/Sphere.006.mesh.j3o", 1, 0, 4);
         NameToActorDataMap.put("fish", ActorDataObj);
-        ActorDataObj = new ActorData("deer", "Scenes/Animals/Deer/Cube.001.mesh.j3o", 0.3f, 0, 1);
+        ActorDataObj = new ActorData("deer", "Scenes/Animals/Deer/Cube.001.mesh.j3o", 0.5f, 0, 1);
         NameToActorDataMap.put("deer", ActorDataObj);
         
         ActorDataObj = new ActorData("parent", "Models/Actors/Cube.mesh.j3o", 2, 0, 9.2f);
