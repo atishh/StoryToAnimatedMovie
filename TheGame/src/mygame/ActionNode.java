@@ -18,14 +18,13 @@ public class ActionNode {
     public static Random rand = new Random((long) 5f);
     public static boolean bCamInUse = false;
     public static int nCurrActionNo = 0;
-    public static int nAccelerateUptoActionNo = 3;
+    public static int nAccelerateUptoActionNo = 5;
     public static float nAccel = 1;
     public static int nNoOfActor2 = 10;
     public static Vector3f[] Actor2Pos = new Vector3f[nNoOfActor2];
     public static Vector3f Actor1LookAt = new Vector3f(0, 0, 0);
-
     public static int nSubtitleDuration = 5;
-    
+
     public ActionNode(CDFNode CDFNodeObj) {
         ActionCDFNode = CDFNodeObj;
     }
@@ -135,7 +134,10 @@ public class ActionNode {
         handleCamera();
 
         processCounter(nSubtitleDuration);
-
+        
+        if (ActionCompleted == true) {
+            SubtitleManager.setSubtitle("");
+        }
     }
 
     public static void processActionTypeStart() {
@@ -501,7 +503,7 @@ public class ActionNode {
         }
 
         if (nCurrActionNo <= nAccelerateUptoActionNo) {
-            nAccel = 2;
+            nAccel = 3;
         } else {
             nAccel = 1;
         }

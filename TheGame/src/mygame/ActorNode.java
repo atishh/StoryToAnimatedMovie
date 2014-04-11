@@ -33,10 +33,10 @@ public class ActorNode {
     public static ActorNode[] gActorNodes = new ActorNode[50];
     public static int gNoOfActors = 0;
     public boolean bAttachedToRoot = false;
-
     public CDFNode CDFNodeObj = null;
     public boolean bPassiveActor = false;
-    
+    public ActorData ActorDataObj;
+
     //This function will populate total no. of actors based on synonyms.
     //For ex; Martin, Annie and Martha are children. children walks to the lake.
     //Here we have 4 ActorNode, but children is actually referred to Martin, Annie
@@ -72,7 +72,7 @@ public class ActorNode {
         bPositionSet = false;
         CDFNodeObj = CDFNodeTemp;
         bPassiveActor = false;
-        
+
         channel = null;
         control = null;
 
@@ -83,6 +83,7 @@ public class ActorNode {
         //Ideally this should be 1;
         nTotalNoOfActorsInThisNode = 0;
         bAttachedToRoot = false;
+        ActorDataObj = null;
         createActor();
 
     }
@@ -104,12 +105,31 @@ public class ActorNode {
 
             if (Actor == null) {
                 //This is the real actor.
-                
-                Actor = (Node) Global.gAssertManager.loadModel("Models/Actors/Cube.mesh.j3o");
-                control = Actor.getControl(AnimControl.class);
 
-                channel = control.createChannel();
-                channel.setAnim("walk");
+                //choose actor from library.
+                //Might be required to change
+                ActorData ActorDataTemp = ChooseActor.getActorData(Name.toLowerCase().trim());
+                if (ActorDataTemp != null) {
+                    ActorDataObj = ActorDataTemp;
+                    Actor = (Node) Global.gAssertManager.loadModel(ActorDataObj.PhysicalPath);
+                    control = Actor.getControl(AnimControl.class);
+                    if (control != null) {
+                        channel = control.createChannel();
+                        channel.setAnim("walk");
+                    }
+                }
+            }
+
+            //This case ideally should not happen, If it happens just load anything.
+            if (Actor == null) {
+                //This is the real actor.
+                Actor = (Node) Global.gAssertManager.loadModel("Models/Actors/Cube.mesh.j3o");
+
+                control = Actor.getControl(AnimControl.class);
+                if (control != null) {
+                    channel = control.createChannel();
+                    channel.setAnim("walk");
+                }
             }
 
         }
