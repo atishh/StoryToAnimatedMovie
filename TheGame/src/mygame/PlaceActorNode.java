@@ -16,19 +16,21 @@ public class PlaceActorNode {
     }
 
     public static void placeActor1Node() {
-
+        
         ActorNode Actor1 = ActionCDFNode.Actor1;
+        Actor1.createActor();
         if (Actor1 != null) {
             for (int i = 0; i < Actor1.nTotalNoOfActorsInThisNode; i++) {
                 BackgroundNode Background1 = ActionCDFNode.Background1;
                 Terrain LakeTerrain = Background1.LakeTerrain;
 
                 ActorNode CurrActor = Actor1.TotalActorNodeInThisNode[i];
+                CurrActor.createActor();
                 if (CurrActor.bPositionSet == false) {
                     Vector3f Actor1PosTemp = PointsOnLake.getAPointNearRoad();
                     System.out.println("Point On Road " + Actor1PosTemp.toString());
                     float height = LakeTerrain.getHeight(new Vector2f(Actor1PosTemp.getX(), Actor1PosTemp.getZ()));
-                    CurrActor.Actor.setLocalTranslation(Actor1PosTemp.getX(), height + 4.6f, Actor1PosTemp.getZ());
+                    CurrActor.Actor.setLocalTranslation(Actor1PosTemp.getX(), height + CurrActor.getHeight(), Actor1PosTemp.getZ());
                     CurrActor.bPositionSet = true;
                 }
             }

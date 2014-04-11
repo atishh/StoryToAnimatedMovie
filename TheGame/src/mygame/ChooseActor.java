@@ -25,24 +25,24 @@ public class ChooseActor {
     }
 
     static void init() {
-        ActorData ActorDataObj = new ActorData("swan", "Scenes/Birds/Sphere.mesh.j3o", 1, 0);
+        ActorData ActorDataObj = new ActorData("swan", "Scenes/Birds/Sphere.mesh.j3o", 1, 0, 4);
         NameToActorDataMap.put("swan", ActorDataObj);
-        ActorDataObj = new ActorData("kingfisher", "Scenes/Birds/Sphere.mesh.j3o", 1, 0);
+        ActorDataObj = new ActorData("kingfisher", "Scenes/Birds/Sphere.mesh.j3o", 1, 0, 4);
         NameToActorDataMap.put("kingfisher", ActorDataObj);
-        ActorDataObj = new ActorData("fish", "Scenes/Fish/Sphere.006.mesh.j3o", 1, 0);
+        ActorDataObj = new ActorData("fish", "Scenes/Fish/Sphere.006.mesh.j3o", 1, 0, 4);
         NameToActorDataMap.put("fish", ActorDataObj);
-        ActorDataObj = new ActorData("deer", "Scenes/Animals/Deer/Cube.001.mesh.j3o", 1, 0);
+        ActorDataObj = new ActorData("deer", "Scenes/Animals/Deer/Cube.001.mesh.j3o", 0.3f, 0, 1);
         NameToActorDataMap.put("deer", ActorDataObj);
         
-        ActorDataObj = new ActorData("parent", "Models/Actors/Cube.mesh.j3o", 2, 0);
+        ActorDataObj = new ActorData("parent", "Models/Actors/Cube.mesh.j3o", 2, 0, 9.2f);
         NameToActorDataMap.put("parent", ActorDataObj);
-        ActorDataObj = new ActorData("parents", "Models/Actors/Cube.mesh.j3o", 2, 0);
+        ActorDataObj = new ActorData("parents", "Models/Actors/Cube.mesh.j3o", 2, 0, 9.2f);
         NameToActorDataMap.put("parents", ActorDataObj);
         
-        ActorDataObj = new ActorData("children", "Models/Actors/Cube.mesh.j3o", 1, 0);
+        ActorDataObj = new ActorData("children", "Models/Actors/Cube.mesh.j3o", 1, 0, 4.6f);
         NameToActorDataMap.put("children", ActorDataObj);
         
-        ActorDataObj = new ActorData("child", "Models/Actors/Cube.mesh.j3o", 1, 0);
+        ActorDataObj = new ActorData("child", "Models/Actors/Cube.mesh.j3o", 1, 0, 4.6f);
         NameToActorDataMap.put("child", ActorDataObj);
         
         CollectiveActorToNoMap.put("parent", 2);

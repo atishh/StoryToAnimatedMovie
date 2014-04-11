@@ -89,7 +89,7 @@ public class DesignUnit {
                 if (CDFNodeTemp.Background1 == null) {
                     CDFNodeTemp.Background1 = PrevBackgroundNode;
                 }
-                CDFNodeTemp.CreatePassiveActors();
+                //CDFNodeTemp.CreatePassiveActors();
             }
             CDFNodeTemp = CDFNodeTemp.children;
         }

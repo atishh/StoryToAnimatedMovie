@@ -93,7 +93,7 @@ public class CDFNode {
     }
 
     public void PlaceActorsForThisBackground(BackgroundNode CurrBackgroundNode) {
-        AttachNodesToRoot();
+        
         if(bFirstTimePlaceActor)
         {
             PlaceActorNode.init(this);
@@ -104,5 +104,8 @@ public class CDFNode {
         {
             children.PlaceActorsForThisBackground(CurrBackgroundNode);
         }
+        //CreatePassiveActors();
+        //Upto now all the nodes must have been populated.
+        AttachNodesToRoot();
     }
 }

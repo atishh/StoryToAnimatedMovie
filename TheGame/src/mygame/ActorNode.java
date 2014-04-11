@@ -6,7 +6,6 @@ package mygame;
 
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
 /**
@@ -36,6 +35,7 @@ public class ActorNode {
     public CDFNode CDFNodeObj = null;
     public boolean bPassiveActor = false;
     public ActorData ActorDataObj;
+    public boolean bActorCreated = false;
 
     //This function will populate total no. of actors based on synonyms.
     //For ex; Martin, Annie and Martha are children. children walks to the lake.
@@ -84,11 +84,15 @@ public class ActorNode {
         nTotalNoOfActorsInThisNode = 0;
         bAttachedToRoot = false;
         ActorDataObj = null;
-        createActor();
-
+        bActorCreated = false;
+        //createActor();
     }
 
     public void createActor() {
+        if (bActorCreated == true) {
+            return;
+        }
+
         if (Global.gAssertManager != null) {
             //First try to load non-actor like cabin. The action can be 
             //"The cabin stand little far aways.
@@ -96,10 +100,11 @@ public class ActorNode {
                 String ObjectPath = SupportedBackground.getPathForStaticObjects(Name);
                 if (ObjectPath != null) {
                     System.out.println("Inside createActor name " + Name + ObjectPath);
-                    //Actor = CDFNodeObj.Background1.createPassiveActor(Name, ObjectPath);
+                    Actor = CDFNodeObj.Background1.createPassiveActor(Name, ObjectPath);
                     CDFNodeObj.passiveActorMap.put(Name, ObjectPath);
                     bAttachedToRoot = true;
                     bPassiveActor = true;
+                    bPositionSet = true;
                 }
             }
 
@@ -108,10 +113,17 @@ public class ActorNode {
 
                 //choose actor from library.
                 //Might be required to change
-                ActorData ActorDataTemp = ChooseActor.getActorData(Name.toLowerCase().trim());
+                //First try with attribute, if unable then go for name. This will take care of 2 cases.
+                //1) William is a children. Children go to the lake. //Here children is attribute.
+                //2) Deer walk towards water. //Here deer is animal.
+                ActorData ActorDataTemp = ChooseActor.getActorData(attribute.toLowerCase().trim());
+                if (ActorDataTemp == null) {
+                    ActorDataTemp = ChooseActor.getActorData(Name.toLowerCase().trim());
+                }
                 if (ActorDataTemp != null) {
                     ActorDataObj = ActorDataTemp;
                     Actor = (Node) Global.gAssertManager.loadModel(ActorDataObj.PhysicalPath);
+                    Actor.setLocalScale(ActorDataObj.nScale);
                     control = Actor.getControl(AnimControl.class);
                     if (control != null) {
                         channel = control.createChannel();
@@ -121,6 +133,7 @@ public class ActorNode {
             }
 
             //This case ideally should not happen, If it happens just load anything.
+
             if (Actor == null) {
                 //This is the real actor.
                 Actor = (Node) Global.gAssertManager.loadModel("Models/Actors/Cube.mesh.j3o");
@@ -131,16 +144,18 @@ public class ActorNode {
                     channel.setAnim("walk");
                 }
             }
-
+            bActorCreated = true;
         }
     }
 
     public void AttachNodesToRoot() {
         if (bAttachedToRoot == false) {
+            /*
             if ((Actor != null)) {
                 System.out.println("Attaching to root node " + Actor.getName());
                 Global.gMyMain.getRootNode().attachChild(Actor);
             }
+            */
 
             if (bOtherActor == true) {
                 for (int i = 0; i < nTotalNoOfActorsInThisNode; i++) {
@@ -154,5 +169,13 @@ public class ActorNode {
             }
             bAttachedToRoot = true;
         }
+    }
+
+    public float getHeight() {
+        float nHeight = 0;
+        if (ActorDataObj != null) {
+            nHeight = ActorDataObj.nHeight;
+        }
+        return nHeight;
     }
 }

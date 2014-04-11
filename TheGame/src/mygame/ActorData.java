@@ -12,13 +12,15 @@ public class ActorData {
 
     String Name;
     String PhysicalPath;
-    int nScale;
+    float nScale;
     float nRotation;
+    float nHeight;
 
-    ActorData(String NameT, String PhysicalPathT, int nScaleT, float nRotationT) {
+    ActorData(String NameT, String PhysicalPathT, float nScaleT, float nRotationT, float nHeightT) {
         Name = NameT;
         PhysicalPath = PhysicalPathT;
         nScale = nScaleT;
         nRotation = nRotationT;
+        nHeight = nHeightT;
     }
 }

@@ -340,7 +340,7 @@ public class ActionNode {
 
             ActorNode CurrActor = Actor1.TotalActorNodeInThisNode[i];
 
-            Node Actor1Node = Actor1.TotalActorNodeInThisNode[i].Actor;
+            Node Actor1Node = CurrActor.Actor;
             Vector3f currLoc = Actor1Node.getLocalTranslation();
 
             //Look towards Actor2.
@@ -370,7 +370,7 @@ public class ActionNode {
             }
 
             float height = LakeTerrain.getHeight(new Vector2f(xMov, xMov));
-            currLoc.setY(height + 4.6f);
+            currLoc.setY(height + CurrActor.getHeight());
             currLoc.setX(xMov);
             currLoc.setZ(zMov);
             Actor1Node.setLocalTranslation(currLoc);
