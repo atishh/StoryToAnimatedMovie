@@ -64,10 +64,10 @@ public class PointsOnLake {
         pointNearRoad.Points[8] = new Vector3f(42, 0, 12);
         pointNearRoad.Points[9] = new Vector3f(50, 0, 15);
 
-        pointOnWater.Points[0] = new Vector3f(-20, 0, 1);
-        pointOnWater.Points[1] = new Vector3f(-20, 0, 3);
-        pointOnWater.Points[2] = new Vector3f(-20, 0, 5);
-        pointOnWater.Points[3] = new Vector3f(-20, 0, -10);
+        pointOnWater.Points[0] = new Vector3f(-22, 0, 15);
+        pointOnWater.Points[1] = new Vector3f(15, 0, 15);
+        pointOnWater.Points[2] = new Vector3f(15, 0, 45);
+        pointOnWater.Points[3] = new Vector3f(-22, 0, 45);
         pointOnWater.Points[4] = new Vector3f(-20, 0, -15);
         pointOnWater.Points[5] = new Vector3f(-20, 0, -20);
 
@@ -99,6 +99,9 @@ public class PointsOnLake {
     public static Vector3f getAPoint(String sPosition) {
         if (bInitialize == false) {
             initialize();
+        }
+        if (sPosition == null) {
+            return null;
         }
         String sPositionTemp = sPosition.toLowerCase().trim();
         PointsArray PointsArrayObj = pointsMap.get(sPositionTemp);

@@ -10,16 +10,42 @@ public class PlaceActorNode {
 
     public static CDFNode ActionCDFNode;
     public static Map<String, Runnable> placeActorForActionMap = new HashMap<String, Runnable>();
+    public static int nNoOfNearPoints = 5;
+    public static Vector3f[] nearPoint = new Vector3f[nNoOfNearPoints];
+    public static Vector3f middlePoint;
+    public static int nCurrPointNo = 0;
 
     public PlaceActorNode(CDFNode CDFNodeObj) {
         ActionCDFNode = CDFNodeObj;
     }
 
+    public static Vector3f getAPointNearAPoint(String PointName) {
+        if (nCurrPointNo == 0) {
+            middlePoint = PointsOnLake.getAPoint(PointName);
+            if (middlePoint == null) {
+                middlePoint = PointsOnLake.getAPointNearRoad();
+            }
+        }
+        Vector3f returnPoint = middlePoint.add(nearPoint[nCurrPointNo]);
+
+        nCurrPointNo++;
+        if (nCurrPointNo >= nNoOfNearPoints) {
+            nCurrPointNo = 0;
+        }
+
+        return returnPoint;
+    }
+
     public static void placeActor1Node() {
-        
+
         ActorNode Actor1 = ActionCDFNode.Actor1;
         //Actor1.createActor();
+        nCurrPointNo = 0;
         if (Actor1 != null) {
+            String PointName = null;
+            if (ActionCDFNode.label.equalsIgnoreCase("swim")) {
+                PointName = "water";
+            }
             for (int i = 0; i < Actor1.nTotalNoOfActorsInThisNode; i++) {
                 BackgroundNode Background1 = ActionCDFNode.Background1;
                 Terrain LakeTerrain = Background1.LakeTerrain;
@@ -27,8 +53,8 @@ public class PlaceActorNode {
                 ActorNode CurrActor = Actor1.TotalActorNodeInThisNode[i];
                 CurrActor.createActor();
                 if (CurrActor.bPositionSet == false) {
-                    Vector3f Actor1PosTemp = PointsOnLake.getAPointNearRoad();
-                    System.out.println("Point On Road " + Actor1PosTemp.toString());
+                    Vector3f Actor1PosTemp = getAPointNearAPoint(PointName);
+                    System.out.println("Placing Actor " + CurrActor.Name + " On Road at " + Actor1PosTemp.toString());
                     float height = LakeTerrain.getHeight(new Vector2f(Actor1PosTemp.getX(), Actor1PosTemp.getZ()));
                     CurrActor.Actor.setLocalTranslation(Actor1PosTemp.getX(), height + CurrActor.getHeight(), Actor1PosTemp.getZ());
                     CurrActor.bPositionSet = true;
@@ -85,6 +111,14 @@ public class PlaceActorNode {
 
         placeActor1Node();
     }
+
+    public static void placeActorNodeForSwim() {
+        //TODO: add update code
+        ActorNode Actor1 = ActionCDFNode.Actor1;
+        ActorNode Actor2 = ActionCDFNode.Actor2;
+
+        placeActor1Node();
+    }
     public static boolean bInitDone = false;
 
     public static void init(CDFNode CDFNodeObj) {
@@ -94,6 +128,12 @@ public class PlaceActorNode {
             return;
         }
         bInitDone = true;
+
+        nearPoint[0] = new Vector3f(0, 0, 0);
+        nearPoint[1] = new Vector3f(-5, 0, 0);
+        nearPoint[2] = new Vector3f(5, 0, 0);
+        nearPoint[3] = new Vector3f(0, 0, -5);
+        nearPoint[4] = new Vector3f(0, 0, 5);
 
         placeActorForActionMap.put("drink", new Runnable() {
             public void run() {
@@ -167,7 +207,7 @@ public class PlaceActorNode {
         });
         placeActorForActionMap.put("swim", new Runnable() {
             public void run() {
-                placeActorNodeForWalk();
+                placeActorNodeForSwim();
             }
         });
         placeActorForActionMap.put("wake", new Runnable() {

@@ -26,6 +26,27 @@ public class ActionNode {
     public static Vector3f[] Actor2Pos = new Vector3f[nNoOfActor2];
     public static Vector3f Actor1LookAt = new Vector3f(0, 0, 0);
     public static int nSubtitleDuration = 5;
+    public static int nNoOfNearPoints = 5;
+    public static Vector3f[] nearPoint = new Vector3f[nNoOfNearPoints];
+    public static Vector3f middlePoint;
+    public static int nCurrPointNo = 0;
+
+    public static Vector3f getAPointNearAPoint(String PointName) {
+        if (nCurrPointNo == 0) {
+            middlePoint = PointsOnLake.getAPoint(PointName);
+        }
+        if (middlePoint == null) {
+            return null;
+        }
+
+        Vector3f returnPoint = middlePoint.add(nearPoint[nCurrPointNo]);
+
+        nCurrPointNo++;
+        if (nCurrPointNo >= nNoOfNearPoints) {
+            nCurrPointNo = 0;
+        }
+        return returnPoint;
+    }
 
     public ActionNode(CDFNode CDFNodeObj) {
         ActionCDFNode = CDFNodeObj;
@@ -108,6 +129,26 @@ public class ActionNode {
 
     }
 
+    public static void processActionTypeSwim() {
+        //TODO: add update code
+        ActorNode Actor1 = ActionCDFNode.Actor1;
+        ActorNode Actor2 = ActionCDFNode.Actor2;
+
+        if (bFirstTimeForThisAction == true) {
+            if (Actor2 != null) {
+                Actor2Pos[0].set(Actor2.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
+            } else {
+                Actor2Pos[0].set(Actor1.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
+            }
+            bFirstTimeForThisAction = false;
+            counter = 0;
+        }
+
+        //handle camera
+        handleCamera();
+        processCounter(5);
+    }
+
     public static void processActionTypeSay() {
 
         ActorNode Actor1 = ActionCDFNode.Actor1;
@@ -169,6 +210,30 @@ public class ActionNode {
         if (ActionCompleted == true) {
             SubtitleManager.setSubtitle("");
         }
+    }
+
+    public static void processActionTypeStop() {
+        //TODO: add update code
+        ActorNode Actor1 = ActionCDFNode.Actor1;
+        ActorNode Actor2 = ActionCDFNode.Actor2;
+
+        if (bFirstTimeForThisAction == true) {
+            if (Actor2 != null) {
+                Actor2Pos[0].set(Actor2.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
+            } else {
+                Actor2Pos[0].set(Actor1.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
+            }
+            bFirstTimeForThisAction = false;
+            counter = 0;
+        }
+
+        //System.out.println("Totalno of actors1 " + Actor1.nTotalNoOfActorsInThisNode);
+
+        //handle camera
+        handleCamera();
+
+        processCounter(2);
+
     }
 
     public static void processActionTypeStart() {
@@ -269,8 +334,11 @@ public class ActionNode {
         ActorNode Actor2 = ActionCDFNode.Actor2;
 
         if (bFirstTimeForThisAction == true) {
+            nCurrPointNo = 0;
             if (Actor2 != null) {
-                Actor2Pos[0].set(Actor2.Actor.getLocalTranslation());
+                for (int i = 0; i < Actor1.nTotalNoOfActorsInThisNode; i++) {
+                    Actor2Pos[i].set(Actor2.Actor.getLocalTranslation());
+                }
             } else {
                 //Here Actor2 is null; this means that we need to find where 
                 //to walk;
@@ -278,16 +346,26 @@ public class ActionNode {
 
                 for (int i = 0; i < Actor1.nTotalNoOfActorsInThisNode; i++) {
                     System.out.println("sPosition String is " + sPosition);
-                    Vector3f Actor2PosTemp = PointsOnLake.getAPoint(sPosition);
+                    Vector3f Actor2PosTemp = getAPointNearAPoint(sPosition);
                     if (Actor2PosTemp != null) {
                         System.out.println("Point Near Lake " + Actor2PosTemp.toString());
                         Actor2Pos[i].set(Actor2PosTemp);
                     } else {
-                        System.out.println("Failed to set Actor2Pos since we couldn't able to find"
-                                + "a point to place it");
-                        ActionCompleted = true;
-                        bCamInUse = false;
-                        return;
+                        if (FutureActionCDFNode != null) {
+                            Actor2 = FutureActionCDFNode.Actor1.TotalActorNodeInThisNode[0];
+                            System.out.println("Future cdf node " + FutureActionCDFNode.label);
+                            if (Actor2 != null) {
+                                Actor2Pos[i].set(Actor2.Actor.getLocalTranslation());
+                            }
+                        }
+                        if (Actor2 == null) {
+                            //Get a future action node.
+                            System.out.println("Failed to set Actor2Pos since we couldn't able to find"
+                                    + "a point to place it");
+                            ActionCompleted = true;
+                            bCamInUse = false;
+                            return;
+                        }
                     }
                 }
 
@@ -336,6 +414,7 @@ public class ActionNode {
         ActorNode Actor2 = ActionCDFNode.Actor2;
 
         if (bFirstTimeForThisAction == true) {
+            nCurrPointNo = 0;
             if (Actor2 != null) {
                 Actor2Pos[0].set(Actor2.Actor.getLocalTranslation());
             } else {
@@ -346,7 +425,7 @@ public class ActionNode {
 
                 for (int i = 0; i < Actor1.nTotalNoOfActorsInThisNode; i++) {
                     System.out.println("sPosition String is " + sPosition);
-                    Vector3f Actor2PosTemp = PointsOnLake.getAPoint(sPosition);
+                    Vector3f Actor2PosTemp = getAPointNearAPoint(sPosition);
                     if (Actor2PosTemp != null) {
                         System.out.println("Point Near Lake " + Actor2PosTemp.toString());
                         Actor2Pos[i].set(Actor2PosTemp);
@@ -436,6 +515,13 @@ public class ActionNode {
             return;
         }
         bInitDone = true;
+
+        nearPoint[0] = new Vector3f(0, 0, 0);
+        nearPoint[1] = new Vector3f(-5, 0, 0);
+        nearPoint[2] = new Vector3f(5, 0, 0);
+        nearPoint[3] = new Vector3f(0, 0, -5);
+        nearPoint[4] = new Vector3f(0, 0, 5);
+
         for (int i = 0; i < nNoOfActor2; i++) {
             Actor2Pos[i] = new Vector3f(0, 0, 0);
         }
@@ -507,12 +593,12 @@ public class ActionNode {
         });
         processActionMap.put("stop", new Runnable() {
             public void run() {
-                processActionTypeWalk();
+                processActionTypeStop();
             }
         });
         processActionMap.put("swim", new Runnable() {
             public void run() {
-                processActionTypeWalk();
+                processActionTypeSwim();
             }
         });
         processActionMap.put("wake", new Runnable() {
@@ -536,6 +622,7 @@ public class ActionNode {
 
         if (bFirstTimeForThisAction == true) {
             nCurrActionNo++;
+            System.out.println("Processing action " + ActionType);
         }
 
         if (nCurrActionNo <= nAccelerateUptoActionNo) {
