@@ -157,16 +157,16 @@ public class ActorNode {
              }
              */
 
-            if (bOtherActor == true) {
-                for (int i = 0; i < nTotalNoOfActorsInThisNode; i++) {
+            //if (bOtherActor == true) {
+            for (int i = 0; i < nTotalNoOfActorsInThisNode; i++) {
 
-                    if (TotalActorNodeInThisNode[i].Actor != null) {
-                        System.out.println("Attaching to root node " + TotalActorNodeInThisNode[i].Actor.getName());
-                        Global.gMyMain.getRootNode().attachChild(TotalActorNodeInThisNode[i].Actor);
-                    }
-
+                if (TotalActorNodeInThisNode[i].Actor != null) {
+                    System.out.println("Attaching to root node " + TotalActorNodeInThisNode[i].Actor.getName());
+                    Global.gMyMain.getRootNode().attachChild(TotalActorNodeInThisNode[i].Actor);
                 }
+
             }
+            //}
             bAttachedToRoot = true;
         }
     }

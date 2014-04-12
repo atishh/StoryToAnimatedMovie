@@ -376,9 +376,6 @@ public class ActionNode {
         boolean bReachedTarget = true;
 
         for (int i = 0; i < Actor1.nTotalNoOfActorsInThisNode; i++) {
-            BackgroundNode Background1 = ActionCDFNode.Background1;
-            Terrain LakeTerrain = Background1.LakeTerrain;
-
             ActorNode CurrActor = Actor1.TotalActorNodeInThisNode[i];
 
             Node Actor1Node = Actor1.TotalActorNodeInThisNode[i].Actor;
@@ -388,7 +385,11 @@ public class ActionNode {
             //Vector3f Actor1LookAt = new Vector3f(Actor2Pos[i]);
             Actor1LookAt.set(Actor2Pos[i]);
             //Actor1LookAt.setY(5);
-            Actor1Node.lookAt(Actor1LookAt, Vector3f.UNIT_Y);
+            //Don't change anything if actor is passive for ex:
+            //The cabin looks very beautiful. Here cabin is passive.
+            if (CurrActor.bPassiveActor == false) {
+                Actor1Node.lookAt(Actor1LookAt, Vector3f.UNIT_Y);
+            }
             //Actor1Node.move(0, 0, tpf);
         }
         //handle camera
