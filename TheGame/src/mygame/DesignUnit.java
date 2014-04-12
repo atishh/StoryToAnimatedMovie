@@ -47,7 +47,9 @@ public class DesignUnit {
     };
     public ParserState myParserState = ParserState.STATE_NOOFFEMALE;
     public ActionInternalState myActionInternalState = ActionInternalState.STATE_ACTOR1;
-    public CDFNode mNextCDFNodeTypeAction = null;
+    public static CDFNode mNextCDFNodeTypeAction = null;
+    public static CDFNode mPastCDFNodeTypeAction = null;
+    public static CDFNode mFutureCDFNodeTypeAction = null;
 
     public void populateBackground() {
         CDFNode CDFNodeTemp = mRootCDFNode;
@@ -97,6 +99,7 @@ public class DesignUnit {
     }
 
     public CDFNode getNextCDFNodeTypeAction() {
+        mPastCDFNodeTypeAction = mNextCDFNodeTypeAction;
         if (mNextCDFNodeTypeAction == null) {
             mNextCDFNodeTypeAction = mRootCDFNode;
         } else {
@@ -109,7 +112,23 @@ public class DesignUnit {
         if (mNextCDFNodeTypeAction != null) {
             System.out.println("Function getNextCDFNodeTypeAction returns " + mNextCDFNodeTypeAction.label);
         }
+        if (mNextCDFNodeTypeAction != null) {
+            mFutureCDFNodeTypeAction = mNextCDFNodeTypeAction.children;
+            while ((mFutureCDFNodeTypeAction != null) && mFutureCDFNodeTypeAction.cdfType != CDFType.CDF_ACTION) {
+                mFutureCDFNodeTypeAction = mFutureCDFNodeTypeAction.children;
+            }
+        }
         return mNextCDFNodeTypeAction;
+    }
+
+    public static boolean IsActorPartOfActor(String Name1, String Name2) {
+        if ("mothers".equalsIgnoreCase(Name1)) {
+            if ("parents".equalsIgnoreCase(Name2)) {
+                System.out.println("IsActorPartOfActor returning true for mothers and parents");
+                return true;
+            }
+        }
+        return false;
     }
 
     public ActorNode findActorNode(String token, CDFNode CDFNodeObj) {
@@ -117,26 +136,29 @@ public class DesignUnit {
             return null;
         }
 
-        System.out.println("findActorNode token = '"+token+"'");
-        
+        System.out.println("findActorNode token = '" + token + "'");
+
         for (int i = 0; i < mNoOfFemaleActors; i++) {
-            System.out.println("findActorNode female = '"+mFemaleActors[i].Name+"'");
-            if (mFemaleActors[i].Name.equalsIgnoreCase(token)) {
+            System.out.println("findActorNode female = '" + mFemaleActors[i].Name + "'");
+            if (mFemaleActors[i].Name.equalsIgnoreCase(token)
+                    || IsActorPartOfActor(token, mFemaleActors[i].Name)) {
                 System.out.println("Found Actor for token " + token);
                 return mFemaleActors[i];
             }
         }
         for (int i = 0; i < mNoOfMaleActors; i++) {
-            System.out.println("findActorNode male = '"+mMaleActors[i].Name+"'");
-            if (mMaleActors[i].Name.equalsIgnoreCase(token)) {
+            System.out.println("findActorNode male = '" + mMaleActors[i].Name + "'");
+            if (mMaleActors[i].Name.equalsIgnoreCase(token)
+                    || IsActorPartOfActor(token, mMaleActors[i].Name)) {
                 System.out.println("Found Actor for token " + token);
                 return mMaleActors[i];
             }
         }
 
         for (int i = 0; i < mNoOfOtherActors; i++) {
-            System.out.println("findActorNode other = '"+mOtherActors[i].Name+"'");
-            if (mOtherActors[i].Name.equalsIgnoreCase(token)) {
+            System.out.println("findActorNode other = '" + mOtherActors[i].Name + "'");
+            if (mOtherActors[i].Name.equalsIgnoreCase(token)
+                    || IsActorPartOfActor(token, mOtherActors[i].Name)) {
                 System.out.println("Found Actor in otherActor for token " + token);
                 return mOtherActors[i];
             }

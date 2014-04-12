@@ -18,7 +18,7 @@ public class PlaceActorNode {
     public static void placeActor1Node() {
         
         ActorNode Actor1 = ActionCDFNode.Actor1;
-        Actor1.createActor();
+        //Actor1.createActor();
         if (Actor1 != null) {
             for (int i = 0; i < Actor1.nTotalNoOfActorsInThisNode; i++) {
                 BackgroundNode Background1 = ActionCDFNode.Background1;

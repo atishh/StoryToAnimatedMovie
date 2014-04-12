@@ -151,11 +151,11 @@ public class ActorNode {
     public void AttachNodesToRoot() {
         if (bAttachedToRoot == false) {
             /*
-            if ((Actor != null)) {
-                System.out.println("Attaching to root node " + Actor.getName());
-                Global.gMyMain.getRootNode().attachChild(Actor);
-            }
-            */
+             if ((Actor != null)) {
+             System.out.println("Attaching to root node " + Actor.getName());
+             Global.gMyMain.getRootNode().attachChild(Actor);
+             }
+             */
 
             if (bOtherActor == true) {
                 for (int i = 0; i < nTotalNoOfActorsInThisNode; i++) {

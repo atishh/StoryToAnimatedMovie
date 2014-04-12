@@ -11,6 +11,8 @@ import java.util.Random;
 public class ActionNode {
 
     public static CDFNode ActionCDFNode;
+    public static CDFNode PastActionCDFNode;
+    public static CDFNode FutureActionCDFNode;
     public static Map<String, Runnable> processActionMap = new HashMap<String, Runnable>();
     public static boolean ActionCompleted = false;
     public static float tpf;
@@ -110,14 +112,43 @@ public class ActionNode {
 
         ActorNode Actor1 = ActionCDFNode.Actor1;
         ActorNode Actor2 = ActionCDFNode.Actor2;
+        System.out.println("PastCDFNode name = " + PastActionCDFNode.label);
+        System.out.println("FutureCDFNode name = " + FutureActionCDFNode.label);
 
         if (bFirstTimeForThisAction == true) {
             nSubtitleDuration = 5;
-            if (Actor2 != null) {
-                Actor2Pos[0].set(Actor2.Actor.getLocalTranslation());
-            } else {
-                Actor2Pos[0].set(Actor1.Actor.getLocalTranslation());
+            //Adding some sort of intelligence to find to whom this actor is 
+            //saying. The other actor can be found from past or future cdf node.
+            if (Actor2 == null) {
+                if (PastActionCDFNode != null) {
+                    if (PastActionCDFNode.label.equals("say")) {
+                        Actor2 = PastActionCDFNode.Actor1.TotalActorNodeInThisNode[0];
+                    }
+                }
             }
+            if (Actor2 == null) {
+                if (FutureActionCDFNode != null) {
+                    if (FutureActionCDFNode.label.equals("say")) {
+                        Actor2 = FutureActionCDFNode.Actor1.TotalActorNodeInThisNode[0];
+                    }
+                }
+            }
+
+            if (Actor2 != null) {
+                Actor2Pos[0].set(Actor2.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
+            } else {
+                Actor2Pos[0].set(Actor1.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
+            }
+
+            if (Actor2 != null) {
+                for (int i = 0; i < Actor1.nTotalNoOfActorsInThisNode; i++) {
+                    ActorNode CurrActor = Actor1.TotalActorNodeInThisNode[i];
+                    Node Actor1Node = CurrActor.Actor;
+                    Vector3f Actor2Loc = Actor2.TotalActorNodeInThisNode[0].Actor.getLocalTranslation();
+                    Actor1Node.lookAt(Actor2Loc, Vector3f.UNIT_Y);
+                }
+            }
+
             String sTalkString = ActionCDFNode.TalkString;
             if (sTalkString != null) {
                 int nStringCount = sTalkString.length();
@@ -128,13 +159,13 @@ public class ActionNode {
             counter = 0;
         }
 
-        System.out.println("Totalno of actors1 " + Actor1.nTotalNoOfActorsInThisNode);
+        //System.out.println("Totalno of actors1 " + Actor1.nTotalNoOfActorsInThisNode);
 
         //handle camera
         handleCamera();
 
         processCounter(nSubtitleDuration);
-        
+
         if (ActionCompleted == true) {
             SubtitleManager.setSubtitle("");
         }
@@ -147,9 +178,9 @@ public class ActionNode {
 
         if (bFirstTimeForThisAction == true) {
             if (Actor2 != null) {
-                Actor2Pos[0].set(Actor2.Actor.getLocalTranslation());
+                Actor2Pos[0].set(Actor2.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
             } else {
-                Actor2Pos[0].set(Actor1.Actor.getLocalTranslation());
+                Actor2Pos[0].set(Actor1.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
             }
             bFirstTimeForThisAction = false;
             counter = 0;
@@ -171,9 +202,9 @@ public class ActionNode {
 
         if (bFirstTimeForThisAction == true) {
             if (Actor2 != null) {
-                Actor2Pos[0].set(Actor2.Actor.getLocalTranslation());
+                Actor2Pos[0].set(Actor2.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
             } else {
-                Actor2Pos[0].set(Actor1.Actor.getLocalTranslation());
+                Actor2Pos[0].set(Actor1.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
             }
             bFirstTimeForThisAction = false;
             counter = 0;
@@ -193,9 +224,9 @@ public class ActionNode {
 
         if (bFirstTimeForThisAction == true) {
             if (Actor2 != null) {
-                Actor2Pos[0].set(Actor2.Actor.getLocalTranslation());
+                Actor2Pos[0].set(Actor2.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
             } else {
-                Actor2Pos[0].set(Actor1.Actor.getLocalTranslation());
+                Actor2Pos[0].set(Actor1.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
             }
             bFirstTimeForThisAction = false;
             counter = 0;
@@ -216,9 +247,9 @@ public class ActionNode {
 
         if (bFirstTimeForThisAction == true) {
             if (Actor2 != null) {
-                Actor2Pos[0].set(Actor2.Actor.getLocalTranslation());
+                Actor2Pos[0].set(Actor2.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
             } else {
-                Actor2Pos[0].set(Actor1.Actor.getLocalTranslation());
+                Actor2Pos[0].set(Actor1.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
             }
             bFirstTimeForThisAction = false;
             counter = 0;
@@ -278,7 +309,7 @@ public class ActionNode {
             //Look towards Actor2.
             //Vector3f Actor1LookAt = new Vector3f(Actor2Pos[i]);
             Actor1LookAt.set(Actor2Pos[i]);
-            Actor1LookAt.setY(5);
+            //Actor1LookAt.setY(5);
             Actor1Node.lookAt(Actor1LookAt, Vector3f.UNIT_Y);
             //Actor1Node.move(0, 0, tpf);
         }
@@ -326,6 +357,13 @@ public class ActionNode {
                         bCamInUse = false;
                         return;
                     }
+                    //Look towards Actor2.
+                    //Vector3f Actor1LookAt = new Vector3f(Actor2Pos[i]);
+                    ActorNode CurrActor = Actor1.TotalActorNodeInThisNode[i];
+                    Node Actor1Node = CurrActor.Actor;
+                    Actor1LookAt.set(Actor2Pos[i]);
+                    Actor1LookAt.setY(5);
+                    Actor1Node.lookAt(Actor1LookAt, Vector3f.UNIT_Y);
                 }
 
             }
@@ -343,11 +381,7 @@ public class ActionNode {
             Node Actor1Node = CurrActor.Actor;
             Vector3f currLoc = Actor1Node.getLocalTranslation();
 
-            //Look towards Actor2.
-            //Vector3f Actor1LookAt = new Vector3f(Actor2Pos[i]);
-            Actor1LookAt.set(Actor2Pos[i]);
-            Actor1LookAt.setY(5);
-            Actor1Node.lookAt(Actor1LookAt, Vector3f.UNIT_Y);
+
 
             //walk towards Actor2Loc, which can be actor or point on plane.
             float randomX = (float) (0 + (rand.nextFloat() * ((0.2))));
@@ -393,8 +427,10 @@ public class ActionNode {
     }
     public static boolean bInitDone = false;
 
-    public static void init(CDFNode CDFNodeObj) {
+    public static void init(CDFNode PastCDFNodeObj, CDFNode CDFNodeObj, CDFNode FutureCDFNodeObj) {
         ActionCDFNode = CDFNodeObj;
+        PastActionCDFNode = PastCDFNodeObj;
+        FutureActionCDFNode = FutureCDFNodeObj;
 
         if (bInitDone == true) {
             return;

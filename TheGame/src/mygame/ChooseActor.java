@@ -38,6 +38,10 @@ public class ChooseActor {
         NameToActorDataMap.put("parent", ActorDataObj);
         ActorDataObj = new ActorData("parents", "Models/Actors/Cube.mesh.j3o", 2, 0, 9.2f);
         NameToActorDataMap.put("parents", ActorDataObj);
+        ActorDataObj = new ActorData("mothers", "Models/Actors/Cube.mesh.j3o", 2, 0, 9.2f);
+        NameToActorDataMap.put("mothers", ActorDataObj);
+        ActorDataObj = new ActorData("mother", "Models/Actors/Cube.mesh.j3o", 2, 0, 9.2f);
+        NameToActorDataMap.put("mother", ActorDataObj);
         
         ActorDataObj = new ActorData("children", "Models/Actors/Cube.mesh.j3o", 1, 0, 4.6f);
         NameToActorDataMap.put("children", ActorDataObj);

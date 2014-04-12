@@ -85,7 +85,7 @@ public class CDFNode {
 
     public boolean PerformAction(float tpf) {
         if (bFirstTime) {
-            ActionNode.init(this);
+            ActionNode.init(DesignUnit.mPastCDFNodeTypeAction, this, DesignUnit.mFutureCDFNodeTypeAction);
             bFirstTime = false;
         }
         ActionNode.ProcessActionWrapper(label, tpf);
