@@ -158,6 +158,9 @@ public class ActorNode {
              */
 
             //if (bOtherActor == true) {
+            if (nTotalNoOfActorsInThisNode == 0) {
+                nTotalNoOfActorsInThisNode = 1;
+            }
             for (int i = 0; i < nTotalNoOfActorsInThisNode; i++) {
 
                 if (TotalActorNodeInThisNode[i].Actor != null) {

@@ -129,6 +129,68 @@ public class ActionNode {
 
     }
 
+    public static ActorNode createPassiveActorForThisAction(ActorNode CurrActor, String sEatString) {
+        ActorNode NewActor = new ActorNode(sEatString, 0, true, ActionCDFNode);
+        NewActor.createActor();
+        NewActor.AttachNodesToRoot();
+        if (NewActor.bPositionSet == false) {
+            Vector3f Actor1PosTemp = CurrActor.Actor.getLocalTranslation();
+            Actor1PosTemp = Actor1PosTemp.add(12, 3, 10);
+            System.out.println("Placing Actor " + sEatString + " at " + Actor1PosTemp.toString());
+            NewActor.Actor.setLocalTranslation(Actor1PosTemp.getX(), Actor1PosTemp.getY(), Actor1PosTemp.getZ());
+            CurrActor.bPositionSet = true;
+        }
+        return NewActor;
+    }
+
+    public static void processActionTypeEat() {
+        //TODO: add update code
+        ActorNode Actor1 = ActionCDFNode.Actor1;
+        ActorNode Actor2 = ActionCDFNode.Actor2;
+
+        if (bFirstTimeForThisAction == true) {
+            nCurrPointNo = 0;
+            String sEatString = ActionCDFNode.TalkString;
+
+            for (int i = 0; i < Actor1.nTotalNoOfActorsInThisNode; i++) {
+                System.out.println("Eat String is " + sEatString);
+                ActorNode CurrActor = Actor1.TotalActorNodeInThisNode[i];
+                ActorNode NewActor = createPassiveActorForThisAction(CurrActor, sEatString);
+                if (NewActor != null) {
+                    Actor2Pos[i].set(NewActor.Actor.getLocalTranslation());
+                }
+            }
+
+            bFirstTimeForThisAction = false;
+            counter = 0;
+        }
+        boolean bReachedTarget = true;
+
+        for (int i = 0; i < Actor1.nTotalNoOfActorsInThisNode; i++) {
+            ActorNode CurrActor = Actor1.TotalActorNodeInThisNode[i];
+
+            Node Actor1Node = Actor1.TotalActorNodeInThisNode[i].Actor;
+            Vector3f currLoc = Actor1Node.getLocalTranslation();
+
+            //Look towards Actor2.
+            //Vector3f Actor1LookAt = new Vector3f(Actor2Pos[i]);
+            Actor1LookAt.set(Actor2Pos[i]);
+            //Actor1LookAt.setY(5);
+            //Don't change anything if actor is passive for ex:
+            //The cabin looks very beautiful. Here cabin is passive.
+            if (CurrActor.bPassiveActor == false) {
+                Actor1Node.lookAt(Actor1LookAt, Vector3f.UNIT_Y);
+            }
+            //Actor1Node.move(0, 0, tpf);
+        }
+        //handle camera
+        handleCamera();
+
+        processCounter(40);
+
+
+    }
+
     public static void processActionTypeSwim() {
         //TODO: add update code
         ActorNode Actor1 = ActionCDFNode.Actor1;
@@ -483,7 +545,7 @@ public class ActionNode {
                 zMov = currLoc.getZ();
             }
 
-            float height = LakeTerrain.getHeight(new Vector2f(xMov, xMov));
+            float height = LakeTerrain.getHeight(new Vector2f(xMov, zMov));
             currLoc.setY(height + CurrActor.getHeight());
             currLoc.setX(xMov);
             currLoc.setZ(zMov);
@@ -534,7 +596,7 @@ public class ActionNode {
         });
         processActionMap.put("eat", new Runnable() {
             public void run() {
-                processActionTypeWalk();
+                processActionTypeEat();
             }
         });
         processActionMap.put("fly", new Runnable() {
