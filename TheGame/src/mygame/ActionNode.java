@@ -1,5 +1,6 @@
 package mygame;
 
+import com.jme3.math.FastMath;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -20,7 +21,7 @@ public class ActionNode {
     public static Random rand = new Random((long) 5f);
     public static boolean bCamInUse = false;
     public static int nCurrActionNo = 0;
-    public static int nAccelerateUptoActionNo = 15;
+    public static int nAccelerateUptoActionNo = 25;
     public static float nAccel = 1;
     public static int nNoOfActor2 = 10;
     public static Vector3f[] Actor2Pos = new Vector3f[nNoOfActor2];
@@ -40,7 +41,7 @@ public class ActionNode {
             ActorNode ActorNodeObj = ActorNode.GetAnActorNamed(PointName);
             if (ActorNodeObj != null) {
                 Vector3f Position = ActorNodeObj.TotalActorNodeInThisNode[0].Actor.getLocalTranslation();
-                middlePoint = Position.add(10,3,10);
+                middlePoint = Position.add(10, 3, 10);
             }
         }
         if (middlePoint == null) {
@@ -223,6 +224,7 @@ public class ActionNode {
         ActorNode Actor1 = ActionCDFNode.Actor1;
         ActorNode Actor2 = ActionCDFNode.Actor2;
 
+        int nSwimDuration = 5;
         if (bFirstTimeForThisAction == true) {
             if (Actor2 != null) {
                 Actor2Pos[0].set(Actor2.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
@@ -232,10 +234,27 @@ public class ActionNode {
             bFirstTimeForThisAction = false;
             counter = 0;
         }
+        //for human rotate 90 degress for swim
 
+        for (int i = 0; i < Actor1.nTotalNoOfActorsInThisNode; i++) {
+            if (Actor1.TotalActorNodeInThisNode[i].getIsHuman()) {
+                ActorNode CurrActor = Actor1.TotalActorNodeInThisNode[i];
+
+                Node Actor1Node = Actor1.TotalActorNodeInThisNode[i].Actor;
+                Actor1Node.rotate((FastMath.PI) / 2, 0, 0);
+                Vector3f currLoc = Actor1Node.getLocalTranslation();
+                currLoc.setY(0);
+                Actor1LookAt.set(currLoc);
+                if (CurrActor.bPassiveActor == false) {
+                    Actor1Node.lookAt(Actor1LookAt, Vector3f.UNIT_Y);
+                }
+                nSwimDuration = 50;
+                //Actor1Node.move(0, 0, tpf);
+            }
+        }
         //handle camera
         handleCamera();
-        processCounter(5);
+        processCounter(nSwimDuration);
     }
 
     public static void processActionTypeSay() {
@@ -723,7 +742,7 @@ public class ActionNode {
         }
 
         if (nCurrActionNo <= nAccelerateUptoActionNo) {
-            nAccel = 5;
+            nAccel = 6;
         } else {
             nAccel = 1;
         }
