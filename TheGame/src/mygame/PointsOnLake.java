@@ -68,8 +68,8 @@ public class PointsOnLake {
         pointOnWater.Points[1] = new Vector3f(15, 0, 15);
         pointOnWater.Points[2] = new Vector3f(15, 0, 45);
         pointOnWater.Points[3] = new Vector3f(-22, 0, 45);
-        pointOnWater.Points[4] = new Vector3f(-20, 0, -15);
-        pointOnWater.Points[5] = new Vector3f(-20, 0, -20);
+        pointOnWater.Points[4] = new Vector3f(-30, 0, 30);
+        pointOnWater.Points[5] = new Vector3f(0, 0, 30);
 
         pointOnSky.Points[0] = new Vector3f(0, 50, 0);
         pointOnSky.Points[1] = new Vector3f(0, 60, 0);
