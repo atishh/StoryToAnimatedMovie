@@ -212,6 +212,8 @@ public class Main extends SimpleApplication implements AnimEventListener {
         // Default speed is too slow
         flyCam.setMoveSpeed(20f);
         flyCam.setZoomSpeed(5f);
+        //voce.SpeechInterface.init();
+        voce.SpeechInterface.synthesize("hello world");
     }
 
     public enum ActionState {

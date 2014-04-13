@@ -152,6 +152,26 @@ public class ActionNode {
         return NewActor;
     }
 
+    public static void processActionTypeFly() {
+        //TODO: add update code
+        ActorNode Actor1 = ActionCDFNode.Actor1;
+        ActorNode Actor2 = ActionCDFNode.Actor2;
+
+        if (bFirstTimeForThisAction == true) {
+            if (Actor2 != null) {
+                Actor2Pos[0].set(Actor2.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
+            } else {
+                Actor2Pos[0].set(Actor1.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
+            }
+            bFirstTimeForThisAction = false;
+            counter = 0;
+        }
+
+        //handle camera
+        handleCamera();
+        processCounter(5);
+    }
+
     public static void processActionTypeDrink() {
         //TODO: add update code
         ActorNode Actor1 = ActionCDFNode.Actor1;
@@ -303,6 +323,10 @@ public class ActionNode {
                 int nStringCount = sTalkString.length();
                 SubtitleManager.setSubtitle(sTalkString);
                 nSubtitleDuration = nStringCount;
+                //This is voice speaker. I don't know how it works yet.
+                //We have to initialize it first.
+                //voce.SpeechInterface.init();
+                voce.SpeechInterface.synthesize(sTalkString);
             }
             bFirstTimeForThisAction = false;
             counter = 0;
@@ -654,7 +678,7 @@ public class ActionNode {
         });
         processActionMap.put("fly", new Runnable() {
             public void run() {
-                processActionTypeWalk();
+                processActionTypeFly();
             }
         });
         processActionMap.put("join", new Runnable() {

@@ -166,7 +166,7 @@ public class BackgroundNode {
             //PlantTree(LakeTerrain);
             CreateLight();
             //CreateWater();
-            createShadow();
+            //createShadow();
         }
     }
 }
