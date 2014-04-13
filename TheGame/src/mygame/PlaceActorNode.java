@@ -42,10 +42,6 @@ public class PlaceActorNode {
         //Actor1.createActor();
         nCurrPointNo = 0;
         if (Actor1 != null) {
-            String PointName = null;
-            if (ActionCDFNode.label.equalsIgnoreCase("swim")) {
-                PointName = "water";
-            }
             for (int i = 0; i < Actor1.nTotalNoOfActorsInThisNode; i++) {
                 BackgroundNode Background1 = ActionCDFNode.Background1;
                 Terrain LakeTerrain = Background1.LakeTerrain;
@@ -53,6 +49,22 @@ public class PlaceActorNode {
                 ActorNode CurrActor = Actor1.TotalActorNodeInThisNode[i];
                 CurrActor.createActor();
                 if (CurrActor.bPositionSet == false) {
+                    String PointName = null;
+                    //If the actor is not human, then just place the actor on the 
+                    //location given by TalkString.
+                    //For ex: The deer walk to the water. Here place the actor deer
+                    //in the water itself.
+                    if (Actor1.TotalActorNodeInThisNode[i].bPassiveActor == true) {
+                        PointName = ActionCDFNode.TalkString;
+                    }
+                    if (Actor1.TotalActorNodeInThisNode[i].getIsHuman() == false) {
+                        if (Actor1.getIsHuman() == false) {
+                            PointName = ActionCDFNode.TalkString;
+                        }
+                    }
+                    if (ActionCDFNode.label.equalsIgnoreCase("swim")) {
+                        PointName = "water";
+                    }
                     Vector3f Actor1PosTemp = getAPointNearAPoint(PointName);
                     System.out.println("Placing Actor " + CurrActor.Name + " On Road at " + Actor1PosTemp.toString());
                     float height = LakeTerrain.getHeight(new Vector2f(Actor1PosTemp.getX(), Actor1PosTemp.getZ()));

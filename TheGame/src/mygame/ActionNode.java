@@ -20,7 +20,7 @@ public class ActionNode {
     public static Random rand = new Random((long) 5f);
     public static boolean bCamInUse = false;
     public static int nCurrActionNo = 0;
-    public static int nAccelerateUptoActionNo = 5;
+    public static int nAccelerateUptoActionNo = 10;
     public static float nAccel = 1;
     public static int nNoOfActor2 = 10;
     public static Vector3f[] Actor2Pos = new Vector3f[nNoOfActor2];
@@ -31,9 +31,9 @@ public class ActionNode {
     public static Vector3f middlePoint;
     public static int nCurrPointNo = 0;
 
-    public static Vector3f getAPointNearAPoint(String PointName) {
+    public static Vector3f getAPointNearAPoint(String PointName, Vector3f origPoint) {
         if (nCurrPointNo == 0) {
-            middlePoint = PointsOnLake.getAPoint(PointName);
+            middlePoint = PointsOnLake.getAPoint(PointName, origPoint);
         }
         if (middlePoint == null) {
             return null;
@@ -408,7 +408,8 @@ public class ActionNode {
 
                 for (int i = 0; i < Actor1.nTotalNoOfActorsInThisNode; i++) {
                     System.out.println("sPosition String is " + sPosition);
-                    Vector3f Actor2PosTemp = getAPointNearAPoint(sPosition);
+                    Vector3f Actor2PosTemp = getAPointNearAPoint(sPosition,
+                            Actor1.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
                     if (Actor2PosTemp != null) {
                         System.out.println("Point Near Lake " + Actor2PosTemp.toString());
                         Actor2Pos[i].set(Actor2PosTemp);
@@ -446,7 +447,7 @@ public class ActionNode {
             //Look towards Actor2.
             //Vector3f Actor1LookAt = new Vector3f(Actor2Pos[i]);
             Actor1LookAt.set(Actor2Pos[i]);
-            //Actor1LookAt.setY(5);
+            Actor1LookAt.setY(Actor1LookAt.getY() + Actor1.getHeight());
             //Don't change anything if actor is passive for ex:
             //The cabin looks very beautiful. Here cabin is passive.
             if (CurrActor.bPassiveActor == false) {
@@ -488,7 +489,8 @@ public class ActionNode {
 
                 for (int i = 0; i < Actor1.nTotalNoOfActorsInThisNode; i++) {
                     System.out.println("sPosition String is " + sPosition);
-                    Vector3f Actor2PosTemp = getAPointNearAPoint(sPosition);
+                    Vector3f Actor2PosTemp = getAPointNearAPoint(sPosition,
+                            Actor1.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
                     if (Actor2PosTemp != null) {
                         System.out.println("Point Near Lake " + Actor2PosTemp.toString());
                         Actor2Pos[i].set(Actor2PosTemp);
@@ -504,7 +506,7 @@ public class ActionNode {
                     ActorNode CurrActor = Actor1.TotalActorNodeInThisNode[i];
                     Node Actor1Node = CurrActor.Actor;
                     Actor1LookAt.set(Actor2Pos[i]);
-                    Actor1LookAt.setY(5);
+                    Actor1LookAt.setY(Actor1LookAt.getY() + CurrActor.getHeight());
                     Actor1Node.lookAt(Actor1LookAt, Vector3f.UNIT_Y);
                 }
 
@@ -689,7 +691,7 @@ public class ActionNode {
         }
 
         if (nCurrActionNo <= nAccelerateUptoActionNo) {
-            nAccel = 3;
+            nAccel = 5;
         } else {
             nAccel = 1;
         }

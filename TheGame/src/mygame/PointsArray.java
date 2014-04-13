@@ -38,4 +38,25 @@ public class PointsArray {
         }
         return Points[currPointNoForBuild++];
     }
+
+    public Vector3f getANearestPoint(Vector3f origPoint) {
+        if (origPoint == null) {
+            return null;
+        }
+        int nReturnPointNo = 0;
+        float minDistance = origPoint.distanceSquared(Points[0]);
+        for (int i = 1; i < nOfPoints; i++) {
+            float minDistanceTemp = origPoint.distanceSquared(Points[i]);
+            if (minDistanceTemp < minDistance) {
+                minDistance = minDistanceTemp;
+                nReturnPointNo = i;
+            }
+        }
+        //Other wise all the objects may cluttered to a single point.
+        if (minDistance < 6) {
+            return Points[nReturnPointNo];
+        } else {
+            return getAPoint();
+        }
+    }
 }

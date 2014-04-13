@@ -96,7 +96,7 @@ public class PointsOnLake {
         bInitialize = true;
     }
 
-    public static Vector3f getAPoint(String sPosition) {
+    public static Vector3f getAPoint(String sPosition, Vector3f origPoint) {
         if (bInitialize == false) {
             initialize();
         }
@@ -106,11 +106,19 @@ public class PointsOnLake {
         String sPositionTemp = sPosition.toLowerCase().trim();
         PointsArray PointsArrayObj = pointsMap.get(sPositionTemp);
         if (PointsArrayObj != null) {
+            if (origPoint != null) {
+                return PointsArrayObj.getANearestPoint(origPoint);
+            }
             return PointsArrayObj.getAPoint();
         } else {
             System.out.println("getAPoint returns null. means not supported");
             return null;
         }
+    }
+    
+    public static Vector3f getAPoint(String sPosition)
+    {
+        return getAPoint(sPosition, null);
     }
 
     public static Vector3f getAPointForBuild(String sPosition) {

@@ -37,18 +37,24 @@ public class ChooseActor {
         NameToActorDataMap.put("deer", ActorDataObj);
 
         ActorDataObj = new ActorData("parent", "Models/Actors/Cube.mesh.j3o", 2, 0, 9.2f);
+        ActorDataObj.bIsHuman = true;
         NameToActorDataMap.put("parent", ActorDataObj);
         ActorDataObj = new ActorData("parents", "Models/Actors/Cube.mesh.j3o", 2, 0, 9.2f);
+        ActorDataObj.bIsHuman = true;
         NameToActorDataMap.put("parents", ActorDataObj);
         ActorDataObj = new ActorData("mothers", "Models/Actors/Cube.mesh.j3o", 2, 0, 9.2f);
+        ActorDataObj.bIsHuman = true;
         NameToActorDataMap.put("mothers", ActorDataObj);
         ActorDataObj = new ActorData("mother", "Models/Actors/Cube.mesh.j3o", 2, 0, 9.2f);
+        ActorDataObj.bIsHuman = true;
         NameToActorDataMap.put("mother", ActorDataObj);
 
         ActorDataObj = new ActorData("children", "Models/Actors/Cube.mesh.j3o", 1, 0, 4.6f);
+        ActorDataObj.bIsHuman = true;
         NameToActorDataMap.put("children", ActorDataObj);
 
         ActorDataObj = new ActorData("child", "Models/Actors/Cube.mesh.j3o", 1, 0, 4.6f);
+        ActorDataObj.bIsHuman = true;
         NameToActorDataMap.put("child", ActorDataObj);
 
         CollectiveActorToNoMap.put("parent", 2);

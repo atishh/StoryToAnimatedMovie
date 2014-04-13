@@ -16,11 +16,14 @@ public class ActorData {
     float nRotation;
     float nHeight;
 
+    boolean bIsHuman;
+    
     ActorData(String NameT, String PhysicalPathT, float nScaleT, float nRotationT, float nHeightT) {
         Name = NameT;
         PhysicalPath = PhysicalPathT;
         nScale = nScaleT;
         nRotation = nRotationT;
         nHeight = nHeightT;
+        bIsHuman = false;
     }
 }

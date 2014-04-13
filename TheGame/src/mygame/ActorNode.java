@@ -181,4 +181,12 @@ public class ActorNode {
         }
         return nHeight;
     }
+
+    public boolean getIsHuman() {
+        boolean bIsHuman = false;
+        if (ActorDataObj != null) {
+            bIsHuman = ActorDataObj.bIsHuman;
+        }
+        return bIsHuman;
+    }
 }
