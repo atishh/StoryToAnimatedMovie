@@ -35,6 +35,14 @@ public class ActionNode {
         if (nCurrPointNo == 0) {
             middlePoint = PointsOnLake.getAPoint(PointName, origPoint);
         }
+        //if middlePoint is null, try to find if there is an actor with this name.
+        if (middlePoint == null) {
+            ActorNode ActorNodeObj = ActorNode.GetAnActorNamed(PointName);
+            if (ActorNodeObj != null) {
+                Vector3f Position = ActorNodeObj.TotalActorNodeInThisNode[0].Actor.getLocalTranslation();
+                middlePoint = Position.add(10,3,10);
+            }
+        }
         if (middlePoint == null) {
             return null;
         }
@@ -143,6 +151,26 @@ public class ActionNode {
         return NewActor;
     }
 
+    public static void processActionTypeDrink() {
+        //TODO: add update code
+        ActorNode Actor1 = ActionCDFNode.Actor1;
+        ActorNode Actor2 = ActionCDFNode.Actor2;
+
+        if (bFirstTimeForThisAction == true) {
+            if (Actor2 != null) {
+                Actor2Pos[0].set(Actor2.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
+            } else {
+                Actor2Pos[0].set(Actor1.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
+            }
+            bFirstTimeForThisAction = false;
+            counter = 0;
+        }
+
+        //handle camera
+        handleCamera();
+        processCounter(5);
+    }
+
     public static void processActionTypeEat() {
         //TODO: add update code
         ActorNode Actor1 = ActionCDFNode.Actor1;
@@ -186,8 +214,7 @@ public class ActionNode {
         //handle camera
         handleCamera();
 
-        processCounter(40);
-
+        processCounter(20);
 
     }
 
@@ -472,6 +499,11 @@ public class ActionNode {
         nAccel = nPrevAccel;
     }
 
+    public static void processActionTypeJoin() {
+        //For now just call walk action.
+        processActionTypeWalk();
+    }
+
     public static void processActionTypeWalk() {
         //TODO: add update code
         ActorNode Actor1 = ActionCDFNode.Actor1;
@@ -533,14 +565,14 @@ public class ActionNode {
             float xMov = currLoc.getX() + nAccel * (Actor2Pos[i].getX() > currLoc.getX() ? tpf + randomX : -tpf - randomX);
             float zMov = currLoc.getZ() + nAccel * (Actor2Pos[i].getZ() > currLoc.getZ() ? tpf + randomX : -tpf - randomX);
 
-            if (Math.abs(Actor2Pos[i].getX() - currLoc.getX()) > 1) {
+            if (Math.abs(Actor2Pos[i].getX() - currLoc.getX()) > 5) {
                 bReachedTarget = false;
             } else {
                 //This is done so that xMov will not flicker because of randomX
                 xMov = currLoc.getX();
             }
 
-            if (Math.abs(Actor2Pos[i].getZ() - currLoc.getZ()) > 1) {
+            if (Math.abs(Actor2Pos[i].getZ() - currLoc.getZ()) > 5) {
                 bReachedTarget = false;
             } else {
                 //This is done so that zMov will not flicker because of randomX
@@ -593,7 +625,7 @@ public class ActionNode {
 
         processActionMap.put("drink", new Runnable() {
             public void run() {
-                processActionTypeWalk();
+                processActionTypeDrink();
             }
         });
         processActionMap.put("eat", new Runnable() {
@@ -608,7 +640,7 @@ public class ActionNode {
         });
         processActionMap.put("join", new Runnable() {
             public void run() {
-                processActionTypeWalk();
+                processActionTypeJoin();
             }
         });
         processActionMap.put("look", new Runnable() {

@@ -189,4 +189,18 @@ public class ActorNode {
         }
         return bIsHuman;
     }
+
+    public static ActorNode GetAnActorNamed(String ActorName) {
+        System.out.println("Inside GetAnActorNamed " + ActorName);
+        if ("them".trim().equalsIgnoreCase(ActorName.trim())) {
+            ActorName = "children";
+        }
+        for (int i = 0; i < gNoOfActors; i++) {
+            ActorNode ActorNodeObj = gActorNodes[i];
+            if (ActorName.trim().equalsIgnoreCase(ActorNodeObj.Name.trim())) {
+                return ActorNodeObj;
+            }
+        }
+        return null;
+    }
 }
