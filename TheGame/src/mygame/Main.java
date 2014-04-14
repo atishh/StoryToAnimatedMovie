@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+//this import javax.speech should be used for speech synthesis later.
+//import javax.speech.
 
 /**
  * test
@@ -213,7 +215,9 @@ public class Main extends SimpleApplication implements AnimEventListener {
         flyCam.setMoveSpeed(20f);
         flyCam.setZoomSpeed(5f);
         //voce.SpeechInterface.init();
-        voce.SpeechInterface.synthesize("hello world");
+        //commenting below code; to be used latter.
+        //voce.SpeechInterface.init("C:\\Users\\atsingh\\Downloads\\voce-0.9.1.zip\\voce-0.9.1\\lib", true, false, "", "");
+        //voce.SpeechInterface.synthesize("hello world");
     }
 
     public enum ActionState {

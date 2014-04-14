@@ -326,7 +326,8 @@ public class ActionNode {
                 //This is voice speaker. I don't know how it works yet.
                 //We have to initialize it first.
                 //voce.SpeechInterface.init();
-                voce.SpeechInterface.synthesize(sTalkString);
+                //commenting this code; to be used latter.
+                //voce.SpeechInterface.synthesize(sTalkString);
             }
             bFirstTimeForThisAction = false;
             counter = 0;
