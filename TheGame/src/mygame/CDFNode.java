@@ -50,19 +50,18 @@ public class CDFNode {
 
     }
 
-    public void CreatePassiveActors() {
-        if (Background1 != null) {
-            for (Map.Entry<String, String> entry : passiveActorMap.entrySet()) {
-                System.out.println(entry.getKey() + "/" + entry.getValue());
-                Node passiveActor = Background1.createPassiveActor(entry.getKey(), entry.getValue());
-                if (Actor1 != null) {
-                    //Might be wrong.
-                    Actor1.Actor = passiveActor;
-                }
-            }
-        }
-    }
-
+    //public void CreatePassiveActors() {
+    //    if (Background1 != null) {
+    //        for (Map.Entry<String, String> entry : passiveActorMap.entrySet()) {
+    //            System.out.println(entry.getKey() + "/" + entry.getValue());
+    //            Node passiveActor = Background1.createPassiveActor(entry.getKey(), entry.getValue());
+    //            if (Actor1 != null) {
+    //                //Might be wrong.
+    //                Actor1.Actor = passiveActor;
+    //            }
+    //        }
+    //    }
+    //}
     public CDFNode(String lex, int idx) {
         this.label = lex;
 
@@ -93,15 +92,13 @@ public class CDFNode {
     }
 
     public void PlaceActorsForThisBackground(BackgroundNode CurrBackgroundNode) {
-        
-        if(bFirstTimePlaceActor)
-        {
+
+        if (bFirstTimePlaceActor) {
             PlaceActorNode.init(this);
             bFirstTimePlaceActor = false;
         }
         PlaceActorNode.PlaceActorWapper(label);
-        if(children != null)
-        {
+        if (children != null) {
             children.PlaceActorsForThisBackground(CurrBackgroundNode);
         }
         //CreatePassiveActors();

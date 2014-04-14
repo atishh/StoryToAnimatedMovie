@@ -152,6 +152,28 @@ public class ActionNode {
         return NewActor;
     }
 
+    public static void processActionTypeSleep() {
+        //TODO: add update code
+        ActorNode Actor1 = ActionCDFNode.Actor1;
+        ActorNode Actor2 = ActionCDFNode.Actor2;
+
+        if (bFirstTimeForThisAction == true) {
+            if (Actor2 != null) {
+                Actor2Pos[0].set(Actor2.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
+            } else {
+                Actor2Pos[0].set(Actor1.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
+            }
+            //Since it is sleep, it is most likely to be night, so create night sky.
+            ActionCDFNode.Background1.CreateNightBackground();
+            bFirstTimeForThisAction = false;
+            counter = 0;
+        }
+
+        //handle camera
+        //handleCamera();
+        processCounter(500000);
+    }
+
     public static void processActionTypeFly() {
         //TODO: add update code
         ActorNode Actor1 = ActionCDFNode.Actor1;
@@ -719,7 +741,7 @@ public class ActionNode {
         });
         processActionMap.put("sleep", new Runnable() {
             public void run() {
-                processActionTypeWalk();
+                processActionTypeSleep();
             }
         });
         processActionMap.put("stand", new Runnable() {

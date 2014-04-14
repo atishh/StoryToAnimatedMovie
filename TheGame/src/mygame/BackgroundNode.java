@@ -7,6 +7,7 @@ package mygame;
 
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
+import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -40,6 +41,8 @@ public class BackgroundNode {
     public BasicShadowRenderer bsr;
     public boolean bLookAroundBackgroundDone = false;
     public boolean bIsAttachedToRoot = false;
+    Spatial skyMorning = null;
+    Spatial skyNight = null;
 
     public BackgroundNode(String lex, int idx) {
         this.Name = lex;
@@ -73,6 +76,15 @@ public class BackgroundNode {
 
     }
 
+    public void RemoveLightsFromRoot() {
+        if (sun != null) {
+            Global.gMyMain.getRootNode().removeLight(sun);
+        }
+        if (ambient != null) {
+            Global.gMyMain.getRootNode().removeLight(ambient);
+        }
+    }
+
     public void CreateLake() {
         Spatial lake = Global.gAssertManager.loadModel("Scenes/Lake/lake2.j3o");
         Background = new Node();
@@ -94,8 +106,42 @@ public class BackgroundNode {
         Texture up = Global.gAssertManager.loadTexture("Scenes/Lake/bluesky_top.JPG");
         Texture down = Global.gAssertManager.loadTexture("Scenes/Lake/bluesky_top.JPG");
 
-        Spatial sky = SkyFactory.createSky(Global.gAssertManager, west, east, north, south, up, down, Vector3f.UNIT_XYZ);
-        Background.attachChild(sky);
+        skyMorning = SkyFactory.createSky(Global.gAssertManager, west, east, north, south, up, down, Vector3f.UNIT_XYZ);
+        Background.attachChild(skyMorning);
+        if (skyNight != null) {
+            Background.detachChild(skyNight);
+        }
+    }
+
+    public void CreateNightSky() {
+        Texture west = Global.gAssertManager.loadTexture("Scenes/Lake/sky_night1.jpg");
+        Texture east = Global.gAssertManager.loadTexture("Scenes/Lake/sky_night1.jpg");
+        Texture north = Global.gAssertManager.loadTexture("Scenes/Lake/sky_night1.jpg");
+        Texture south = Global.gAssertManager.loadTexture("Scenes/Lake/sky_night1.jpg");
+        Texture up = Global.gAssertManager.loadTexture("Scenes/Lake/sky_night1.jpg");
+        Texture down = Global.gAssertManager.loadTexture("Scenes/Lake/sky_night1.jpg");
+
+        skyNight = SkyFactory.createSky(Global.gAssertManager, west, east, north, south, up, down, Vector3f.UNIT_XYZ);
+        Background.attachChild(skyNight);
+        if (skyMorning != null) {
+            Background.detachChild(skyMorning);
+        }
+    }
+
+    public void CreateNightLight() {
+        /**
+         * A white, spot light source.
+         */
+        PointLight lamp = new PointLight();
+        lamp.setPosition(Vector3f.ZERO);
+        lamp.setColor(ColorRGBA.White);
+        Global.gMyMain.getRootNode().addLight(lamp);
+    }
+
+    public void CreateNightBackground() {
+        CreateNightSky();
+        RemoveLightsFromRoot();
+        CreateNightLight();
     }
 
     public void PlantTree(Terrain LakeTerrain) {
@@ -168,7 +214,7 @@ public class BackgroundNode {
         Vector3f ActorLoc = PointsOnLake.getAPointForBuild(Name);
         float height = LakeTerrain.getHeight(new Vector2f(ActorLoc.getX(), ActorLoc.getZ()));
         Actor.setLocalTranslation(ActorLoc.getX(), height, ActorLoc.getZ());
-        Actor.setLocalScale(5, 5, 5);
+        Actor.setLocalScale(10, 10, 10);
         Background.attachChild(Actor);
         return Actor;
     }
@@ -177,6 +223,7 @@ public class BackgroundNode {
         if ((Global.gAssertManager != null) && (Global.gMyMain != null)) {
             CreateLake();
             CreateSky();
+            //CreateNightSky();
             //Temporarily commenting it for faster fps
             //PlantTree(LakeTerrain);
             CreateLight();
