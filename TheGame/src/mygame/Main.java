@@ -214,6 +214,7 @@ public class Main extends SimpleApplication implements AnimEventListener {
         // Default speed is too slow
         flyCam.setMoveSpeed(20f);
         flyCam.setZoomSpeed(5f);
+        //viewPort.setBackgroundColor(ColorRGBA.Blue);
         //voce.SpeechInterface.init();
         //commenting below code; to be used latter.
         //voce.SpeechInterface.init("C:\\Users\\atsingh\\Downloads\\voce-0.9.1.zip\\voce-0.9.1\\lib", true, false, "", "");
