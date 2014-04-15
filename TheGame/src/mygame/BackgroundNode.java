@@ -8,11 +8,14 @@ package mygame;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.light.PointLight;
+import com.jme3.material.RenderState.FaceCullMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.BasicShadowRenderer;
 import com.jme3.terrain.Terrain;
@@ -27,7 +30,7 @@ import java.util.Random;
  * @author aa496
  */
 public class BackgroundNode {
-
+    
     public String Name;
     public String label;
     public int idx;
@@ -43,7 +46,7 @@ public class BackgroundNode {
     public boolean bIsAttachedToRoot = false;
     Spatial skyMorning = null;
     Spatial skyNight = null;
-
+    
     public BackgroundNode(String lex, int idx) {
         this.Name = lex;
         this.label = lex + "-" + idx;
@@ -53,9 +56,9 @@ public class BackgroundNode {
         bLookAroundBackgroundDone = false;
         bIsAttachedToRoot = false;
     }
-
+    
     public void AttachNodesToRoot() {
-
+        
         if ((Background != null) && (bIsAttachedToRoot == false)) {
             System.out.println("Attaching to root node " + Background.getName());
             Global.gMyMain.getRootNode().attachChild(Background);
@@ -73,9 +76,9 @@ public class BackgroundNode {
             }
             bIsAttachedToRoot = true;
         }
-
+        
     }
-
+    
     public void RemoveLightsFromRoot() {
         if (sun != null) {
             Global.gMyMain.getRootNode().removeLight(sun);
@@ -84,7 +87,7 @@ public class BackgroundNode {
             Global.gMyMain.getRootNode().removeLight(ambient);
         }
     }
-
+    
     public void CreateLake() {
         Spatial lake = Global.gAssertManager.loadModel("Scenes/Lake/lake2.j3o");
         Background = new Node();
@@ -97,7 +100,7 @@ public class BackgroundNode {
             lodControl.setCamera(Global.gMyMain.getCamera());
         }
     }
-
+    
     public void CreateSky() {
         Texture west = Global.gAssertManager.loadTexture("Scenes/Lake/bluesky_back.jpg");
         Texture east = Global.gAssertManager.loadTexture("Scenes/Lake/bluesky_front.jpg");
@@ -105,14 +108,14 @@ public class BackgroundNode {
         Texture south = Global.gAssertManager.loadTexture("Scenes/Lake/bluesky_right.jpg");
         Texture up = Global.gAssertManager.loadTexture("Scenes/Lake/bluesky_top.JPG");
         Texture down = Global.gAssertManager.loadTexture("Scenes/Lake/bluesky_top.JPG");
-
+        
         skyMorning = SkyFactory.createSky(Global.gAssertManager, west, east, north, south, up, down, Vector3f.UNIT_XYZ);
         Background.attachChild(skyMorning);
         if (skyNight != null) {
             Background.detachChild(skyNight);
         }
     }
-
+    
     public void CreateNightSky() {
         Texture west = Global.gAssertManager.loadTexture("Scenes/Lake/sky_night1.jpg");
         Texture east = Global.gAssertManager.loadTexture("Scenes/Lake/sky_night1.jpg");
@@ -120,14 +123,14 @@ public class BackgroundNode {
         Texture south = Global.gAssertManager.loadTexture("Scenes/Lake/sky_night1.jpg");
         Texture up = Global.gAssertManager.loadTexture("Scenes/Lake/sky_night1.jpg");
         Texture down = Global.gAssertManager.loadTexture("Scenes/Lake/sky_night1.jpg");
-
+        
         skyNight = SkyFactory.createSky(Global.gAssertManager, west, east, north, south, up, down, Vector3f.UNIT_XYZ);
         Background.attachChild(skyNight);
         if (skyMorning != null) {
             Background.detachChild(skyMorning);
         }
     }
-
+    
     public void CreateNightLight() {
         /**
          * A white, spot light source.
@@ -137,13 +140,13 @@ public class BackgroundNode {
         lamp.setColor(ColorRGBA.White);
         Global.gMyMain.getRootNode().addLight(lamp);
     }
-
+    
     public void CreateNightBackground() {
         CreateNightSky();
         RemoveLightsFromRoot();
         CreateNightLight();
     }
-
+    
     public void PlantTree(Terrain LakeTerrain) {
         Random rand = new Random((long) 5f);
 
@@ -161,18 +164,18 @@ public class BackgroundNode {
             float height = LakeTerrain.getHeight(new Vector2f(randomX, randomZ));
             //System.out.println("height = " + height);
             Spatial tree = Global.gAssertManager.loadModel("Scenes/Plants/Cylinder.001.mesh.j3o");
-
+            
             tree.setLocalTranslation(randomX, height + 0.6f, randomZ);
             tree.setShadowMode(RenderQueue.ShadowMode.Cast);
-
+            
             float randomRotate = (float) (-3.14f + (rand.nextFloat() * ((3.14f + 3.14f) + 1)));
             //System.out.println("randomRotate = " + randomRotate);
             tree.rotate(0f, randomRotate, 0f);
             Background.attachChild(tree);
         }
-
+        
     }
-
+    
     public void CreateWater() {
         //Create water;
         waterProcessor =
@@ -187,7 +190,7 @@ public class BackgroundNode {
         waterPlane.setLocalTranslation(-45, 1.5f, 65);
         Background.attachChild(waterPlane);
     }
-
+    
     public void CreateLight() {
 
         /**
@@ -201,13 +204,13 @@ public class BackgroundNode {
         sun.setColor(ColorRGBA.White);
         // Background.addLight(sun);
     }
-
+    
     public void createShadow() {
         bsr = new BasicShadowRenderer(Global.gAssertManager, 512);
         bsr.setDirection(new Vector3f(-1, -1, -1).normalizeLocal());
-
+        
     }
-
+    
     public Node createPassiveActor(String Name, String ObjectPath) {
         //This is the passive actor.
         Node Actor = (Node) Global.gAssertManager.loadModel(ObjectPath);
@@ -215,10 +218,29 @@ public class BackgroundNode {
         float height = LakeTerrain.getHeight(new Vector2f(ActorLoc.getX(), ActorLoc.getZ()));
         Actor.setLocalTranslation(ActorLoc.getX(), height, ActorLoc.getZ());
         Actor.setLocalScale(10, 10, 10);
+        //Make culling off, since otherwise when the camera is inside the house 
+        //it will be transparent.
+        Actor.depthFirstTraversal(new SceneGraphVisitor() {
+            public void visit(Spatial spatial) {
+                if (spatial instanceof Geometry) {
+                    ((Geometry) spatial).getMaterial().getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
+                }
+            }
+        });
+
+        /**
+         * A white, spot light source.
+         */        
+        PointLight lamp = new PointLight();
+        lamp.setPosition(Actor.getLocalTranslation().subtract(0, 5, 0));
+        lamp.setColor(ColorRGBA.White);
+        Background.addLight(lamp);
+        //Material cube2Mat = Global.gAssertManager.loadMaterial("Materials/newMaterial.j3m");
+        //Actor.setMaterial(cube2Mat);
         Background.attachChild(Actor);
         return Actor;
     }
-
+    
     public void createBackground() {
         if ((Global.gAssertManager != null) && (Global.gMyMain != null)) {
             CreateLake();

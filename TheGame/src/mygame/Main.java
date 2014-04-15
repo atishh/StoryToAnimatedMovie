@@ -106,6 +106,8 @@ public class Main extends SimpleApplication implements AnimEventListener {
         Box boxMesh = new Box(1f, 1f, 1f);
         Geometry boxGeo = new Geometry("Colored Box", boxMesh);
         Material boxMat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+        //RenderState rend = boxMat.getAdditionalRenderState();
+        //rend.set
         boxMat.setBoolean("UseMaterialColors", true);
         boxMat.setColor("Ambient", ColorRGBA.Green);
         boxMat.setColor("Diffuse", ColorRGBA.Green);
@@ -219,6 +221,7 @@ public class Main extends SimpleApplication implements AnimEventListener {
         //commenting below code; to be used latter.
         //voce.SpeechInterface.init("C:\\Users\\atsingh\\Downloads\\voce-0.9.1.zip\\voce-0.9.1\\lib", true, false, "", "");
         //voce.SpeechInterface.synthesize("hello world");
+        
     }
 
     public enum ActionState {
