@@ -103,6 +103,24 @@ public class ActionNode {
         }
     }
 
+    public static void handleCamera(Vector3f myCamLoc) {
+        //handle camera
+        if (myCamLoc == null) {
+            handleCamera();
+        } else {
+            if (bCamInUse == false) {
+                Vector3f CamLocTemp = new Vector3f(myCamLoc);
+                CamLocTemp = CamLocTemp.add(0,10,0);
+                Global.gMyMain.getCamera().setLocation(CamLocTemp);
+                Global.gMyMain.getCamera().lookAt(myCamLoc, Vector3f.UNIT_Y);
+                bCamInUse = true;
+            } else {
+                //Move the camera little bit, since stationary camera looks dull.
+                perplexCamera();
+            }
+        }
+    }
+
     public static void handleCamera() {
         //handle camera
         if (bCamInUse == false) {
@@ -157,21 +175,48 @@ public class ActionNode {
         ActorNode Actor1 = ActionCDFNode.Actor1;
         ActorNode Actor2 = ActionCDFNode.Actor2;
 
+        Vector3f myCamLoc = null;
+
         if (bFirstTimeForThisAction == true) {
+
+            //Since it is sleep, it is most likely to be night, so create night sky.
+            ActionCDFNode.Background1.CreateNightBackground();
+            Node HouseNode = ActionCDFNode.Background1.getHouseNode();
+            if (HouseNode != null) {
+                Vector3f HouseLoc = HouseNode.getLocalTranslation();
+                for (int i = 0; i < Actor1.nTotalNoOfActorsInThisNode; i++) {
+                    if (Actor1.TotalActorNodeInThisNode[i].getIsHuman()) {
+                        ActorNode CurrActor = Actor1.TotalActorNodeInThisNode[i];
+                        Node Actor1Node = Actor1.TotalActorNodeInThisNode[i].Actor;
+                        Actor1Node.setLocalTranslation(HouseLoc.add(-5 + i * 3, 0, 0));
+                        Actor1Node.rotate((FastMath.PI) / 2, 0, 0);
+                        Vector3f currLoc = new Vector3f(Actor1Node.getLocalTranslation());
+                        //Look very high.
+                        currLoc.setY(100);
+                        Actor1LookAt.set(currLoc);
+                        if (CurrActor.bPassiveActor == false) {
+                            Actor1Node.lookAt(Actor1LookAt, Vector3f.UNIT_Y);
+                        }
+                        //Actor1Node.move(0, 0, tpf);
+                    }
+                }
+                myCamLoc = Actor1.TotalActorNodeInThisNode[0].Actor.getLocalTranslation();
+            }
+
             if (Actor2 != null) {
                 Actor2Pos[0].set(Actor2.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
             } else {
                 Actor2Pos[0].set(Actor1.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
             }
-            //Since it is sleep, it is most likely to be night, so create night sky.
-            ActionCDFNode.Background1.CreateNightBackground();
+
             bFirstTimeForThisAction = false;
             counter = 0;
         }
 
+
         //handle camera
-        //handleCamera();
-        processCounter(500000);
+        handleCamera(myCamLoc);
+        processCounter(50);
     }
 
     public static void processActionTypeFly() {
