@@ -37,6 +37,23 @@ public class ActorNode {
     public ActorData ActorDataObj;
     public boolean bActorCreated = false;
 
+    public void DetachNodesFromRoot() {
+        for (int i = 0; i < gNoOfActors; i++) {
+            ActorNode ActorNodeObj = gActorNodes[i];
+            if (ActorNodeObj.bAttachedToRoot == true) {
+                for (int j = 0; j < ActorNodeObj.nTotalNoOfActorsInThisNode; j++) {
+
+                    if (ActorNodeObj.TotalActorNodeInThisNode[j].Actor != null) {
+                        System.out.println("Detaching from root node " + ActorNodeObj.TotalActorNodeInThisNode[j].Actor.getName());
+                        Global.gMyMain.getRootNode().detachChild(ActorNodeObj.TotalActorNodeInThisNode[j].Actor);
+                    }
+                }
+                //}
+                ActorNodeObj.bAttachedToRoot = false;
+            }
+        }
+    }
+
     //This function will populate total no. of actors based on synonyms.
     //For ex; Martin, Annie and Martha are children. children walks to the lake.
     //Here we have 4 ActorNode, but children is actually referred to Martin, Annie

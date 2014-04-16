@@ -31,11 +31,19 @@ public class ChooseActor {
         NameToActorDataMap.put("swan babies", ActorDataObj);
         ActorDataObj = new ActorData("kingfisher", "Scenes/Birds/Sphere.mesh.j3o", 0.5f, 0, 5);
         NameToActorDataMap.put("kingfisher", ActorDataObj);
+        ActorDataObj = new ActorData("birds", "Scenes/Birds/Sphere.mesh.j3o", 0.5f, 0, 5);
+        NameToActorDataMap.put("birds", ActorDataObj);
+        ActorDataObj = new ActorData("bird", "Scenes/Birds/Sphere.mesh.j3o", 0.5f, 0, 5);
+        NameToActorDataMap.put("bird", ActorDataObj);
+        
         ActorDataObj = new ActorData("fish", "Scenes/Fish/Sphere.006.mesh.j3o", 0.2f, 0, 1);
         NameToActorDataMap.put("fish", ActorDataObj);
         ActorDataObj = new ActorData("deer", "Scenes/Animals/Deer/Cube.001.mesh.j3o", 0.5f, 0, 1);
         NameToActorDataMap.put("deer", ActorDataObj);
 
+        ActorDataObj = new ActorData("sun", "Scenes/sun/Sphere.mesh.j3o", 0.5f, 0, 1);
+        NameToActorDataMap.put("sun", ActorDataObj);
+        
         ActorDataObj = new ActorData("parent", "Models/Actors/Cube.mesh.j3o", 2, 0, 9.2f);
         ActorDataObj.bIsHuman = true;
         NameToActorDataMap.put("parent", ActorDataObj);
@@ -56,7 +64,7 @@ public class ChooseActor {
         ActorDataObj = new ActorData("child", "Models/Actors/Cube.mesh.j3o", 1, 0, 4.6f);
         ActorDataObj.bIsHuman = true;
         NameToActorDataMap.put("child", ActorDataObj);
-
+        
         CollectiveActorToNoMap.put("parent", 2);
         CollectiveActorToNoMap.put("parents", 2);
         bInit = true;

@@ -14,6 +14,7 @@ public class PlaceActorNode {
     public static Vector3f[] nearPoint = new Vector3f[nNoOfNearPoints];
     public static Vector3f middlePoint;
     public static int nCurrPointNo = 0;
+    public static boolean bPlaceHigh = false;
 
     public PlaceActorNode(CDFNode CDFNodeObj) {
         ActionCDFNode = CDFNodeObj;
@@ -68,6 +69,14 @@ public class PlaceActorNode {
                     Vector3f Actor1PosTemp = getAPointNearAPoint(PointName);
                     System.out.println("Placing Actor " + CurrActor.Name + " On Road at " + Actor1PosTemp.toString());
                     float height = LakeTerrain.getHeight(new Vector2f(Actor1PosTemp.getX(), Actor1PosTemp.getZ()));
+                    if (bPlaceHigh == true) {
+                        //for action like birds fly, we have to place actors in the sky.
+                        height = height + 50;
+                    }
+                    if (CurrActor.Name.trim().equalsIgnoreCase("sun")) {
+                        //for objects like sun, place it high.
+                        height = height + 200;
+                    }
                     CurrActor.Actor.setLocalTranslation(Actor1PosTemp.getX(), height + CurrActor.getHeight(), Actor1PosTemp.getZ());
                     CurrActor.bPositionSet = true;
                 }
@@ -124,6 +133,15 @@ public class PlaceActorNode {
         placeActor1Node();
     }
 
+    public static void placeActorNodeForFly() {
+        //TODO: add update code
+        ActorNode Actor1 = ActionCDFNode.Actor1;
+        ActorNode Actor2 = ActionCDFNode.Actor2;
+
+        bPlaceHigh = true;
+        placeActor1Node();
+    }
+
     public static void placeActorNodeForSwim() {
         //TODO: add update code
         ActorNode Actor1 = ActionCDFNode.Actor1;
@@ -159,7 +177,7 @@ public class PlaceActorNode {
         });
         placeActorForActionMap.put("fly", new Runnable() {
             public void run() {
-                placeActorNodeForWalk();
+                placeActorNodeForFly();
             }
         });
         placeActorForActionMap.put("join", new Runnable() {
@@ -238,6 +256,7 @@ public class PlaceActorNode {
     public static void PlaceActorWapper(String ActionType) {
 
         boolean bActionNotSupported = false;
+        bPlaceHigh = false;
 
         Runnable r = placeActorForActionMap.get(ActionType.toLowerCase());
         if (r != null) {

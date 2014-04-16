@@ -110,7 +110,7 @@ public class ActionNode {
         } else {
             if (bCamInUse == false) {
                 Vector3f CamLocTemp = new Vector3f(myCamLoc);
-                CamLocTemp = CamLocTemp.add(0,10,0);
+                CamLocTemp = CamLocTemp.add(0, 10, 0);
                 Global.gMyMain.getCamera().setLocation(CamLocTemp);
                 Global.gMyMain.getCamera().lookAt(myCamLoc, Vector3f.UNIT_Y);
                 bCamInUse = true;
@@ -134,6 +134,7 @@ public class ActionNode {
 
     public static void processLookAroundBackground() {
         //TODO: add update code
+        bCamInUse = true;
         BackgroundNode BackgroundNode1 = ActionCDFNode.Background1;
         camPos.setX(camPos.getX() - 10 * nAccel * tpf);
         camPos.setY(camPos.getY() - 12 * nAccel * tpf);
@@ -170,6 +171,54 @@ public class ActionNode {
         return NewActor;
     }
 
+    public static void processActionTypeWake() {
+        //TODO: add update code
+        ActorNode Actor1 = ActionCDFNode.Actor1;
+        ActorNode Actor2 = ActionCDFNode.Actor2;
+
+        Vector3f myCamLoc = null;
+
+        if (bFirstTimeForThisAction == true) {
+
+            //Since it is sleep, it is most likely to be night, so create night sky.
+            ActionCDFNode.Background1.CreateDayBackground();
+            ActionCDFNode.Actor1.DetachNodesFromRoot();
+            ActionCDFNode.Actor1.AttachNodesToRoot();
+            ActionCDFNode.PlaceActorsForThisBackground(ActionCDFNode.Background1);
+            if (ActionCDFNode.Actor2 != null) {
+                ActionCDFNode.Actor2.AttachNodesToRoot();
+            }
+            for (int i = 0; i < Actor1.nTotalNoOfActorsInThisNode; i++) {
+                if (Actor1.TotalActorNodeInThisNode[i].getIsHuman()) {
+                    ActorNode CurrActor = Actor1.TotalActorNodeInThisNode[i];
+                    Node Actor1Node = CurrActor.Actor;
+                    Actor1Node.rotate((FastMath.PI) / 2, 0, 0);
+                }
+                myCamLoc = Actor1.TotalActorNodeInThisNode[0].Actor.getLocalTranslation();
+            }
+
+            if (Actor2 != null) {
+                Actor2Pos[0].set(Actor2.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
+            } else {
+                Actor2Pos[0].set(Actor1.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
+            }
+
+            //Look around background.
+            //camPos = new Vector3f(100, 150, 100);
+            camPos.set(100, 150, 100);
+            ActionCDFNode.Background1.bLookAroundBackgroundDone = false;
+            bFirstTimeForThisAction = false;
+            counter = 0;
+        }
+
+        //handle camera
+        if (ActionCDFNode.Background1.bLookAroundBackgroundDone == true) {
+            myCamLoc = Actor1.TotalActorNodeInThisNode[0].Actor.getLocalTranslation();
+            handleCamera(myCamLoc);
+            processCounter(50);
+        }
+    }
+
     public static void processActionTypeSleep() {
         //TODO: add update code
         ActorNode Actor1 = ActionCDFNode.Actor1;
@@ -181,6 +230,11 @@ public class ActionNode {
 
             //Since it is sleep, it is most likely to be night, so create night sky.
             ActionCDFNode.Background1.CreateNightBackground();
+            ActionCDFNode.Actor1.DetachNodesFromRoot();
+            ActionCDFNode.Actor1.AttachNodesToRoot();
+            if (ActionCDFNode.Actor2 != null) {
+                ActionCDFNode.Actor2.AttachNodesToRoot();
+            }
             Node HouseNode = ActionCDFNode.Background1.getHouseNode();
             if (HouseNode != null) {
                 Vector3f HouseLoc = HouseNode.getLocalTranslation();
@@ -209,14 +263,20 @@ public class ActionNode {
                 Actor2Pos[0].set(Actor1.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
             }
 
+            //Look around background.
+            //camPos = new Vector3f(100, 150, 100);
+            camPos.set(100, 150, 100);
+            ActionCDFNode.Background1.bLookAroundBackgroundDone = false;
             bFirstTimeForThisAction = false;
             counter = 0;
         }
 
-
         //handle camera
-        handleCamera(myCamLoc);
-        processCounter(50);
+        if (ActionCDFNode.Background1.bLookAroundBackgroundDone == true) {
+            myCamLoc = Actor1.TotalActorNodeInThisNode[0].Actor.getLocalTranslation();
+            handleCamera(myCamLoc);
+            processCounter(50);
+        }
     }
 
     public static void processActionTypeFly() {
@@ -236,7 +296,7 @@ public class ActionNode {
 
         //handle camera
         handleCamera();
-        processCounter(5);
+        processCounter(10);
     }
 
     public static void processActionTypeDrink() {
@@ -811,7 +871,7 @@ public class ActionNode {
         });
         processActionMap.put("wake", new Runnable() {
             public void run() {
-                processActionTypeWalk();
+                processActionTypeWake();
             }
         });
         processActionMap.put("walk", new Runnable() {
@@ -824,7 +884,9 @@ public class ActionNode {
 
     public static void ProcessActionWrapper(String ActionType, float tpf_tmp) {
 
-        tpf = tpf_tmp;
+        //  System.out.println("tpf = " + tpf_tmp);
+        //currently making tpf to 0.1, we have to see latter what to do with it.
+        tpf = 0.1f;
         boolean bActionNotSupported = false;
         ActionCompleted = false;
 

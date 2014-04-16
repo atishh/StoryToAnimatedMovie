@@ -48,6 +48,7 @@ public class BackgroundNode {
     public boolean bIsAttachedToRoot = false;
     Spatial skyMorning = null;
     Spatial skyNight = null;
+    PointLight Nightlamp = null;
     public static Map<String, Node> gPassiveActorMap = new HashMap<String, Node>();
 
     public BackgroundNode(String lex, int idx) {
@@ -88,6 +89,15 @@ public class BackgroundNode {
         }
         if (ambient != null) {
             Global.gMyMain.getRootNode().removeLight(ambient);
+        }
+    }
+
+    public void AddLightsToRoot() {
+        if (sun != null) {
+            Global.gMyMain.getRootNode().addLight(sun);
+        }
+        if (ambient != null) {
+            Global.gMyMain.getRootNode().addLight(ambient);
         }
     }
 
@@ -138,16 +148,31 @@ public class BackgroundNode {
         /**
          * A white, spot light source.
          */
-        PointLight lamp = new PointLight();
-        lamp.setPosition(Vector3f.ZERO);
-        lamp.setColor(ColorRGBA.White);
-        Global.gMyMain.getRootNode().addLight(lamp);
+        Nightlamp = new PointLight();
+        Nightlamp.setPosition(Vector3f.ZERO);
+        Nightlamp.setColor(ColorRGBA.White);
+        Global.gMyMain.getRootNode().addLight(Nightlamp);
+    }
+
+    public void RemoveNightLight() {
+        /**
+         * A white, spot light source.
+         */
+        if (Nightlamp != null) {
+            Global.gMyMain.getRootNode().removeLight(Nightlamp);
+        }
     }
 
     public void CreateNightBackground() {
         CreateNightSky();
         RemoveLightsFromRoot();
         CreateNightLight();
+    }
+
+    public void CreateDayBackground() {
+        CreateSky();
+        AddLightsToRoot();
+        RemoveNightLight();
     }
 
     public void PlantTree(Terrain LakeTerrain) {

@@ -104,6 +104,12 @@ public class PointsOnLake {
             return null;
         }
         String sPositionTemp = sPosition.toLowerCase().trim();
+        
+        //since window in house is not implemented, for now run to the window
+        //is similar to run to the road.
+        if("window".equalsIgnoreCase(sPositionTemp))
+            sPositionTemp = "road";
+            
         PointsArray PointsArrayObj = pointsMap.get(sPositionTemp);
         if (PointsArrayObj != null) {
             if (origPoint != null) {
@@ -115,9 +121,8 @@ public class PointsOnLake {
             return null;
         }
     }
-    
-    public static Vector3f getAPoint(String sPosition)
-    {
+
+    public static Vector3f getAPoint(String sPosition) {
         return getAPoint(sPosition, null);
     }
 
