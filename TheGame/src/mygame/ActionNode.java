@@ -408,8 +408,12 @@ public class ActionNode {
 
         ActorNode Actor1 = ActionCDFNode.Actor1;
         ActorNode Actor2 = ActionCDFNode.Actor2;
-        System.out.println("PastCDFNode name = " + PastActionCDFNode.label);
-        System.out.println("FutureCDFNode name = " + FutureActionCDFNode.label);
+        if (PastActionCDFNode != null) {
+            System.out.println("PastCDFNode name = " + PastActionCDFNode.label);
+        }
+        if (FutureActionCDFNode != null) {
+            System.out.println("FutureCDFNode name = " + FutureActionCDFNode.label);
+        }
 
         if (bFirstTimeForThisAction == true) {
             nSubtitleDuration = 5;
