@@ -28,7 +28,8 @@ public class SubtitleManager {
             bInit = true;
         }
         text.setText(SubtitleString);
-        text.setColor(SubtitleString, ColorRGBA.Black);
+        text.setColor(SubtitleString, ColorRGBA.Magenta);
+        System.out.println("camera width = "+(Global.gMyMain.getCamera().getWidth() - text.getLineWidth()) / 2+"camera height = "+Global.gMyMain.getCamera().getHeight());
         text.setLocalTranslation((Global.gMyMain.getCamera().getWidth() - text.getLineWidth()) / 2, Global.gMyMain.getCamera().getHeight(), 0);
     }
 

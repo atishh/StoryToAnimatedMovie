@@ -222,6 +222,9 @@ public class Main extends SimpleApplication implements AnimEventListener {
         //voce.SpeechInterface.init("C:\\Users\\atsingh\\Downloads\\voce-0.9.1.zip\\voce-0.9.1\\lib", true, false, "", "");
         //voce.SpeechInterface.synthesize("hello world");
         
+        //never pause the engine.
+        this.setPauseOnLostFocus(false);
+        
     }
 
     public enum ActionState {

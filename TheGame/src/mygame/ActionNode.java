@@ -21,7 +21,7 @@ public class ActionNode {
     public static Random rand = new Random((long) 5f);
     public static boolean bCamInUse = false;
     public static int nCurrActionNo = 0;
-    public static int nAccelerateUptoActionNo = 25;
+    public static int nAccelerateUptoActionNo = 10;
     public static float nAccel = 1;
     public static int nNoOfActor2 = 10;
     public static Vector3f[] Actor2Pos = new Vector3f[nNoOfActor2];
@@ -500,6 +500,30 @@ public class ActionNode {
 
     }
 
+        public static void processActionTypeScramble() {
+        //TODO: add update code
+        ActorNode Actor1 = ActionCDFNode.Actor1;
+        ActorNode Actor2 = ActionCDFNode.Actor2;
+
+        if (bFirstTimeForThisAction == true) {
+            if (Actor2 != null) {
+                Actor2Pos[0].set(Actor2.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
+            } else {
+                Actor2Pos[0].set(Actor1.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
+            }
+            bFirstTimeForThisAction = false;
+            counter = 0;
+        }
+
+        System.out.println("Action scramble is currently partially supported");
+
+        //handle camera
+        handleCamera();
+
+        processCounter(2);
+
+    }
+    
     public static void processActionTypeStart() {
         //TODO: add update code
         ActorNode Actor1 = ActionCDFNode.Actor1;
@@ -840,7 +864,7 @@ public class ActionNode {
         });
         processActionMap.put("scramble", new Runnable() {
             public void run() {
-                processActionTypeWalk();
+                processActionTypeScramble();
             }
         });
         processActionMap.put("sit", new Runnable() {
