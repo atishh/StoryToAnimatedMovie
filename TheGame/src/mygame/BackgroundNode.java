@@ -102,13 +102,18 @@ public class BackgroundNode {
     }
 
     public void CreateLake() {
-        Spatial lake = Global.gAssertManager.loadModel("Scenes/Lake/lake2.j3o");
+        Spatial lake = Global.gAssertManager.loadModel("Scenes/Lake/lake5.j3o");
+        
         Background = new Node();
         Background.attachChild(lake);
         Node rootLake = lake.getParent();
-        LakeTerrain = (Terrain) rootLake.getChild("terrain-lake2");
-        rootLake.getChild("terrain-lake2").setShadowMode(RenderQueue.ShadowMode.Receive);
-        TerrainLodControl lodControl = rootLake.getChild("terrain-lake2").getControl(TerrainLodControl.class);
+        
+        //Initialize points on lake;
+        PointsOnLake.lake = rootLake;
+        
+        LakeTerrain = (Terrain) rootLake.getChild("terrain-lake5");
+        rootLake.getChild("terrain-lake5").setShadowMode(RenderQueue.ShadowMode.Receive);
+        TerrainLodControl lodControl = rootLake.getChild("terrain-lake5").getControl(TerrainLodControl.class);
         if (lodControl != null) {
             lodControl.setCamera(Global.gMyMain.getCamera());
         }

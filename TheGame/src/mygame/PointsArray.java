@@ -5,6 +5,8 @@
 package mygame;
 
 import com.jme3.math.Vector3f;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  *
@@ -17,9 +19,17 @@ public class PointsArray {
     public int currPointNo = 0;
     public int currPointNoForBuild = 0;
 
-    PointsArray(int nOfPointsTemp) {
+    PointsArray(int nOfPointsTemp, List list) {
         nOfPoints = nOfPointsTemp;
         Points = new Vector3f[nOfPoints];
+        if (list != null) {
+            currPointNo = 0;
+            for (Iterator<Vector3f> iter = list.iterator(); iter.hasNext();) {
+                Vector3f element = iter.next();
+                Points[currPointNo] = element;
+                currPointNo++;
+            }
+        }
         currPointNo = 0;
     }
 
