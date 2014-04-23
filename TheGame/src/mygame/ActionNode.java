@@ -434,6 +434,19 @@ public class ActionNode {
                 }
             }
 
+            //still if actor2 is null, then direcly assign actor2 to actor1 of previous action
+            if (Actor2 == null) {
+                if (PastActionCDFNode != null) {
+                    Actor2 = PastActionCDFNode.Actor1.TotalActorNodeInThisNode[0];
+                }
+            }
+
+            if (Actor2 == null) {
+                if (FutureActionCDFNode != null) {
+                    Actor2 = FutureActionCDFNode.Actor1.TotalActorNodeInThisNode[0];
+                }
+            }
+
             if (Actor2 != null) {
                 Actor2Pos[0].set(Actor2.TotalActorNodeInThisNode[0].Actor.getLocalTranslation());
             } else {
@@ -500,7 +513,7 @@ public class ActionNode {
 
     }
 
-        public static void processActionTypeScramble() {
+    public static void processActionTypeScramble() {
         //TODO: add update code
         ActorNode Actor1 = ActionCDFNode.Actor1;
         ActorNode Actor2 = ActionCDFNode.Actor2;
@@ -523,7 +536,7 @@ public class ActionNode {
         processCounter(2);
 
     }
-    
+
     public static void processActionTypeStart() {
         //TODO: add update code
         ActorNode Actor1 = ActionCDFNode.Actor1;
