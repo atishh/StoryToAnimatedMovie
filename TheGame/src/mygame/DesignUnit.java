@@ -198,8 +198,8 @@ public class DesignUnit {
         boolean bCdfNodeCreated = false;
         CDFNode newCDFNode = null;
         Scanner scanner = new Scanner(token);
-        //scanner.useDelimiter(" ");
-        //scanner.next();
+        scanner.useDelimiter(" ");
+        scanner.next();
 
         while (scanner.hasNext()) {
             //assumes the line has a certain structure

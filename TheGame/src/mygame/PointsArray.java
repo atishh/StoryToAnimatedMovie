@@ -35,6 +35,10 @@ public class PointsArray {
 
     public Vector3f getAPoint() {
 
+        if (nOfPoints == 0) {
+            //This is type of assertion.
+            return Vector3f.ZERO;
+        }
         if (currPointNo >= nOfPoints) {
             currPointNo = 0;
         }

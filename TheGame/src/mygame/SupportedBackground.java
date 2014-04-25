@@ -20,7 +20,10 @@ public class SupportedBackground {
         if (s.equalsIgnoreCase("camp")) {
             return true;
         }
-        if (s.equalsIgnoreCase("lake")) {
+        else if (s.equalsIgnoreCase("lake")) {
+            return true;
+        }
+        else if (s.equalsIgnoreCase("library")) {
             return true;
         }
         return false;

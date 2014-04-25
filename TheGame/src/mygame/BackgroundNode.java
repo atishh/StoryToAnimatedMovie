@@ -56,7 +56,14 @@ public class BackgroundNode {
         this.label = lex + "-" + idx;
         this.idx = idx;
         attribute = "";
-        createLakeBackground();
+        if (lex.trim().equalsIgnoreCase("lake")) {
+            createLakeBackground();
+        } else if (lex.trim().equalsIgnoreCase("library")) {
+            createLibraryBackground();
+        } else {
+            createLakeBackground();
+        }
+
         bLookAroundBackgroundDone = false;
         bIsAttachedToRoot = false;
     }
@@ -103,17 +110,35 @@ public class BackgroundNode {
 
     public void CreateLake() {
         Spatial lake = Global.gAssertManager.loadModel("Scenes/Lake/lake5.j3o");
-        
+
         Background = new Node();
         Background.attachChild(lake);
         Node rootLake = lake.getParent();
-        
+
         //Initialize points on lake;
         PointsOnLake.lake = rootLake;
-        
+
         LakeTerrain = (Terrain) rootLake.getChild("terrain-lake5");
         rootLake.getChild("terrain-lake5").setShadowMode(RenderQueue.ShadowMode.Receive);
         TerrainLodControl lodControl = rootLake.getChild("terrain-lake5").getControl(TerrainLodControl.class);
+        if (lodControl != null) {
+            lodControl.setCamera(Global.gMyMain.getCamera());
+        }
+    }
+    
+    public void CreateLibrary() {
+        Spatial library = Global.gAssertManager.loadModel("Scenes/Library/library1.j3o");
+
+        Background = new Node();
+        Background.attachChild(library);
+        Node rootLake = library.getParent();
+
+        //Initialize points on lake;
+        PointsOnLake.lake = rootLake;
+
+        LakeTerrain = (Terrain) rootLake.getChild("terrain-library1");
+        rootLake.getChild("terrain-library1").setShadowMode(RenderQueue.ShadowMode.Receive);
+        TerrainLodControl lodControl = rootLake.getChild("terrain-library1").getControl(TerrainLodControl.class);
         if (lodControl != null) {
             lodControl.setCamera(Global.gMyMain.getCamera());
         }
@@ -291,6 +316,14 @@ public class BackgroundNode {
             CreateLight();
             //CreateWater();
             //createShadow();
+        }
+    }
+
+    public void createLibraryBackground() {
+        if ((Global.gAssertManager != null) && (Global.gMyMain != null)) {
+            CreateLibrary();
+            CreateSky();
+            CreateLight();
         }
     }
 }
