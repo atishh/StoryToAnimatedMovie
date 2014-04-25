@@ -43,7 +43,7 @@ public class DesignUnit {
 
     public enum ActionInternalState {
 
-        STATE_ACTOR1, STATE_ACTOR2, STATE_SAY, STATE_NOTHING
+        STATE_ACTOR1, STATE_ACTOR2, STATE_SAY, STATE_POTENTIAL_BACKGROUND, STATE_NOTHING
     };
     public ParserState myParserState = ParserState.STATE_NOOFFEMALE;
     public ActionInternalState myActionInternalState = ActionInternalState.STATE_ACTOR1;
@@ -54,28 +54,37 @@ public class DesignUnit {
     public void populateBackground() {
         CDFNode CDFNodeTemp = mRootCDFNode;
         BackgroundNode PrevBackgroundNode = null;
-        while (CDFNodeTemp != null) {
-            if (CDFNodeTemp.cdfType == CDFType.CDF_BACKGROUND) {
-                if (SupportedBackground.IsSupported(CDFNodeTemp.label)) {
-                    if ((PrevBackgroundNode != null) && PrevBackgroundNode.Name.equalsIgnoreCase(CDFNodeTemp.label)) {
-                        //This means previous background was the same
-                        CDFNodeTemp.Background1 = PrevBackgroundNode;
+        //It may happen that rootCDFNode may not have any background. If it is the case 
+        //then create a dummy background at the top. TODO it latter.
+
+        while (PrevBackgroundNode == null) {
+            while (CDFNodeTemp != null) {
+                if (CDFNodeTemp.cdfType == CDFType.CDF_BACKGROUND) {
+                    if (SupportedBackground.IsSupported(CDFNodeTemp.label)) {
+                        if ((PrevBackgroundNode != null) && PrevBackgroundNode.Name.equalsIgnoreCase(CDFNodeTemp.label)) {
+                            //This means previous background was the same
+                            CDFNodeTemp.Background1 = PrevBackgroundNode;
+                        } else {
+                            CDFNodeTemp.Background1 = new BackgroundNode(CDFNodeTemp.label, 1);
+                            PrevBackgroundNode = CDFNodeTemp.Background1;
+                        }
                     } else {
-                        CDFNodeTemp.Background1 = new BackgroundNode(CDFNodeTemp.label, 1);
-                        PrevBackgroundNode = CDFNodeTemp.Background1;
-                    }
-                } else {
-                    //Not supported.. what to do
-                    if (PrevBackgroundNode != null) {
-                        CDFNodeTemp.Background1 = PrevBackgroundNode;
-                    } else {
-                        //Create a lake background to be on safe side
-                        CDFNodeTemp.Background1 = new BackgroundNode("lake", 1);
-                        PrevBackgroundNode = CDFNodeTemp.Background1;
+                        //Not supported.. what to do
+                        if (PrevBackgroundNode != null) {
+                            CDFNodeTemp.Background1 = PrevBackgroundNode;
+                        } else {
+                            //Create a lake background to be on safe side
+                            CDFNodeTemp.Background1 = new BackgroundNode("lake", 1);
+                            PrevBackgroundNode = CDFNodeTemp.Background1;
+                        }
                     }
                 }
+                CDFNodeTemp = CDFNodeTemp.children;
             }
-            CDFNodeTemp = CDFNodeTemp.children;
+            //This means there is no "Background:" syntax from output from nlp.
+            if (PrevBackgroundNode == null) {
+                CDFNodeTemp.Background1 = new BackgroundNode("lake", 1);
+            }
         }
     }
 
@@ -270,9 +279,12 @@ public class DesignUnit {
 
             case STATE_SAY:
                 mCurrCDFNode.TalkString = token;
+                myActionInternalState = ActionInternalState.STATE_POTENTIAL_BACKGROUND;
+                break;
+            case STATE_POTENTIAL_BACKGROUND:
+                mCurrCDFNode.sPotentialBackgroundName = token;
                 myActionInternalState = ActionInternalState.STATE_NOTHING;
                 break;
-
             default:
                 System.out.println("Midweek days are so-so.");
                 break;
@@ -359,7 +371,12 @@ public class DesignUnit {
             case STATE_NOOFMALE:
                 mNoOfMaleActors = Integer.parseInt(token);
                 System.out.println("No of Male Actors are " + mNoOfMaleActors);
-                myParserState = ParserState.STATE_MALE;
+                if (mNoOfMaleActors == 0) {
+                    //No need to go in STATE_MALE;
+                    myParserState = ParserState.STATE_ACTION;
+                } else {
+                    myParserState = ParserState.STATE_MALE;
+                }
                 mCounter = 0;
                 mMaleActors = new ActorNode[mNoOfMaleActors];
                 break;

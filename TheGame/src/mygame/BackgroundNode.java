@@ -56,7 +56,7 @@ public class BackgroundNode {
         this.label = lex + "-" + idx;
         this.idx = idx;
         attribute = "";
-        createBackground();
+        createLakeBackground();
         bLookAroundBackgroundDone = false;
         bIsAttachedToRoot = false;
     }
@@ -281,7 +281,7 @@ public class BackgroundNode {
         return Actor;
     }
 
-    public void createBackground() {
+    public void createLakeBackground() {
         if ((Global.gAssertManager != null) && (Global.gMyMain != null)) {
             CreateLake();
             CreateSky();

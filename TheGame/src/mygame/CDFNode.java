@@ -33,6 +33,8 @@ public class CDFNode {
     public boolean bFirstTimePlaceActor = true;
     public Map<String, String> passiveActorMap = new HashMap<String, String>();
 
+    public String sPotentialBackgroundName = null;
+    
     public void AttachNodesToRoot() {
 
         if ((Background1 != null)) {

@@ -21,7 +21,7 @@ public class ActionNode {
     public static Random rand = new Random((long) 5f);
     public static boolean bCamInUse = false;
     public static int nCurrActionNo = 0;
-    public static int nAccelerateUptoActionNo = 10;
+    public static int nAccelerateUptoActionNo = 0;
     public static float nAccel = 1;
     public static int nNoOfActor2 = 10;
     public static Vector3f[] Actor2Pos = new Vector3f[nNoOfActor2];
@@ -946,10 +946,12 @@ public class ActionNode {
         //System.out.println("nAccel = " + nAccel);
 
         //Look Around Background in parallel to action.
-        if (ActionCDFNode.Background1.bLookAroundBackgroundDone == false) {
-            bCamInUse = true;
-            processLookAroundBackground();
+        if (ActionCDFNode.Background1 != null) {
+            if (ActionCDFNode.Background1.bLookAroundBackgroundDone == false) {
+                bCamInUse = true;
+                processLookAroundBackground();
 
+            }
         } else {
         }
 

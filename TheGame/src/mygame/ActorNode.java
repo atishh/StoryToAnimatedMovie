@@ -150,16 +150,21 @@ public class ActorNode {
             }
 
             //This case ideally should not happen, If it happens just load anything.
-
             if (Actor == null) {
                 //This is the real actor.
-                Actor = (Node) Global.gAssertManager.loadModel("Models/Actors/Cube.mesh.j3o");
-
-                control = Actor.getControl(AnimControl.class);
-                if (control != null) {
-                    channel = control.createChannel();
-                    channel.setAnim("walk");
+                //If not able to find actor, then choose as "children".
+                ActorData ActorDataTemp = ChooseActor.getActorData("children");
+                if (ActorDataTemp != null) {
+                    ActorDataObj = ActorDataTemp;
+                    Actor = (Node) Global.gAssertManager.loadModel(ActorDataObj.PhysicalPath);
+                    Actor.setLocalScale(ActorDataObj.nScale);
+                    control = Actor.getControl(AnimControl.class);
+                    if (control != null) {
+                        channel = control.createChannel();
+                        channel.setAnim("walk");
+                    }
                 }
+
             }
             bActorCreated = true;
         }
