@@ -114,8 +114,9 @@ public class ActorNode {
             //First try to load non-actor like cabin. The action can be 
             //"The cabin stand little far aways.
             if (bOtherActor == true) {
-                String ObjectPath = SupportedBackground.getPathForStaticObjects(Name);
-                if (ObjectPath != null) {
+                ActorData ActorDataObj = SupportedBackground.getPathForStaticObjects(Name);
+                if (ActorDataObj != null) {
+                    String ObjectPath = ActorDataObj.PhysicalPath;
                     System.out.println("Inside createActor name " + Name + ObjectPath);
                     Actor = CDFNodeObj.Background1.createPassiveActor(Name, ObjectPath);
                     CDFNodeObj.passiveActorMap.put(Name, ObjectPath);

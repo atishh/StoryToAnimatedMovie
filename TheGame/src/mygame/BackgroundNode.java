@@ -49,6 +49,7 @@ public class BackgroundNode {
     Spatial skyMorning = null;
     Spatial skyNight = null;
     PointLight Nightlamp = null;
+    Spatial sceneSpatial = null;
     public static Map<String, Node> gPassiveActorMap = new HashMap<String, Node>();
 
     public BackgroundNode(String lex, int idx) {
@@ -63,9 +64,33 @@ public class BackgroundNode {
         } else {
             createLakeBackground();
         }
-
+        placeStaticObjects();
         bLookAroundBackgroundDone = false;
         bIsAttachedToRoot = false;
+    }
+
+    public void placeStaticObjects() {
+
+        SceneGraphVisitor visitor = new SceneGraphVisitor() {
+            public void visit(Spatial spatial) {
+                if ((spatial != null) && (spatial.getName() != null)) {
+                    System.out.println(spatial.getName());
+                    if (spatial.getName().equals("house")) {
+                        ActorData ActorDataObj = SupportedBackground.getPathForStaticObjects("house");
+                        String ObjectPath = ActorDataObj.PhysicalPath;
+                        Vector3f spatialLocation = spatial.getLocalTranslation();
+                        float height = LakeTerrain.getHeight(new Vector2f(spatialLocation.getX(), spatialLocation.getZ()));
+                        Spatial tree = Global.gAssertManager.loadModel(ObjectPath);
+                        tree.setLocalTranslation(spatialLocation.getX(), height + ActorDataObj.nHeight, spatialLocation.getZ());
+                        float nScale = ActorDataObj.nScale;
+                        tree.setLocalScale(nScale, nScale, nScale);
+                        tree.setShadowMode(RenderQueue.ShadowMode.Cast);
+                        Background.attachChild(tree);
+                    }
+                }
+            }
+        };
+        sceneSpatial.depthFirstTraversal(visitor);
     }
 
     public void AttachNodesToRoot() {
@@ -110,7 +135,7 @@ public class BackgroundNode {
 
     public void CreateLake() {
         Spatial lake = Global.gAssertManager.loadModel("Scenes/Lake/lake5.j3o");
-
+        sceneSpatial = lake;
         Background = new Node();
         Background.attachChild(lake);
         Node rootLake = lake.getParent();
@@ -125,10 +150,10 @@ public class BackgroundNode {
             lodControl.setCamera(Global.gMyMain.getCamera());
         }
     }
-    
+
     public void CreateLibrary() {
         Spatial library = Global.gAssertManager.loadModel("Scenes/Library/library1.j3o");
-
+        sceneSpatial = library;
         Background = new Node();
         Background.attachChild(library);
         Node rootLake = library.getParent();

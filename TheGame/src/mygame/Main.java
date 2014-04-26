@@ -4,6 +4,7 @@ import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
 import com.jme3.app.SimpleApplication;
+import com.jme3.app.state.VideoRecorderAppState;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -224,7 +225,8 @@ public class Main extends SimpleApplication implements AnimEventListener {
         
         //never pause the engine.
         this.setPauseOnLostFocus(false);
-        
+        //This is the main function for recording video/audio.
+        //stateManager.attach(new VideoRecorderAppState());
     }
 
     public enum ActionState {

@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class SupportedBackground {
 
-    public static Map<String, String> LogicalToPhysicalMap = new HashMap<String, String>();
+    public static Map<String, ActorData> LogicalToPhysicalMap = new HashMap<String, ActorData>();
     public static boolean bInit = false;
 
     static boolean IsSupported(String s) {
@@ -30,11 +30,16 @@ public class SupportedBackground {
     }
 
     static void init() {
-        LogicalToPhysicalMap.put("cabin", "Scenes/House/example_house.j3o");
+        //ActorData(String NameT, String PhysicalPathT, float nScaleT, float nRotationT, float nHeightT
+        ActorData ActorDataObj = new ActorData("cabin", "Scenes/House/example_house.j3o", 10, 0, 2);
+        LogicalToPhysicalMap.put("cabin", ActorDataObj);
+        LogicalToPhysicalMap.put("house", ActorDataObj);
+       // LogicalToPhysicalMap.put("cabin", "Scenes/House/example_house.j3o");
+       // LogicalToPhysicalMap.put("house", "Scenes/House/example_house.j3o");
         bInit = true;
     }
 
-    static String getPathForStaticObjects(String object) {
+    static ActorData getPathForStaticObjects(String object) {
         if (bInit == false) {
             init();
         }
