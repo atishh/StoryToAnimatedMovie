@@ -26,6 +26,7 @@ public class PointsOnLake {
     private static final int nOfPointOnSky = 3;
     private static final int nOfPointOnTree = 3;
     private static int nOfPointForHouse = 3;
+    private static int nOfPointNearTable = 3;
     public static PointsArray walkablePoint = new PointsArray(nOfWalkablePoints, null);
     // public static PointsArray pointNearLake = new PointsArray(nOfPointNearLake);
     public static PointsArray pointNearLake = null;
@@ -33,6 +34,7 @@ public class PointsOnLake {
     public static PointsArray pointNearRoad = null;
     // public static PointsArray pointOnWater = new PointsArray(nOfPointOnWater);
     public static PointsArray pointOnWater = null;
+    public static PointsArray pointNearTable = null;
     public static PointsArray pointOnSky = new PointsArray(nOfPointOnSky, null);
     public static PointsArray pointOnTree = new PointsArray(nOfPointOnTree, null);
     //public static PointsArray pointForHouse = new PointsArray(nOfPointForHouse);
@@ -46,6 +48,8 @@ public class PointsOnLake {
         final List listWater = new ArrayList<Vector3f>();
         final List listRoad = new ArrayList<Vector3f>();
         final List listHouse = new ArrayList<Vector3f>();
+        final List listTable = new ArrayList<Vector3f>();
+
         SceneGraphVisitor visitor = new SceneGraphVisitor() {
             public void visit(Spatial spatial) {
                 if ((spatial != null) && (spatial.getName() != null)) {
@@ -58,21 +62,27 @@ public class PointsOnLake {
                         listRoad.add(spatial.getLocalTranslation());
                     } else if (spatial.getName().equals("cabin")) {
                         listHouse.add(spatial.getLocalTranslation());
+                    } else if (spatial.getName().equals("table")) {
+                        //Note here that we have added world translation.
+                        listTable.add(spatial.getWorldTranslation());
                     }
                 }
             }
         };
+        lake.updateGeometricState();
         lake.depthFirstTraversal(visitor);
-        
+
         nOfPointNearLake = listLake.size();
         nOfPointOnWater = listWater.size();
         nOfPointOnRoad = listRoad.size();
         nOfPointForHouse = listHouse.size();
+        nOfPointNearTable = listTable.size();
 
         pointNearLake = new PointsArray(nOfPointNearLake, listLake);
         pointNearRoad = new PointsArray(nOfPointOnRoad, listRoad);
         pointOnWater = new PointsArray(nOfPointOnWater, listWater);
         pointForHouse = new PointsArray(nOfPointForHouse, listHouse);
+        pointNearTable = new PointsArray(nOfPointNearTable, listTable);
     }
 
     public static void initialize() {
@@ -143,6 +153,7 @@ public class PointsOnLake {
         pointsMap.put("trees", pointOnTree);
         pointsMap.put("cabin", pointForHouse);
         pointsMap.put("house", pointForHouse);
+        pointsMap.put("table", pointNearTable);
 
         bInitialize = true;
     }

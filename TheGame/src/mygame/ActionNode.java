@@ -87,6 +87,15 @@ public class ActionNode {
         float camZ = Actor2Pos[0].getZ() > currLoc.getZ() ? Actor2Pos[0].getZ() + 35
                 : Actor2Pos[0].getZ() - 35;
         float camY = Actor2Pos[0].getY() + 10;
+
+        if (BackgroundNode.bIndoorScene == true) {
+            camX = Actor2Pos[0].getX() > currLoc.getX() ? Actor2Pos[0].getX() + 3
+                    : Actor2Pos[0].getX() - 3;
+            camZ = Actor2Pos[0].getZ() > currLoc.getZ() ? Actor2Pos[0].getZ() + 3
+                    : Actor2Pos[0].getZ() - 3;
+            camY = Actor2Pos[0].getY() + 2;
+        }
+
         System.out.println("Camera Pos x " + camX + " camera pos z " + camZ);
         camPos.setX(camX);
         camPos.setY(camY);

@@ -63,6 +63,9 @@ public class PlaceActorNode {
                             PointName = ActionCDFNode.TalkString;
                         }
                     }
+                    if (PointName == null) {
+                        PointName = ActionCDFNode.TalkString.trim();
+                    }
                     if (ActionCDFNode.label.equalsIgnoreCase("swim")) {
                         PointName = "water";
                     }

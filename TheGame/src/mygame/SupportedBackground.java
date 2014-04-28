@@ -19,11 +19,9 @@ public class SupportedBackground {
     static boolean IsSupported(String s) {
         if (s.equalsIgnoreCase("camp")) {
             return true;
-        }
-        else if (s.equalsIgnoreCase("lake")) {
+        } else if (s.equalsIgnoreCase("lake")) {
             return true;
-        }
-        else if (s.equalsIgnoreCase("library")) {
+        } else if (s.equalsIgnoreCase("library")) {
             return true;
         }
         return false;
@@ -34,8 +32,12 @@ public class SupportedBackground {
         ActorData ActorDataObj = new ActorData("cabin", "Scenes/House/example_house.j3o", 10, 0, 2);
         LogicalToPhysicalMap.put("cabin", ActorDataObj);
         LogicalToPhysicalMap.put("house", ActorDataObj);
-       // LogicalToPhysicalMap.put("cabin", "Scenes/House/example_house.j3o");
-       // LogicalToPhysicalMap.put("house", "Scenes/House/example_house.j3o");
+
+        ActorDataObj = new ActorData("table", "Scenes/Table/table1.j3o", 1, 0, 2);
+        LogicalToPhysicalMap.put("table", ActorDataObj);
+
+        // LogicalToPhysicalMap.put("cabin", "Scenes/House/example_house.j3o");
+        // LogicalToPhysicalMap.put("house", "Scenes/House/example_house.j3o");
         bInit = true;
     }
 

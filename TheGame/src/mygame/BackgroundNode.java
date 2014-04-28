@@ -50,7 +50,9 @@ public class BackgroundNode {
     Spatial skyNight = null;
     PointLight Nightlamp = null;
     Spatial sceneSpatial = null;
+    Node houseNode = null;
     public static Map<String, Node> gPassiveActorMap = new HashMap<String, Node>();
+    static boolean bIndoorScene = false;
 
     public BackgroundNode(String lex, int idx) {
         this.Name = lex;
@@ -60,6 +62,7 @@ public class BackgroundNode {
         if (lex.trim().equalsIgnoreCase("lake")) {
             createLakeBackground();
         } else if (lex.trim().equalsIgnoreCase("library")) {
+            bIndoorScene = true;
             createLibraryBackground();
         } else {
             createLakeBackground();
@@ -67,6 +70,35 @@ public class BackgroundNode {
         placeStaticObjects();
         bLookAroundBackgroundDone = false;
         bIsAttachedToRoot = false;
+    }
+
+    public void placeStaticObjectsInsideHouse() {
+
+        SceneGraphVisitor visitor = new SceneGraphVisitor() {
+            public void visit(Spatial spatial) {
+                if ((spatial != null) && (spatial.getName() != null)) {
+                    System.out.println(spatial.getName());
+                    if (spatial.getName().equals("table")) {
+                        ActorData ActorDataObj = SupportedBackground.getPathForStaticObjects("table");
+                        String ObjectPath = ActorDataObj.PhysicalPath;
+                        Vector3f spatialLocation = spatial.getLocalTranslation();
+                        float height = LakeTerrain.getHeight(new Vector2f(spatialLocation.getX(), spatialLocation.getZ()));
+                        Spatial tableSpatial = Global.gAssertManager.loadModel(ObjectPath);
+                        tableSpatial.setLocalTranslation(spatialLocation.getX(), height + ActorDataObj.nHeight, spatialLocation.getZ());
+                        float nScale = ActorDataObj.nScale;
+                        tableSpatial.setLocalScale(nScale, nScale, nScale);
+                        tableSpatial.setShadowMode(RenderQueue.ShadowMode.Cast);
+                        //houseSpatial.attachChild(tableSpatial);
+                        houseNode.attachChild(tableSpatial);
+                    }
+                    //This is so that both inside and outside of house is rendered.
+                    if (spatial instanceof Geometry) {
+                        ((Geometry) spatial).getMaterial().getAdditionalRenderState().setFaceCullMode(FaceCullMode.Off);
+                    }
+                }
+            }
+        };
+        houseNode.depthFirstTraversal(visitor);
     }
 
     public void placeStaticObjects() {
@@ -80,12 +112,15 @@ public class BackgroundNode {
                         String ObjectPath = ActorDataObj.PhysicalPath;
                         Vector3f spatialLocation = spatial.getLocalTranslation();
                         float height = LakeTerrain.getHeight(new Vector2f(spatialLocation.getX(), spatialLocation.getZ()));
-                        Spatial tree = Global.gAssertManager.loadModel(ObjectPath);
-                        tree.setLocalTranslation(spatialLocation.getX(), height + ActorDataObj.nHeight, spatialLocation.getZ());
+                        houseNode = new Node();
+                        Spatial houseSpatial = Global.gAssertManager.loadModel(ObjectPath);
+                        houseNode.setLocalTranslation(spatialLocation.getX(), height + ActorDataObj.nHeight, spatialLocation.getZ());
                         float nScale = ActorDataObj.nScale;
-                        tree.setLocalScale(nScale, nScale, nScale);
-                        tree.setShadowMode(RenderQueue.ShadowMode.Cast);
-                        Background.attachChild(tree);
+                        houseSpatial.setLocalScale(nScale, nScale, nScale);
+                        houseSpatial.setShadowMode(RenderQueue.ShadowMode.Cast);
+                        houseNode.attachChild(houseSpatial);
+                        Background.attachChild(houseNode);
+                        placeStaticObjectsInsideHouse();
                     }
                 }
             }
