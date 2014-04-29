@@ -972,6 +972,6 @@ public class ActionNode {
             System.out.println("Currently Action Type " + ActionType + " is not supported");
         }
 
-
+        MusicManager.playMusic();
     }
 }

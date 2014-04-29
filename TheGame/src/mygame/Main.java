@@ -27,7 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 //this import javax.speech should be used for speech synthesis later.
 //import javax.speech.
-
+import com.sun.speech.freetts.*;
 /**
  * test
  *
@@ -44,6 +44,7 @@ public class Main extends SimpleApplication implements AnimEventListener {
     private AnimChannel channel;
     private AnimControl control;
     public DesignUnit parserObj;
+    public VideoRecorderAppState vrap = null;
 
     public static void main(String[] args) {
         Main app = new Main();
@@ -220,13 +221,25 @@ public class Main extends SimpleApplication implements AnimEventListener {
         //viewPort.setBackgroundColor(ColorRGBA.Blue);
         //voce.SpeechInterface.init();
         //commenting below code; to be used latter.
-        //voce.SpeechInterface.init("C:\\Users\\atsingh\\Downloads\\voce-0.9.1.zip\\voce-0.9.1\\lib", true, false, "", "");
-        //voce.SpeechInterface.synthesize("hello world");
         
+        voce.SpeechInterface.init("C:\\Users\\atsingh\\Downloads\\voce-0.9.1.zip\\voce-0.9.1\\lib", true, false, "", "");
+        voce.SpeechInterface.synthesize("hello world hello world hello worlk");
+        
+        
+        /*
+        //voce.SpeechInterface.
+        String VoiceName = "kevin16";
+        VoiceManager vm = VoiceManager.getInstance();
+        Voice voice;
+        voice = vm.getVoice(VoiceName);
+        voice.allocate();
+        voice.speak("This is from freetts");
+        */
         //never pause the engine.
         this.setPauseOnLostFocus(false);
         //This is the main function for recording video/audio.
-        //stateManager.attach(new VideoRecorderAppState());
+        vrap = new VideoRecorderAppState();
+        stateManager.attach(vrap);
     }
 
     public enum ActionState {
@@ -282,6 +295,8 @@ public class Main extends SimpleApplication implements AnimEventListener {
                 break;
             case STATE_ACTIONSTATEEXIT:
                 //System.exit(0);
+                voce.SpeechInterface.destroy();
+                //stateManager.detach(vrap);
                 stop();
                 break;
         }
