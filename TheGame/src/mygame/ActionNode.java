@@ -473,6 +473,7 @@ public class ActionNode {
 
             String sTalkString = ActionCDFNode.TalkString;
             if (sTalkString != null) {
+                VoiceManager.speak(ActionCDFNode.sAudioFileName);
                 int nStringCount = sTalkString.length();
                 SubtitleManager.setSubtitle(sTalkString);
                 nSubtitleDuration = nStringCount;
@@ -489,9 +490,16 @@ public class ActionNode {
         //System.out.println("Totalno of actors1 " + Actor1.nTotalNoOfActorsInThisNode);
 
         //handle camera
-        handleCamera();
+        if (counter < nSubtitleDuration) {
+            handleCamera();
+            counter++;
+        }
 
-        processCounter(nSubtitleDuration);
+        if (VoiceManager.IsAudioStopped() == true) {
+            ActionCompleted = true;
+            bCamInUse = false;
+        }
+        //processCounter(nSubtitleDuration);
 
         if (ActionCompleted == true) {
             SubtitleManager.setSubtitle("");

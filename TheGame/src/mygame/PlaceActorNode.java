@@ -88,6 +88,16 @@ public class PlaceActorNode {
         }
     }
 
+    public static void placeActorNodeForSay() {
+        //TODO: add update code
+        ActorNode Actor1 = ActionCDFNode.Actor1;
+        ActorNode Actor2 = ActionCDFNode.Actor2;
+
+        VoiceManager.createAudio(ActionCDFNode, Actor1);
+        bPlaceHigh = true;
+        placeActor1Node();
+    }
+
     public static void placeActorNodeForStart() {
         //TODO: add update code
         ActorNode Actor1 = ActionCDFNode.Actor1;
@@ -205,7 +215,7 @@ public class PlaceActorNode {
         });
         placeActorForActionMap.put("say", new Runnable() {
             public void run() {
-                placeActorNodeForWalk();
+                placeActorNodeForSay();
             }
         });
         placeActorForActionMap.put("scramble", new Runnable() {

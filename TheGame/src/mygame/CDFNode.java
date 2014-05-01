@@ -35,6 +35,8 @@ public class CDFNode {
 
     public String sPotentialBackgroundName = null;
     
+    public String sAudioFileName = null;
+    
     public void AttachNodesToRoot() {
 
         if ((Background1 != null)) {

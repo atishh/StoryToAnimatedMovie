@@ -21,13 +21,29 @@ import com.jme3.shadow.BasicShadowRenderer;
 import com.jme3.terrain.Terrain;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.water.SimpleWaterProcessor;
+import com.sun.speech.freetts.Voice;
+import com.sun.speech.freetts.VoiceManager;
+import com.sun.speech.freetts.audio.AudioPlayer;
+import com.sun.speech.freetts.audio.SingleFileAudioPlayer;
+import com.sun.speech.freetts.audio.NullAudioPlayer;
 import java.io.IOException;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-//this import javax.speech should be used for speech synthesis later.
-//import javax.speech.
-import com.sun.speech.freetts.*;
+import javax.sound.sampled.AudioFileFormat.Type;
+/*
+ import javax.speech.AudioException;
+ //this import javax.speech should be used for speech synthesis later.
+ //import javax.speech.
+ import javax.speech.EngineCreate;
+ import javax.speech.EngineException;
+ import javax.speech.EngineList;
+ import javax.speech.EngineStateError;
+ import javax.speech.synthesis.Synthesizer;
+ import javax.speech.synthesis.SynthesizerModeDesc;
+ import javax.speech.synthesis.Voice;
+ * */
+
 /**
  * test
  *
@@ -186,18 +202,12 @@ public class Main extends SimpleApplication implements AnimEventListener {
         /**
          * Load a model. Uses model and texture from jme3-test-data library!
          */
-       // createScene();
+        // createScene();
         //PlantTree(LakeTerrain);
-
-
-
-
         // if(LakeTerrain != NULL)
-
         //createBox();
         //createLight();
         //createWater();
-
         //createShadow();
 
         /*
@@ -221,25 +231,97 @@ public class Main extends SimpleApplication implements AnimEventListener {
         //viewPort.setBackgroundColor(ColorRGBA.Blue);
         //voce.SpeechInterface.init();
         //commenting below code; to be used latter.
-        
-        voce.SpeechInterface.init("C:\\Users\\atsingh\\Downloads\\voce-0.9.1.zip\\voce-0.9.1\\lib", true, false, "", "");
-        voce.SpeechInterface.synthesize("hello world hello world hello worlk");
-        
-        
-        /*
+
+        // voce.SpeechInterface.init("C:\\Users\\atsingh\\Downloads\\voce-0.9.1.zip\\voce-0.9.1\\lib", true, false, "", "");
+        // voce.SpeechInterface.synthesize("hello world hello world hello worlk");
+
+
+
         //voce.SpeechInterface.
-        String VoiceName = "kevin16";
+        //System.setProperty("mbrola.base",);
+        /*
+        System.setProperty("mbrola.base", "C:\\Users\\atsingh\\Projects\\mbrola");
+        String VoiceName = "mbrola_us1";
         VoiceManager vm = VoiceManager.getInstance();
+
         Voice voice;
         voice = vm.getVoice(VoiceName);
+
+        System.out.println("VoicePitch = " + voice.getPitch());
+        System.out.println("VoicePitchShift = " + voice.getPitchShift());
+        System.out.println("VoicePitchRange = " + voice.getPitchRange());
+        System.out.println("Voice string = " + voice.toString());
+        
+        voice.setPitch((float) 150.00);
+        voice.setPitchShift((float) -100.905);
+        voice.setPitchRange((float) 10.01);
+        //"business", "casual", "robotic", "breathy"
+        //voice.setStyle("business");
         voice.allocate();
-        voice.speak("This is from freetts");
-        */
+        AudioPlayer audioPlayer = new SingleFileAudioPlayer("atishoutput.wav", Type.WAVE);
+        //AudioPlayer audioPlayer = new SingleFileAudioPlayer();
+        voice.setAudioPlayer(audioPlayer);
+        
+        voice.speak("atish kumar singh");
+        voice.deallocate();
+        audioPlayer.close();
+        //System.exit(0);
+        * */
+        /*
+         try {
+         SynthesizerModeDesc generalDesc = new SynthesizerModeDesc(
+         null, // engine name
+         "general", // mode name
+         Locale.US, // locale
+         null, // running
+         null);			// voice
+
+         // Avoid using the JSAPI Central class (and the use of the speech.properties 
+         // file) by using FreeTTSEngineCentral directly.
+         FreeTTSEngineCentral central = new FreeTTSEngineCentral();
+         EngineList list = central.createEngineList(generalDesc);
+
+
+         EngineCreate creator = (EngineCreate) list.get(0);
+         Synthesizer talker = (Synthesizer) creator.createEngine();
+
+
+         //Synthesizer talker = Central.createSynthesizer(
+         //        new SynthesizerModeDesc(null, "general", Locale.US, null, null));
+
+         // Get it ready to speak
+         talker.allocate();
+         //  Voice theVoice = new Voice("hello I am atish kumar singh",
+         //          Voice.GENDER_DONT_CARE, Voice.AGE_DONT_CARE, null);
+         Voice theVoice = new Voice("mbrola_us1",
+         Voice.GENDER_DONT_CARE, Voice.AGE_DONT_CARE, null);
+
+         talker.getSynthesizerProperties().setVoice(theVoice);
+         talker.resume();
+         talker.speakPlainText("hi this is kumar ", null);
+         //talker.
+         //synthesize(" ");
+         //talker.speak("Java is Wicked Cool, tell all your friends!", null);
+
+         // Wait till speaking is done
+         talker.waitEngineState(Synthesizer.QUEUE_EMPTY);
+
+         // Clean up
+         //talker.deallocate();
+         } catch (IllegalArgumentException e) {
+         } catch (EngineException e) {
+         } catch (AudioException e) {
+         } catch (EngineStateError e) {
+         } catch (InterruptedException e) {
+         } catch (Exception e) {
+         }
+         */
+
         //never pause the engine.
         this.setPauseOnLostFocus(false);
         //This is the main function for recording video/audio.
-        vrap = new VideoRecorderAppState();
-        stateManager.attach(vrap);
+        //vrap = new VideoRecorderAppState();
+        //stateManager.attach(vrap);
     }
 
     public enum ActionState {
@@ -249,10 +331,9 @@ public class Main extends SimpleApplication implements AnimEventListener {
     };
     public ActionState mActionStateObj = ActionState.STATE_ACTIONSTATEINITIAL;
     public CDFNode pCurrActionCDFNode = null;
-
     BackgroundNode PrevBackgroundNode = null;
     BackgroundNode CurrBackgroundNode = null;
-    
+
     @Override
     public void simpleUpdate(float tpf) {
         //TODO: add update code
@@ -274,13 +355,12 @@ public class Main extends SimpleApplication implements AnimEventListener {
                     mActionStateObj = ActionState.STATE_ACTIONSTATEEXIT;
                 } else {
                     CurrBackgroundNode = pCurrActionCDFNode.Background1;
-                    if(CurrBackgroundNode != PrevBackgroundNode)
-                    {
+                    if (CurrBackgroundNode != PrevBackgroundNode) {
                         System.out.println("In Simpleupdate , background changed");
                         pCurrActionCDFNode.PlaceActorsForThisBackground(CurrBackgroundNode);
                     }
                     PrevBackgroundNode = CurrBackgroundNode;
-                    
+
                     mActionStateObj = ActionState.STATE_ACTIONSTATEMIDDLE;
                 }
                 break;
@@ -295,7 +375,7 @@ public class Main extends SimpleApplication implements AnimEventListener {
                 break;
             case STATE_ACTIONSTATEEXIT:
                 //System.exit(0);
-                voce.SpeechInterface.destroy();
+                //voce.SpeechInterface.destroy();
                 //stateManager.detach(vrap);
                 stop();
                 break;
