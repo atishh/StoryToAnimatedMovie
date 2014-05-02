@@ -351,6 +351,7 @@ public class DesignUnit {
                 break;
             case STATE_FEMALE:
                 mFemaleActors[mCounter] = new ActorNode(token.trim(), mCounter, false, null);
+                mFemaleActors[mCounter].bIsFemale = true;
                 if (mCounter < (mNoOfFemaleActors)) {
                     myParserState = ParserState.STATE_FEMALEATTRIBUTE;
                 } else {
@@ -383,6 +384,7 @@ public class DesignUnit {
             case STATE_MALE:
                 //TODO change it
                 mMaleActors[mCounter] = new ActorNode(token.trim(), mCounter, false, null);
+                mMaleActors[mCounter].bIsMale = true;
                 if (mCounter < (mNoOfMaleActors)) {
                     myParserState = ParserState.STATE_MALEATTRIBUTE;
                 } else {

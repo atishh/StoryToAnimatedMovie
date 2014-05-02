@@ -37,6 +37,14 @@ public class ActorNode {
     public ActorData ActorDataObj;
     public boolean bActorCreated = false;
 
+    public boolean bIsMale = false;
+    public boolean bIsFemale = false;
+    
+    //These are voice related fields.
+    public boolean bVoiceDataSet = false;
+    public String sVoiceName = null;
+    public float pitchShift = 0;
+    
     public void DetachNodesFromRoot() {
         for (int i = 0; i < gNoOfActors; i++) {
             ActorNode ActorNodeObj = gActorNodes[i];
