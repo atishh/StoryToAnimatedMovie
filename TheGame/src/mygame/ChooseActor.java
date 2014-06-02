@@ -39,6 +39,7 @@ public class ChooseActor {
         ActorDataObj = new ActorData("fish", "Scenes/Fish/Sphere.006.mesh.j3o", 0.2f, 0, 1);
         NameToActorDataMap.put("fish", ActorDataObj);
         ActorDataObj = new ActorData("deer", "Scenes/Animals/Deer/Cube.001.mesh.j3o", 0.5f, 0, 1);
+        //ActorDataObj = new ActorData("deer", "Models/lady/lady.mesh.j3o", 0.5f, 0, 1);
         NameToActorDataMap.put("deer", ActorDataObj);
 
         ActorDataObj = new ActorData("sun", "Scenes/sun/Sphere.mesh.j3o", 0.5f, 0, 1);
@@ -58,6 +59,7 @@ public class ChooseActor {
         NameToActorDataMap.put("mother", ActorDataObj);
 
         ActorDataObj = new ActorData("children", "Models/Actors/Cube.mesh.j3o", 1, 0, 4.6f);
+        //ActorDataObj = new ActorData("children", "Models/lady/lady.mesh.j3o", 0.5f, 0, 4.6f);
         ActorDataObj.bIsHuman = true;
         NameToActorDataMap.put("children", ActorDataObj);
 

@@ -153,7 +153,9 @@ public class ActorNode {
                     control = Actor.getControl(AnimControl.class);
                     if (control != null) {
                         channel = control.createChannel();
-                        channel.setAnim("walk");
+                        System.out.println("Animation name is" + channel.getAnimationName());
+                        if(control.getAnim("walk") != null)
+                            channel.setAnim("walk");
                     }
                 }
             }

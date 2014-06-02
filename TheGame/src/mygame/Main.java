@@ -1,10 +1,13 @@
 package mygame;
 
+import com.aurellem.capture.Capture;
+import com.aurellem.capture.IsoTimer;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
 import com.jme3.app.SimpleApplication;
-import com.jme3.app.state.VideoRecorderAppState;
+//import com.jme3.app.state.VideoRecorderAppState;
+//import com.jme3.app.state.VideoRecorderAppState.IsoTimer;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -18,19 +21,15 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.shadow.BasicShadowRenderer;
+import com.jme3.system.AppSettings;
 import com.jme3.terrain.Terrain;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.water.SimpleWaterProcessor;
-import com.sun.speech.freetts.Voice;
-import com.sun.speech.freetts.VoiceManager;
-import com.sun.speech.freetts.audio.AudioPlayer;
-import com.sun.speech.freetts.audio.SingleFileAudioPlayer;
-import com.sun.speech.freetts.audio.NullAudioPlayer;
+import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.sound.sampled.AudioFileFormat.Type;
 /*
  import javax.speech.AudioException;
  //this import javax.speech should be used for speech synthesis later.
@@ -60,11 +59,29 @@ public class Main extends SimpleApplication implements AnimEventListener {
     private AnimChannel channel;
     private AnimControl control;
     public DesignUnit parserObj;
-    public VideoRecorderAppState vrap = null;
+    //public VideoRecorderAppState vrap = null;
 
     public static void main(String[] args) {
         Main app = new Main();
+        try {
+            //settings.setAudioRenderer(AurellemSystemDelegate.SEND);
+            //JmeSystem.setSystemDelegate(new AurellemSystemDelegate());
+            File video = File.createTempFile("JME-video", ".mkv");
+            File audio = File.createTempFile("JME-audio", ".wav");
+            app.setTimer(new IsoTimer(30));
+
+            Capture.captureVideo(app, video);
+            Capture.captureAudio(app, audio);
+            AppSettings settings = new AppSettings(true);
+        settings.setAudioRenderer(AppSettings.LWJGL_OPENAL);
+        app.setSettings(settings);
+            System.out.println(video.getCanonicalPath());
+            System.out.println(audio.getCanonicalPath());
+        } catch (Exception e) {
+        }
         app.start();
+        //System.out.println(video.getCanonicalPath());
+        //System.out.println(audio.getCanonicalPath());
     }
 
     public Node createActor() {
@@ -192,7 +209,7 @@ public class Main extends SimpleApplication implements AnimEventListener {
         Global.gAssertManager = assetManager;
         Global.gMyMain = this;
 
-        parserObj = new DesignUnit("C:\\Users\\atsingh\\Projects\\nlp\\source\\outfile.txt");
+        parserObj = new DesignUnit("C:\\Users\\atsingh\\Projects\\nlp\\source\\outfile.txt_bk_bk_bk");
         try {
             parserObj.processLineByLine();
         } catch (IOException ex) {
@@ -240,33 +257,33 @@ public class Main extends SimpleApplication implements AnimEventListener {
         //voce.SpeechInterface.
         //System.setProperty("mbrola.base",);
         /*
-        System.setProperty("mbrola.base", "C:\\Users\\atsingh\\Projects\\mbrola");
-        String VoiceName = "mbrola_us1";
-        VoiceManager vm = VoiceManager.getInstance();
+         System.setProperty("mbrola.base", "C:\\Users\\atsingh\\Projects\\mbrola");
+         String VoiceName = "mbrola_us1";
+         VoiceManager vm = VoiceManager.getInstance();
 
-        Voice voice;
-        voice = vm.getVoice(VoiceName);
+         Voice voice;
+         voice = vm.getVoice(VoiceName);
 
-        System.out.println("VoicePitch = " + voice.getPitch());
-        System.out.println("VoicePitchShift = " + voice.getPitchShift());
-        System.out.println("VoicePitchRange = " + voice.getPitchRange());
-        System.out.println("Voice string = " + voice.toString());
+         System.out.println("VoicePitch = " + voice.getPitch());
+         System.out.println("VoicePitchShift = " + voice.getPitchShift());
+         System.out.println("VoicePitchRange = " + voice.getPitchRange());
+         System.out.println("Voice string = " + voice.toString());
         
-        voice.setPitch((float) 150.00);
-        voice.setPitchShift((float) -100.905);
-        voice.setPitchRange((float) 10.01);
-        //"business", "casual", "robotic", "breathy"
-        //voice.setStyle("business");
-        voice.allocate();
-        AudioPlayer audioPlayer = new SingleFileAudioPlayer("atishoutput.wav", Type.WAVE);
-        //AudioPlayer audioPlayer = new SingleFileAudioPlayer();
-        voice.setAudioPlayer(audioPlayer);
+         voice.setPitch((float) 150.00);
+         voice.setPitchShift((float) -100.905);
+         voice.setPitchRange((float) 10.01);
+         //"business", "casual", "robotic", "breathy"
+         //voice.setStyle("business");
+         voice.allocate();
+         AudioPlayer audioPlayer = new SingleFileAudioPlayer("atishoutput.wav", Type.WAVE);
+         //AudioPlayer audioPlayer = new SingleFileAudioPlayer();
+         voice.setAudioPlayer(audioPlayer);
         
-        voice.speak("atish kumar singh");
-        voice.deallocate();
-        audioPlayer.close();
-        //System.exit(0);
-        * */
+         voice.speak("atish kumar singh");
+         voice.deallocate();
+         audioPlayer.close();
+         //System.exit(0);
+         * */
         /*
          try {
          SynthesizerModeDesc generalDesc = new SynthesizerModeDesc(
@@ -322,6 +339,22 @@ public class Main extends SimpleApplication implements AnimEventListener {
         //This is the main function for recording video/audio.
         //vrap = new VideoRecorderAppState();
         //stateManager.attach(vrap);
+
+        /*
+         //video/audio capture.
+         try {
+         //settings.setAudioRenderer(AurellemSystemDelegate.SEND);
+         //JmeSystem.setSystemDelegate(new AurellemSystemDelegate());
+         File video = File.createTempFile("JME-video", ".avi");
+         File audio = File.createTempFile("JME-audio", ".wav");
+         this.setTimer(new IsoTimer(30));
+         Capture.captureVideo(this, video);
+         Capture.captureAudio(this, audio);
+         System.out.println(video.getCanonicalPath());
+         System.out.println(audio.getCanonicalPath());
+         } catch (Exception e) {
+         }
+         * */
     }
 
     public enum ActionState {
